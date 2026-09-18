@@ -102,7 +102,7 @@ const SignalLight = ({ color = 'green', label }) => {
   );
 };
 
-export const LoginPage = ({ onLoginSuccess }) => {
+export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => {
   const { login, authError, setAuthError } = useAuth();
 
   const [officerId, setOfficerId] = useState('');
@@ -114,7 +114,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
   const [introComplete, setIntroComplete] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => setIntroComplete(true), 800);
+    const timer = setTimeout(() => setIntroComplete(true), 600);
     return () => clearTimeout(timer);
   }, []);
 
@@ -170,7 +170,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
             </div>
 
             <h1 className="text-4xl font-black tracking-tight text-white mb-2">
-              PRAGATI
+              RAILOPT AI
             </h1>
             <p className="text-sm text-slate-400 font-medium mb-6 tracking-wide">
               INTELLIGENT RAILWAY MAINTENANCE<br />& BLOCK OPTIMIZATION
@@ -180,7 +180,7 @@ export const LoginPage = ({ onLoginSuccess }) => {
             <div className="flex items-center justify-center gap-4 flex-wrap">
               <SignalLight color="green" label="CRIS CONNECTED" />
               <SignalLight color="green" label="AI ENGINE" />
-              <SignalLight color="amber" label="TELEMETRY" />
+              <SignalLight color="amber" label="LIVE TELEMETRY" />
             </div>
 
             {/* Ministry badge */}
@@ -202,24 +202,42 @@ export const LoginPage = ({ onLoginSuccess }) => {
         <div className="absolute inset-0 bg-grid-fine opacity-30 pointer-events-none" />
 
         <div className={`w-full max-w-md relative z-10 ${introComplete ? 'login-fade-in' : 'opacity-0'}`}>
+          {/* Back to Zonal Selection Link */}
+          {onBackToGateway && (
+            <button
+              onClick={onBackToGateway}
+              className="mb-6 flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors"
+            >
+              <span>←</span>
+              <span>CHANGE ZONAL COMMAND CENTER</span>
+            </button>
+          )}
+
           {/* Mobile logo */}
-          <div className="lg:hidden flex items-center gap-3 mb-8">
+          <div className="lg:hidden flex items-center gap-3 mb-6">
             <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-red-700 to-red-900 border border-red-500/40 flex items-center justify-center shadow-lg">
               <Train className="w-6 h-6 text-amber-300" />
             </div>
             <div>
-              <h1 className="text-xl font-black tracking-tight text-white">PRAGATI</h1>
+              <h1 className="text-xl font-black tracking-tight text-white">RAILOPT AI</h1>
               <span className="text-[9px] font-mono text-emerald-400 uppercase tracking-widest font-bold">OFFICER GATEWAY</span>
             </div>
           </div>
 
           {/* Header */}
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-3">
-              <ShieldCheck className="w-5 h-5 text-cyan-400" />
-              <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">
-                Secure Access
-              </span>
+          <div className="mb-6">
+            <div className="flex items-center justify-between gap-2 mb-3">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-cyan-400" />
+                <span className="text-xs font-mono font-bold text-cyan-400 uppercase tracking-widest">
+                  Secure Access
+                </span>
+              </div>
+              {selectedZone && (
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-950/80 text-cyan-300 border border-blue-700/60">
+                  ZONE: {selectedZone.code || selectedZone}
+                </span>
+              )}
             </div>
             <h2 className="text-2xl font-bold text-white mb-1">
               Railway Operations Control

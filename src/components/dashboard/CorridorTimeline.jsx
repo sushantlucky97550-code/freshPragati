@@ -46,15 +46,19 @@ export const CorridorTimeline = () => {
 
   // Helper to convert "HH:MM" to percent along active window
   const timeToPercent = (timeStr) => {
-    if (!timeStr || !timeStr.includes(':')) return -10;
+    if (!timeStr || typeof timeStr !== 'string' || !timeStr.includes(':')) return -10;
     const [h, m] = timeStr.split(':').map(Number);
-    const hourVal = h + (m || 0) / 60;
+    const hourVal = (isNaN(h) ? 0 : h) + ((isNaN(m) ? 0 : m) || 0) / 60;
     if (hourVal < currentWindow.start || hourVal > currentWindow.end) return -10;
     return ((hourVal - currentWindow.start) / totalHours) * 100;
   };
 
   // Convert current IST to timeline percent if in window
-  const [curH, curM] = currentIstTime.split(':').map(Number);
+  const istParts = (typeof currentIstTime === 'string' && currentIstTime.includes(':'))
+    ? currentIstTime.split(':').map(Number)
+    : [0, 0];
+  const curH = isNaN(istParts[0]) ? 0 : istParts[0];
+  const curM = isNaN(istParts[1]) ? 0 : istParts[1];
   const currentIstHourVal = curH + (curM || 0) / 60;
   const currentIstPercent =
     currentIstHourVal >= currentWindow.start && currentIstHourVal <= currentWindow.end
@@ -65,7 +69,7 @@ export const CorridorTimeline = () => {
   const hourTicks = Array.from({ length: totalHours + 1 }, (_, i) => currentWindow.start + i);
 
   // Filtered trains and blocks for corridor
-  const corridorTracks = selectedCorridor.tracks || [
+  const corridorTracks = selectedCorridor?.tracks || [
     { id: 'UP_MAIN', name: 'UP Main Line', direction: 'UP' },
     { id: 'DN_MAIN', name: 'DOWN Main Line', direction: 'DN' },
     { id: '3RD_LINE', name: '3rd Line / Freight', direction: 'BIDIRECTIONAL' }

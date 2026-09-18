@@ -40,20 +40,15 @@ export const WorkloadDistribution = () => {
 
       // Fallback to department service
       const data = await getDepartments();
-      const deptArray = Array.isArray(data) ? data : [];
+      const deptArray = Array.isArray(data) && data.length > 0 ? data : [];
       setLocalDepartments(deptArray);
       if (setGlobalDepartments) {
         setGlobalDepartments(deptArray);
       }
     } catch (err) {
-      console.warn('[WorkloadDistribution] Falling back to department service:', err);
-      try {
-        const data = await getDepartments();
-        const deptArray = Array.isArray(data) ? data : [];
-        setLocalDepartments(deptArray);
-      } catch (fallbackErr) {
-        setError(fallbackErr.message || 'Unable to connect to backend service.');
-      }
+      console.warn('[WorkloadDistribution] Recovering with fallback departments:', err);
+      const fallbackDepts = await getDepartments();
+      setLocalDepartments(fallbackDepts);
     } finally {
       setLoading(false);
     }

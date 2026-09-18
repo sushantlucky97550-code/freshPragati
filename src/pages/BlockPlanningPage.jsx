@@ -159,7 +159,7 @@ export const BlockPlanningPage = () => {
                   Target Track Line
                 </label>
                 <div className="grid grid-cols-3 gap-2">
-                  {selectedCorridor.tracks.map((track) => (
+                  {(selectedCorridor?.tracks || []).map((track) => (
                     <button
                       key={track.id}
                       type="button"
@@ -170,7 +170,7 @@ export const BlockPlanningPage = () => {
                           : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#111A2E] text-slate-600 dark:text-slate-400 hover:border-slate-300'
                       }`}
                     >
-                      {track.name.split(' ')[0]} {track.direction}
+                      {(track?.name || track?.id || 'Track').split(' ')[0]} {track?.direction || ''}
                     </button>
                   ))}
                 </div>

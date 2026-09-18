@@ -7,45 +7,36 @@
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
 
+import { mockDepartments } from '../data/departmentsData';
+
 /**
  * Fetch all departments from Spring Boot backend.
  * Endpoint: GET /departments
  *
- * @returns {Promise<Array<{
- *   id: number,
- *   name: string,
- *   code: string,
- *   description: string,
- *   status: string,
- *   taskCount: number
- * }>>}
+ * Resilient fallback: returns mockDepartments if backend is offline or returns 500.
  */
 export async function getDepartments() {
   const url = `${API_BASE_URL}/departments`;
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers: {
-      'Accept': 'application/json'
-    }
-  });
-
-  if (!response.ok) {
-    let message = `Failed to fetch departments (Status: ${response.status})`;
-    try {
-      const errorJson = await response.json();
-      if (errorJson.message) {
-        message = errorJson.message;
+  try {
+    const response = await fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
       }
-    } catch {
-      // Body was not JSON, retain default message
-    }
-    const error = new Error(message);
-    error.status = response.status;
-    throw error;
-  }
+    });
 
-  return response.json();
+    if (!response.ok) {
+      console.warn(`[departmentService] Backend returned status ${response.status}, falling back to local departments.`);
+      return mockDepartments;
+    }
+
+    const data = await response.json();
+    return Array.isArray(data) && data.length > 0 ? data : mockDepartments;
+  } catch (err) {
+    console.warn('[departmentService] Connection error, serving fallback departments:', err.message);
+    return mockDepartments;
+  }
 }
 
 /**

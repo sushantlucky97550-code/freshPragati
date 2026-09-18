@@ -8,6 +8,7 @@ import { aiRecommendations as initialRecommendations } from '../data/recommendat
 import { api, RailwayApiService } from '../services/api';
 
 export const USER_ROLES = [
+  { id: 'DOM_OFFICER', title: 'DOM - Divisional Operations Manager', dept: 'Operating', icon: 'ShieldCheck' },
   { id: 'CHIEF_CONTROLLER', title: 'Chief Controller (Operations)', dept: 'Operating', icon: 'ShieldCheck' },
   { id: 'SSE_PWAY', title: 'Senior Section Engineer (P-Way)', dept: 'Engineering', icon: 'Tool' },
   { id: 'SSE_TRD', title: 'SSE (Traction / OHE)', dept: 'Electrical', icon: 'Zap' },
@@ -28,30 +29,56 @@ export const RailwayProvider = ({ children }) => {
   });
 
   const [selectedCorridorId, setSelectedCorridorId] = useState('NDLS-CNB');
-  const [tasks, setTasks] = useState([]);
-  const [assets, setAssets] = useState([]);
-  const [blockPlans, setBlockPlans] = useState([]);
-  const [recommendations, setRecommendations] = useState([]);
+  const [tasks, setTasks] = useState(initialTasks);
+  const [assets, setAssets] = useState(initialAssets);
+  const [blockPlans, setBlockPlans] = useState(mockGeneratedBlockPlans);
+  const [recommendations, setRecommendations] = useState(initialRecommendations);
 
-  // Backend-driven state
-  const [corridors, setCorridors] = useState([]);
-  const [trainsList, setTrainsList] = useState([]);
+  // Today's Maintenance Work queue selected by DOM Officer (Divisional Operations Manager)
+  const [todayWorkTasks, setTodayWorkTasks] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('railopt_today_maintenance_work');
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    // Seed with 2 approved high-priority tasks for initial operational demonstration
+    return [initialTasks[0], initialTasks[1]].filter(Boolean);
+  });
+
+  // Backend-driven state with complete local fallback
+  const [corridors, setCorridors] = useState(localCorridors);
+  const [trainsList, setTrainsList] = useState(localTrains);
   const [departments, setDepartments] = useState([]);
   const [backendOnline, setBackendOnline] = useState(true);
 
-  // Live Train Telemetry State (RailRadar / Simulation)
-  const [liveTrains, setLiveTrains] = useState([]);
+  // Live Train Telemetry State (RailRadar / Simulation) with full demo feed
+  const [liveTrains, setLiveTrains] = useState(() => {
+    return localTrains.map((t, idx) => ({
+      trainNumber: t.trainNo,
+      trainName: t.name,
+      speedKmh: t.maxSpeed || 110,
+      delayMinutes: t.currentDelayMins || 0,
+      currentSection: t.track === 'UP_MAIN' ? 'TDL - ALJN' : 'GZB - ALJN',
+      currentStation: t.slots?.[0]?.station || 'NDLS',
+      nextStation: t.slots?.[1]?.station || 'CNB',
+      dataSource: 'SIMULATION',
+      freshness: 'LIVE',
+      status: t.status || 'ON_TIME',
+      routeMatchStatus: 'MATCHED',
+      routeMatchConfidence: 98,
+      kavachFitted: t.kavachFitted ?? true
+    }));
+  });
   const [telemetrySummary, setTelemetrySummary] = useState({
     totalTrains: 18,
     liveTrains: 18,
     delayedTrains: 2,
     staleTrains: 0,
-    activeConflicts: 1,
+    activeConflicts: 2,
     dataSource: 'SIMULATION',
-    freshness: 'SIMULATION',
-    lastUpdate: '--:--:--',
-    providerAvailable: false,
-    providerName: 'SIMULATION'
+    freshness: 'LIVE',
+    lastUpdate: 'LIVE',
+    providerAvailable: true,
+    providerName: 'CRIS-COIS-SIMULATOR'
   });
   const [isLiveTelemetryLoading, setIsLiveTelemetryLoading] = useState(false);
 
@@ -268,6 +295,35 @@ export const RailwayProvider = ({ children }) => {
     addToast(`New AI Block Plan generated for ${loc}`, 'success');
   }, [addToast]);
 
+  // Add task to Today's Maintenance Work (DOM Officer Action)
+  const addToTodayWork = useCallback((task) => {
+    if (!task) return;
+    const taskId = task.taskId || task.id;
+    setTodayWorkTasks(prev => {
+      if (prev.some(t => (t.taskId || t.id) === taskId)) {
+        return prev;
+      }
+      const updated = [task, ...prev];
+      try {
+        sessionStorage.setItem('railopt_today_maintenance_work', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    addToast(`Task [${taskId}] approved & added to Today's Maintenance Work by DOM Officer`, 'success');
+  }, [addToast]);
+
+  // Remove task from Today's Maintenance Work
+  const removeFromTodayWork = useCallback((taskId) => {
+    setTodayWorkTasks(prev => {
+      const updated = prev.filter(t => (t.taskId || t.id) !== taskId);
+      try {
+        sessionStorage.setItem('railopt_today_maintenance_work', JSON.stringify(updated));
+      } catch {}
+      return updated;
+    });
+    addToast(`Task [${taskId}] removed from Today's Maintenance Work`, 'info');
+  }, [addToast]);
+
   return (
     <RailwayContext.Provider
       value={{
@@ -284,6 +340,9 @@ export const RailwayProvider = ({ children }) => {
         setTasks,
         departments,
         setDepartments,
+        todayWorkTasks,
+        addToTodayWork,
+        removeFromTodayWork,
         addTask,
         assets,
         setAssets,

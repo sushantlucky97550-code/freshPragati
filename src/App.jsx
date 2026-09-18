@@ -15,12 +15,15 @@ import { WeeklyPlannerPage } from './pages/WeeklyPlannerPage';
 import { RecommendationsPage } from './pages/RecommendationsPage';
 import { ReportsPage } from './pages/ReportsPage';
 import { LoginPage } from './pages/LoginPage';
+import { GatewayPage } from './pages/GatewayPage';
 
 import { Train, ShieldCheck } from 'lucide-react';
 
 // Route path mapping helper
 const PATH_TO_PAGE_MAP = {
-  '/': 'dashboard',
+  '/': 'gateway',
+  '/gateway': 'gateway',
+  '/login': 'login',
   '/dashboard': 'dashboard',
   '/ai-planning': 'ai-planning',
   '/block-planner': 'ai-planning',
@@ -32,11 +35,12 @@ const PATH_TO_PAGE_MAP = {
   '/corridors': 'trains-corridors',
   '/planner': 'planner',
   '/recommendations': 'recommendations',
-  '/reports': 'reports',
-  '/login': 'login'
+  '/reports': 'reports'
 };
 
 const PAGE_TO_PATH_MAP = {
+  'gateway': '/gateway',
+  'login': '/login',
   'dashboard': '/dashboard',
   'ai-planning': '/block-planner',
   'maintenance-tasks': '/maintenance',
@@ -44,8 +48,7 @@ const PAGE_TO_PATH_MAP = {
   'trains-corridors': '/corridors',
   'planner': '/planner',
   'recommendations': '/recommendations',
-  'reports': '/reports',
-  'login': '/login'
+  'reports': '/reports'
 };
 
 // Error Boundary Component to prevent white/blank screens
@@ -137,9 +140,18 @@ function AppContent() {
   const { isAuthenticated, isLoading, user: authUser } = useAuth();
   const { setCurrentUser } = useRailway();
 
+  const [selectedZone, setSelectedZone] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('railopt_selected_zone');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   const [activePage, setActivePage] = useState(() => {
     const currentPath = window.location.pathname;
-    return PATH_TO_PAGE_MAP[currentPath] || 'dashboard';
+    return PATH_TO_PAGE_MAP[currentPath] || (window.location.hash.includes('gateway') ? 'gateway' : 'gateway');
   });
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
@@ -164,12 +176,15 @@ function AppContent() {
     const handlePopState = () => {
       const path = window.location.pathname;
       if (!isAuthenticated) {
-        // Enforce route protection on back/forward
-        window.history.replaceState(null, '', '/login');
-        setActivePage('login');
+        if (path === '/login') {
+          setActivePage('login');
+        } else {
+          window.history.replaceState(null, '', '/gateway');
+          setActivePage('gateway');
+        }
       } else {
         const page = PATH_TO_PAGE_MAP[path] || 'dashboard';
-        setActivePage(page === 'login' ? 'dashboard' : page);
+        setActivePage(page === 'login' || page === 'gateway' ? 'dashboard' : page);
       }
     };
 
@@ -181,13 +196,14 @@ function AppContent() {
   useEffect(() => {
     if (!isLoading) {
       if (!isAuthenticated) {
-        if (window.location.pathname !== '/login') {
-          window.history.replaceState(null, '', '/login');
+        const path = window.location.pathname;
+        if (path !== '/login' && path !== '/gateway') {
+          window.history.replaceState(null, '', '/gateway');
+          setActivePage('gateway');
         }
-        setActivePage('login');
       } else {
-        // Authenticated: if currently on /login, move to dashboard
-        if (window.location.pathname === '/login' || window.location.pathname === '/') {
+        // Authenticated: if currently on /login, /gateway or /, move to dashboard
+        if (window.location.pathname === '/login' || window.location.pathname === '/gateway' || window.location.pathname === '/') {
           window.history.replaceState(null, '', '/dashboard');
           setActivePage('dashboard');
         }
@@ -204,6 +220,14 @@ function AppContent() {
     }
   }, []);
 
+  const handleSelectZone = (zone) => {
+    setSelectedZone(zone);
+    try {
+      sessionStorage.setItem('railopt_selected_zone', JSON.stringify(zone));
+    } catch (e) {}
+    navigateTo('login');
+  };
+
   const navigateToPlanningWithTask = (task) => {
     navigateTo('ai-planning');
   };
@@ -213,15 +237,24 @@ function AppContent() {
     return <VerifyingSessionSplash />;
   }
 
-  // ─── 2. UNAUTHENTICATED: RENDER ONLY THE OFFICER AUTHENTICATION GATEWAY ───────
+  // ─── 2. UNAUTHENTICATED: RENDER GATEWAY OR OFFICER LOGIN ───────
   // No Navbar, no Sidebar, no application data rendered in DOM!
   if (!isAuthenticated) {
+    if (activePage === 'login') {
+      return (
+        <LoginPage
+          selectedZone={selectedZone}
+          onBackToGateway={() => navigateTo('gateway')}
+          onLoginSuccess={() => {
+            window.history.pushState(null, '', '/dashboard');
+            setActivePage('dashboard');
+          }}
+        />
+      );
+    }
     return (
-      <LoginPage
-        onLoginSuccess={() => {
-          window.history.pushState(null, '', '/dashboard');
-          setActivePage('dashboard');
-        }}
+      <GatewayPage
+        onSelectZone={handleSelectZone}
       />
     );
   }
@@ -253,7 +286,11 @@ function AppContent() {
   return (
     <div className="min-h-screen bg-slate-100 dark:bg-[#070B12] text-slate-900 dark:text-slate-100 flex flex-col w-full overflow-x-hidden selection:bg-red-700 selection:text-white">
       {/* Top Navigation Bar */}
-      <Navbar onToggleSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)} />
+      <Navbar
+        onToggleSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
+        activePage={activePage}
+        onNavigate={navigateTo}
+      />
 
       {/* Main Layout Body */}
       <div className="flex-1 flex w-full relative">

@@ -28,7 +28,7 @@ export const Sidebar = ({
   isOpenMobile,
   onCloseMobile
 }) => {
-  const { tasks, recommendations, blockPlans } = useRailway();
+  const { tasks, recommendations, blockPlans, todayWorkTasks, removeFromTodayWork } = useRailway();
   const { user: authUser, logout } = useAuth();
 
   const pendingTasksCount = tasks.filter(t => t.status === 'PENDING_BLOCK').length;
@@ -70,13 +70,6 @@ export const Sidebar = ({
       label: 'Trains & Corridors',
       icon: Train,
       badge: 'LIVE',
-      roles: ['ADMIN', 'OPERATIONS_CONTROL', 'CHIEF_CONTROLLER', 'ENGINEERING_OFFICER']
-    },
-    {
-      id: 'planner',
-      label: 'Weekly / Monthly Planner',
-      icon: Calendar,
-      badge: null,
       roles: ['ADMIN', 'OPERATIONS_CONTROL', 'CHIEF_CONTROLLER', 'ENGINEERING_OFFICER']
     },
     {
@@ -194,6 +187,95 @@ export const Sidebar = ({
               </button>
             );
           })}
+
+          {/* ─────────────────────────────────────────────────────────────
+              TODAY'S MAINTENANCE WORK SECTION (Selected by DOM Officer)
+              ───────────────────────────────────────────────────────────── */}
+          {!isCollapsed ? (
+            <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800/80">
+              <div className="flex items-center justify-between px-2 mb-2">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                  <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-700 dark:text-slate-200">
+                    Today's Maintenance
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono font-bold px-1.5 py-0.2 rounded bg-red-100 dark:bg-red-950/70 text-red-700 dark:text-red-300 border border-red-300 dark:border-red-900">
+                  {todayWorkTasks?.length || 0} Queued
+                </span>
+              </div>
+
+              {todayWorkTasks && todayWorkTasks.length > 0 ? (
+                <div className="space-y-1.5 max-h-48 overflow-y-auto pr-1">
+                  {todayWorkTasks.map((twTask) => {
+                    const taskId = twTask.taskId || twTask.id;
+                    const dept = twTask.departmentCode || twTask.department || 'PWAY';
+                    return (
+                      <div
+                        key={taskId}
+                        className="group relative p-2 rounded-lg bg-slate-50 dark:bg-[#0D1527] border border-slate-200 dark:border-slate-800 hover:border-red-500/40 transition-all text-left"
+                      >
+                        <div className="flex items-center justify-between text-[10px]">
+                          <span className="font-mono font-bold text-slate-800 dark:text-slate-100 truncate max-w-[130px]">
+                            {taskId}
+                          </span>
+                          <span className="font-mono text-[9px] px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            {twTask.requiredWindowHours || (twTask.durationMinutes ? (twTask.durationMinutes / 60).toFixed(1) : 2.5)}h
+                          </span>
+                        </div>
+                        <div className="text-[10px] text-slate-600 dark:text-slate-300 font-sans truncate mt-0.5">
+                          {twTask.title || twTask.taskType}
+                        </div>
+                        <div className="flex items-center justify-between text-[9px] text-slate-400 mt-1 font-mono">
+                          <span className="truncate max-w-[120px] text-amber-600 dark:text-amber-400 font-semibold">
+                            {twTask.section || twTask.location}
+                          </span>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFromTodayWork(taskId);
+                            }}
+                            title="Remove from Today's Work"
+                            className="opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-700 transition-opacity ml-1"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <div className="p-2.5 rounded-lg border border-dashed border-slate-200 dark:border-slate-800 text-center">
+                  <p className="text-[10px] text-slate-400">
+                    No tasks selected for today.
+                  </p>
+                  <button
+                    onClick={() => setActivePage('maintenance-tasks')}
+                    className="text-[10px] text-red-600 dark:text-red-400 font-semibold hover:underline mt-1 block w-full"
+                  >
+                    + DOM: Select Requisitions
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            /* Collapsed Icon View for Today's Work */
+            <div className="mt-3 pt-3 border-t border-slate-200 dark:border-slate-800/80 flex flex-col items-center">
+              <button
+                onClick={() => setActivePage('maintenance-tasks')}
+                title={`Today's Maintenance Work (${todayWorkTasks?.length || 0} queued)`}
+                className="relative p-2 rounded-xl bg-slate-100 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 hover:text-red-500 transition-colors"
+              >
+                <Wrench className="w-4 h-4 text-amber-500" />
+                {todayWorkTasks?.length > 0 && (
+                  <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-red-600 text-white text-[9px] font-mono font-bold flex items-center justify-center">
+                    {todayWorkTasks.length}
+                  </span>
+                )}
+              </button>
+            </div>
+          )}
         </nav>
 
         {/* Bottom Telemetry & Collapse Button */}

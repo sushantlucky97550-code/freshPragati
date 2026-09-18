@@ -26,7 +26,7 @@ import {
 
 import { IstClock } from './IstClock';
 
-export const Navbar = ({ onToggleSidebar }) => {
+export const Navbar = ({ onToggleSidebar, activePage, onNavigate }) => {
   const {
     currentUser,
     switchRole,
@@ -55,7 +55,7 @@ export const Navbar = ({ onToggleSidebar }) => {
           </span>
           <span className="text-slate-600">|</span>
           <span className="text-slate-400">
-            SYSTEM ENGINE: <strong className="text-white">Pragati MILP-v4.2</strong>
+            SYSTEM ENGINE: <strong className="text-white">RailOpt AI MILP-v4.2</strong>
           </span>
           <span className="text-slate-600">|</span>
           <span className="text-amber-400 flex items-center gap-1">
@@ -78,24 +78,39 @@ export const Navbar = ({ onToggleSidebar }) => {
             <Menu className="w-5 h-5" />
           </button>
 
-          <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-railway-maroon to-red-800 flex items-center justify-center shadow-md shadow-red-950/30 text-white font-black text-lg tracking-tighter border border-red-500/40">
+          <div
+            onClick={() => onNavigate && onNavigate('dashboard')}
+            className="flex items-center gap-2.5 cursor-pointer group select-none"
+          >
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-railway-maroon to-red-800 flex items-center justify-center shadow-md shadow-red-950/30 text-white font-black text-lg tracking-tighter border border-red-500/40 group-hover:scale-105 transition-transform">
               <Train className="w-5 h-5 text-amber-300" />
             </div>
             <div>
               <div className="flex items-center gap-1.5">
                 <span className="font-extrabold text-base sm:text-lg tracking-tight text-slate-900 dark:text-white">
-                  Pragati
+                  RailOpt AI
                 </span>
                 <span className="text-[10px] uppercase font-bold font-mono px-1.5 py-0.5 rounded bg-red-100 dark:bg-red-950/70 text-red-700 dark:text-red-300 border border-red-300 dark:border-red-900">
-                  IR-CTRL
+                  IR-COMMAND
                 </span>
               </div>
               <p className="text-[10px] text-slate-500 dark:text-slate-400 hidden sm:block">
-                Automatic Block Planning & Optimization System
+                Intelligent Railway Maintenance & Block Optimization
               </p>
             </div>
           </div>
+
+          {/* If on a subpage, render a prominent BACK TO COMMAND CENTER button */}
+          {activePage && activePage !== 'dashboard' && (
+            <button
+              onClick={() => onNavigate && onNavigate('dashboard')}
+              className="ml-2 px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-mono font-bold flex items-center gap-1.5 shadow-md shadow-red-950/40 transition-all group"
+            >
+              <span>←</span>
+              <span className="hidden sm:inline">BACK TO COMMAND CENTER</span>
+              <span className="sm:hidden">DASHBOARD</span>
+            </button>
+          )}
         </div>
 
         {/* Center: Active Corridor Selector */}

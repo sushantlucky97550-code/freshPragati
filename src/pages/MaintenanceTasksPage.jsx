@@ -24,9 +24,18 @@ import {
 } from 'lucide-react';
 import { StatusBadge } from '../components/common/StatusBadge';
 import { Modal } from '../components/common/Modal';
+import { MultiDeptBundlingPanel } from '../components/maintenance/MultiDeptBundlingPanel';
 
 export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
-  const { tasks, setTasks, selectedCorridor, addToast } = useRailway();
+  const {
+    tasks,
+    setTasks,
+    selectedCorridor,
+    addToast,
+    todayWorkTasks,
+    addToTodayWork,
+    removeFromTodayWork
+  } = useRailway();
 
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -263,13 +272,22 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
         </div>
       </div>
 
-      {/* Error Alert State */}
-      {error && (
+      {/* Multi-Department Overlapping Area Bundles & AI Priority Calculator */}
+      <MultiDeptBundlingPanel
+        onPlanBundle={(bundle) => {
+          if (onNavigateToPlanning && bundle.tasks && bundle.tasks[0]) {
+            onNavigateToPlanning(bundle.tasks[0]);
+          }
+        }}
+      />
+
+      {/* Non-blocking Offline Banner only if both live and local failed */}
+      {error && tasks.length === 0 && (
         <div className="p-4 rounded-xl border border-red-200 dark:border-red-900/50 bg-red-50 dark:bg-red-950/20 text-red-800 dark:text-red-300 flex items-center justify-between gap-3 text-xs">
           <div className="flex items-center gap-2">
             <AlertCircle className="w-4 h-4 text-red-600 dark:text-red-400 shrink-0" />
             <span>
-              <strong>Backend Connection Error:</strong> {error}
+              <strong>Backend Connection Notice:</strong> Spring Boot offline. Loaded local offline cache.
             </span>
           </div>
           <button
@@ -346,7 +364,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
             Fetching maintenance tasks and departments from http://localhost:8080/api...
           </p>
         </div>
-      ) : error ? (
+      ) : error && tasks.length === 0 ? (
         <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-white dark:bg-[#0E1626] p-12 text-center shadow-sm">
           <AlertCircle className="w-10 h-10 text-red-600 dark:text-red-400 mx-auto mb-3" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">Failed to Connect to Backend</h3>
@@ -466,9 +484,36 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
 
                     <td className="px-4 py-3.5 text-right font-sans">
                       <div className="inline-flex items-center gap-1.5">
+                        {/* DOM Officer Select / Add to Today's Maintenance Work Button */}
+                        {todayWorkTasks?.some(tw => (tw.taskId || tw.id) === (t.taskId || t.id)) ? (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFromTodayWork(t.taskId || t.id);
+                            }}
+                            title="Task is approved in Today's Maintenance Work. Click to remove."
+                            className="px-2 py-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/30 text-[11px] font-mono font-bold transition-all inline-flex items-center gap-1"
+                          >
+                            <CheckCircle2 className="w-3 h-3 text-emerald-500" />
+                            <span>In Today's Work</span>
+                          </button>
+                        ) : (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              addToTodayWork(t);
+                            }}
+                            title="DOM Officer: Approve and add to Today's Maintenance Work sidebar queue"
+                            className="px-2 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[11px] font-mono font-bold transition-all shadow-xs inline-flex items-center gap-1"
+                          >
+                            <Plus className="w-3 h-3" />
+                            <span>DOM: Today's Work</span>
+                          </button>
+                        )}
+
                         <button
                           onClick={() => onNavigateToPlanning && onNavigateToPlanning(t)}
-                          className="px-2 py-1 rounded-lg bg-red-50 hover:bg-red-100 dark:bg-red-950/40 dark:hover:bg-red-900/50 text-red-700 dark:text-red-300 text-[11px] font-bold transition-colors inline-flex items-center gap-1"
+                          className="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-[11px] font-bold transition-colors inline-flex items-center gap-1"
                         >
                           <span>Plan Block</span>
                           <ArrowRight className="w-3 h-3" />
@@ -549,12 +594,36 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
 
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono">
                         <span className="text-slate-400">{t.requiredWindowHours}h window</span>
-                        <button
-                          onClick={() => onNavigateToPlanning && onNavigateToPlanning(t)}
-                          className="text-red-600 dark:text-red-400 font-bold hover:underline flex items-center gap-1"
-                        >
-                          Plan Block <ArrowRight className="w-3 h-3" />
-                        </button>
+                        <div className="flex items-center gap-1.5">
+                          {todayWorkTasks?.some(tw => (tw.taskId || tw.id) === (t.taskId || t.id)) ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                removeFromTodayWork(t.taskId || t.id);
+                              }}
+                              className="text-emerald-500 font-bold hover:underline flex items-center gap-0.5 text-[10px]"
+                            >
+                              <CheckCircle2 className="w-3 h-3" />
+                              Today's
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addToTodayWork(t);
+                              }}
+                              className="px-1.5 py-0.5 rounded bg-red-600 hover:bg-red-700 text-white text-[10px] font-bold transition-all"
+                            >
+                              + DOM
+                            </button>
+                          )}
+                          <button
+                            onClick={() => onNavigateToPlanning && onNavigateToPlanning(t)}
+                            className="text-red-600 dark:text-red-400 font-bold hover:underline flex items-center gap-0.5 text-[10px]"
+                          >
+                            Plan <ArrowRight className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
