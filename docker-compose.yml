@@ -1,0 +1,24 @@
+services:
+  postgres:
+    image: railopt-postgres:16
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    container_name: railopt-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: railopt
+      POSTGRES_USER: railopt
+      POSTGRES_PASSWORD: railopt123
+    ports:
+      - "5432:5432"
+    volumes:
+      - railopt_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U railopt -d railopt"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  railopt_postgres_data:

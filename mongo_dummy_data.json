@@ -1,0 +1,1626 @@
+{
+  "departments": [
+    {
+      "_id": 1,
+      "name": "Permanent Way",
+      "code": "PWAY",
+      "description": "Responsible for track maintenance, inspection, and renewal on NCR division.",
+      "status": "ACTIVE"
+    },
+    {
+      "_id": 2,
+      "name": "Traction & Rolling Distribution",
+      "code": "TRD",
+      "description": "Manages overhead equipment (OHE), traction substations, and power supply.",
+      "status": "ACTIVE"
+    },
+    {
+      "_id": 3,
+      "name": "Signal & Telecommunication",
+      "code": "ST",
+      "description": "Maintains signalling systems, interlocking, and telecom infrastructure.",
+      "status": "ACTIVE"
+    },
+    {
+      "_id": 4,
+      "name": "Mechanical",
+      "code": "MECH",
+      "description": "Oversees maintenance of rolling stock, cranes, and mechanical assets.",
+      "status": "ACTIVE"
+    }
+  ],
+  "corridors": [
+    {
+      "_id": 1,
+      "corridorId": "NDLS-CNB",
+      "name": "Delhi – Kanpur Main Line",
+      "fromStation": "NDLS",
+      "toStation": "CNB",
+      "lengthKm": 440,
+      "capacityUtilization": 87,
+      "dailyTrains": 186,
+      "zone": "NCR",
+      "division": "Prayagraj",
+      "signaling": "Multi-Aspect Colour Light (MACLS) + ATP-SIL2",
+      "traction": "25kV AC OHE",
+      "speedLimit": 130,
+      "status": "OPERATIONAL",
+      "tracks": [
+        {
+          "_id": 1,
+          "trackCode": "UP_MAIN",
+          "trackName": "UP Main Line",
+          "direction": "UP",
+          "status": "OPERATIONAL"
+        },
+        {
+          "_id": 2,
+          "trackCode": "DN_MAIN",
+          "trackName": "DN Main Line",
+          "direction": "DN",
+          "status": "OPERATIONAL"
+        },
+        {
+          "_id": 3,
+          "trackCode": "3RD_LINE",
+          "trackName": "3rd Line (Freight Loop)",
+          "direction": "BIDIRECTIONAL",
+          "status": "OPERATIONAL"
+        }
+      ],
+      "stations": [
+        {
+          "_id": 1,
+          "stationCode": "NDLS",
+          "stationName": "New Delhi",
+          "km": 0,
+          "hasLoops": true,
+          "maxSpeed": 130
+        },
+        {
+          "_id": 2,
+          "stationCode": "GZB",
+          "stationName": "Ghaziabad",
+          "km": 26,
+          "hasLoops": true,
+          "maxSpeed": 130
+        },
+        {
+          "_id": 3,
+          "stationCode": "ALJN",
+          "stationName": "Aligarh",
+          "km": 126,
+          "hasLoops": true,
+          "maxSpeed": 130
+        },
+        {
+          "_id": 4,
+          "stationCode": "TDL",
+          "stationName": "Tundla",
+          "km": 206,
+          "hasLoops": true,
+          "maxSpeed": 130
+        },
+        {
+          "_id": 5,
+          "stationCode": "CNB",
+          "stationName": "Kanpur Central",
+          "km": 440,
+          "hasLoops": true,
+          "maxSpeed": 130
+        }
+      ]
+    },
+    {
+      "_id": 2,
+      "corridorId": "NDLS-AGC",
+      "name": "Delhi – Agra Mainline",
+      "fromStation": "NDLS",
+      "toStation": "AGC",
+      "lengthKm": 195,
+      "capacityUtilization": 92,
+      "dailyTrains": 120,
+      "zone": "NCR",
+      "division": "Agra",
+      "signaling": "ETCS Level-1 + KAVACH SIL-4",
+      "traction": "25kV AC OHE",
+      "speedLimit": 160,
+      "status": "OPERATIONAL",
+      "tracks": [
+        {
+          "_id": 4,
+          "trackCode": "UP_MAIN",
+          "trackName": "UP Semi-High Speed Line",
+          "direction": "UP",
+          "status": "OPERATIONAL"
+        },
+        {
+          "_id": 5,
+          "trackCode": "DN_MAIN",
+          "trackName": "DN Semi-High Speed Line",
+          "direction": "DN",
+          "status": "OPERATIONAL"
+        }
+      ],
+      "stations": [
+        {
+          "_id": 6,
+          "stationCode": "NDLS",
+          "stationName": "New Delhi",
+          "km": 0,
+          "hasLoops": true,
+          "maxSpeed": 160
+        },
+        {
+          "_id": 7,
+          "stationCode": "MTJ",
+          "stationName": "Mathura Junction",
+          "km": 141,
+          "hasLoops": true,
+          "maxSpeed": 160
+        },
+        {
+          "_id": 8,
+          "stationCode": "AGC",
+          "stationName": "Agra Cantonment",
+          "km": 195,
+          "hasLoops": true,
+          "maxSpeed": 160
+        }
+      ]
+    },
+    {
+      "_id": 3,
+      "corridorId": "CNB-PRYG",
+      "name": "Kanpur – Prayagraj Junction",
+      "fromStation": "CNB",
+      "toStation": "PRYG",
+      "lengthKm": 204,
+      "capacityUtilization": 78,
+      "dailyTrains": 95,
+      "zone": "NCR",
+      "division": "Prayagraj",
+      "signaling": "Multi-Aspect Colour Light (MACLS)",
+      "traction": "25kV AC OHE",
+      "speedLimit": 110,
+      "status": "OPERATIONAL",
+      "tracks": [
+        {
+          "_id": 6,
+          "trackCode": "UP_MAIN",
+          "trackName": "UP Main Line",
+          "direction": "UP",
+          "status": "OPERATIONAL"
+        },
+        {
+          "_id": 7,
+          "trackCode": "DN_MAIN",
+          "trackName": "DN Main Line",
+          "direction": "DN",
+          "status": "OPERATIONAL"
+        }
+      ],
+      "stations": [
+        {
+          "_id": 9,
+          "stationCode": "CNB",
+          "stationName": "Kanpur Central",
+          "km": 0,
+          "hasLoops": true,
+          "maxSpeed": 110
+        },
+        {
+          "_id": 10,
+          "stationCode": "FTP",
+          "stationName": "Fatehpur",
+          "km": 78,
+          "hasLoops": true,
+          "maxSpeed": 110
+        },
+        {
+          "_id": 11,
+          "stationCode": "PRYG",
+          "stationName": "Prayagraj Junction",
+          "km": 204,
+          "hasLoops": true,
+          "maxSpeed": 110
+        }
+      ]
+    }
+  ],
+  "trains": [
+    {
+      "_id": 1,
+      "trainNumber": "12301",
+      "trainName": "Howrah Rajdhani Express",
+      "trainType": "PREMIUM",
+      "category": "Rajdhani",
+      "source": "NDLS",
+      "destination": "HWH",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 1,
+      "maxSpeed": 130,
+      "rakeLength": 20,
+      "departureTime": "16:55",
+      "arrivalTime": "10:05",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": true,
+      "updatedAt": "2026-09-11T19:24:31.895Z"
+    },
+    {
+      "_id": 2,
+      "trainNumber": "12302",
+      "trainName": "Howrah Rajdhani Express",
+      "trainType": "PREMIUM",
+      "category": "Rajdhani",
+      "source": "HWH",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 1,
+      "maxSpeed": 130,
+      "rakeLength": 20,
+      "departureTime": "14:05",
+      "arrivalTime": "07:55",
+      "status": "DELAYED",
+      "delayMinutes": 12,
+      "kavachFitted": true,
+      "updatedAt": "2026-09-11T19:24:31.902Z"
+    },
+    {
+      "_id": 3,
+      "trainNumber": "22436",
+      "trainName": "Vande Bharat Express (Delhi-CNB)",
+      "trainType": "PREMIUM",
+      "category": "Vande Bharat",
+      "source": "NDLS",
+      "destination": "CNB",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 1,
+      "maxSpeed": 160,
+      "rakeLength": 16,
+      "departureTime": "06:00",
+      "arrivalTime": "10:45",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": true,
+      "updatedAt": "2026-09-11T19:24:31.906Z"
+    },
+    {
+      "_id": 4,
+      "trainNumber": "22435",
+      "trainName": "Vande Bharat Express (CNB-Delhi)",
+      "trainType": "PREMIUM",
+      "category": "Vande Bharat",
+      "source": "CNB",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 1,
+      "maxSpeed": 160,
+      "rakeLength": 16,
+      "departureTime": "17:35",
+      "arrivalTime": "22:20",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": true,
+      "updatedAt": "2026-09-11T19:24:31.909Z"
+    },
+    {
+      "_id": 5,
+      "trainNumber": "12003",
+      "trainName": "Lucknow Shatabdi Express",
+      "trainType": "PREMIUM",
+      "category": "Shatabdi",
+      "source": "NDLS",
+      "destination": "LKO",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 2,
+      "maxSpeed": 150,
+      "rakeLength": 18,
+      "departureTime": "06:10",
+      "arrivalTime": "12:30",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.912Z"
+    },
+    {
+      "_id": 6,
+      "trainNumber": "12004",
+      "trainName": "Lucknow Shatabdi Express",
+      "trainType": "PREMIUM",
+      "category": "Shatabdi",
+      "source": "LKO",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 2,
+      "maxSpeed": 150,
+      "rakeLength": 18,
+      "departureTime": "14:55",
+      "arrivalTime": "21:30",
+      "status": "DELAYED",
+      "delayMinutes": 8,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.916Z"
+    },
+    {
+      "_id": 7,
+      "trainNumber": "12393",
+      "trainName": "Sampoorna Kranti Express",
+      "trainType": "EXPRESS",
+      "category": "Superfast",
+      "source": "RJPB",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 3,
+      "maxSpeed": 110,
+      "rakeLength": 22,
+      "departureTime": "19:30",
+      "arrivalTime": "07:40",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.919Z"
+    },
+    {
+      "_id": 8,
+      "trainNumber": "12582",
+      "trainName": "Banaras – NDLS SF Express",
+      "trainType": "EXPRESS",
+      "category": "Superfast",
+      "source": "BSB",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 3,
+      "maxSpeed": 110,
+      "rakeLength": 20,
+      "departureTime": "16:35",
+      "arrivalTime": "06:10",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.922Z"
+    },
+    {
+      "_id": 9,
+      "trainNumber": "FR-BOXN-4012",
+      "trainName": "BOXN Freight – Khurja to CNB",
+      "trainType": "FREIGHT",
+      "category": "Freight",
+      "source": "KRJ",
+      "destination": "CNB",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 5,
+      "maxSpeed": 75,
+      "rakeLength": 58,
+      "departureTime": "02:00",
+      "arrivalTime": "10:30",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.926Z"
+    },
+    {
+      "_id": 10,
+      "trainNumber": "FR-BCNA-7201",
+      "trainName": "BCNA Rake – GZB Yard to AGC",
+      "trainType": "FREIGHT",
+      "category": "Freight",
+      "source": "GZB",
+      "destination": "AGC",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 5,
+      "maxSpeed": 75,
+      "rakeLength": 50,
+      "departureTime": "01:15",
+      "arrivalTime": "08:00",
+      "status": "DELAYED",
+      "delayMinutes": 22,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.929Z"
+    },
+    {
+      "_id": 11,
+      "trainNumber": "12049",
+      "trainName": "Gatimaan Express (NDLS-AGC)",
+      "trainType": "PREMIUM",
+      "category": "Premium",
+      "source": "NDLS",
+      "destination": "AGC",
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 1,
+      "maxSpeed": 160,
+      "rakeLength": 12,
+      "departureTime": "08:10",
+      "arrivalTime": "09:50",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": true,
+      "updatedAt": "2026-09-11T19:24:31.932Z"
+    },
+    {
+      "_id": 12,
+      "trainNumber": "12050",
+      "trainName": "Gatimaan Express (AGC-NDLS)",
+      "trainType": "PREMIUM",
+      "category": "Premium",
+      "source": "AGC",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 1,
+      "maxSpeed": 160,
+      "rakeLength": 12,
+      "departureTime": "17:50",
+      "arrivalTime": "19:30",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": true,
+      "updatedAt": "2026-09-11T19:24:31.936Z"
+    },
+    {
+      "_id": 13,
+      "trainNumber": "12138",
+      "trainName": "Punjab Mail",
+      "trainType": "EXPRESS",
+      "category": "Mail/Express",
+      "source": "CSTM",
+      "destination": "FZR",
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 3,
+      "maxSpeed": 110,
+      "rakeLength": 22,
+      "departureTime": "17:15",
+      "arrivalTime": "09:30",
+      "status": "DELAYED",
+      "delayMinutes": 18,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.938Z"
+    },
+    {
+      "_id": 14,
+      "trainNumber": "12275",
+      "trainName": "Allahabad Duronto Express",
+      "trainType": "EXPRESS",
+      "category": "Duronto",
+      "source": "NDLS",
+      "destination": "PRYG",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 2,
+      "maxSpeed": 110,
+      "rakeLength": 20,
+      "departureTime": "14:05",
+      "arrivalTime": "22:10",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.942Z"
+    },
+    {
+      "_id": 15,
+      "trainNumber": "12276",
+      "trainName": "Allahabad Duronto Express",
+      "trainType": "EXPRESS",
+      "category": "Duronto",
+      "source": "PRYG",
+      "destination": "NDLS",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 2,
+      "maxSpeed": 110,
+      "rakeLength": 20,
+      "departureTime": "05:55",
+      "arrivalTime": "14:00",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.945Z"
+    },
+    {
+      "_id": 16,
+      "trainNumber": "22182",
+      "trainName": "PRYG Rajyarani SF Express",
+      "trainType": "EXPRESS",
+      "category": "Superfast",
+      "source": "PRYG",
+      "destination": "HZM",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "trackLine": "DN_MAIN",
+      "priority": 3,
+      "maxSpeed": 100,
+      "rakeLength": 18,
+      "departureTime": "20:30",
+      "arrivalTime": "10:45",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.948Z"
+    },
+    {
+      "_id": 17,
+      "trainNumber": "FR-BTPN-5901",
+      "trainName": "Petrol Tank Rake – CNB to PRYG",
+      "trainType": "FREIGHT",
+      "category": "Freight",
+      "source": "CNB",
+      "destination": "PRYG",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 5,
+      "maxSpeed": 65,
+      "rakeLength": 40,
+      "departureTime": "03:30",
+      "arrivalTime": "07:20",
+      "status": "ON_TIME",
+      "delayMinutes": 0,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.950Z"
+    },
+    {
+      "_id": 18,
+      "trainNumber": "FR-COAL-8842",
+      "trainName": "Coal Rake – CNB to PRYG",
+      "trainType": "FREIGHT",
+      "category": "Freight",
+      "source": "CNB",
+      "destination": "PRYG",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "trackLine": "UP_MAIN",
+      "priority": 5,
+      "maxSpeed": 60,
+      "rakeLength": 58,
+      "departureTime": "22:45",
+      "arrivalTime": "05:30",
+      "status": "DELAYED",
+      "delayMinutes": 35,
+      "kavachFitted": false,
+      "updatedAt": "2026-09-11T19:24:31.954Z"
+    }
+  ],
+  "railway_assets": [
+    {
+      "_id": 1,
+      "assetId": "AST-TRK-01",
+      "name": "Track TDL-162 UP Main",
+      "assetType": "TRACK_KM",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Aligarh – Tundla",
+      "location": "Tundla Yard, km 162+400",
+      "healthScore": 74,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-07-28T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-16T18:30:00.000Z",
+      "defectsCount": 3,
+      "activeTsr": "TSR-30 at km 162+380 (slew defect)",
+      "gmtCarried": 18.4,
+      "updatedAt": "2026-09-11T19:24:31.979Z"
+    },
+    {
+      "_id": 2,
+      "assetId": "AST-TRK-02",
+      "name": "Track CNB-105 UP Main",
+      "assetType": "TRACK_KM",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Etawah – Kanpur",
+      "location": "Kanpur Junction, km 105+200",
+      "healthScore": 52,
+      "status": "CRITICAL",
+      "lastMaintenance": "2026-06-13T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-13T18:30:00.000Z",
+      "defectsCount": 6,
+      "activeTsr": "TSR-45 at km 105+190 (hogged joint)",
+      "gmtCarried": 22.1,
+      "updatedAt": "2026-09-11T19:24:31.982Z"
+    },
+    {
+      "_id": 3,
+      "assetId": "AST-BRG-01",
+      "name": "Yamuna Bridge YB-01",
+      "assetType": "BRIDGE",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "section": "Agra Cantonment – AGC",
+      "location": "Agra, km 192+000",
+      "healthScore": 89,
+      "status": "GOOD",
+      "lastMaintenance": "2026-08-12T18:30:00.000Z",
+      "nextInspectionDue": "2026-11-10T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:31.985Z"
+    },
+    {
+      "_id": 4,
+      "assetId": "AST-TRK-03",
+      "name": "Track PRYG-204 DN Main",
+      "assetType": "TRACK_KM",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "section": "Fatehpur – Prayagraj",
+      "location": "Prayagraj Jn, km 204+800",
+      "healthScore": 81,
+      "status": "GOOD",
+      "lastMaintenance": "2026-08-22T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-06T18:30:00.000Z",
+      "defectsCount": 1,
+      "gmtCarried": 14.5,
+      "updatedAt": "2026-09-11T19:24:31.989Z"
+    },
+    {
+      "_id": 5,
+      "assetId": "AST-LC-01",
+      "name": "Level Crossing LC-47",
+      "assetType": "LEVEL_CROSSING",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Etawah",
+      "location": "Etawah, km 219+750",
+      "healthScore": 65,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-07-13T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-21T18:30:00.000Z",
+      "defectsCount": 2,
+      "activeTsr": "TSR-30 (worn check rails)",
+      "updatedAt": "2026-09-11T19:24:31.993Z"
+    },
+    {
+      "_id": 6,
+      "assetId": "AST-OHE-01",
+      "name": "OHE ALJN-22 UP Line",
+      "assetType": "OHE_SECTION",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Aligarh – Sasni",
+      "location": "Aligarh Junction, km 122+300",
+      "healthScore": 61,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-05-14T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-18T18:30:00.000Z",
+      "defectsCount": 2,
+      "updatedAt": "2026-09-11T19:24:31.996Z"
+    },
+    {
+      "_id": 7,
+      "assetId": "AST-TSS-01",
+      "name": "Traction Substation TSS-4 Firozabad",
+      "assetType": "TRACTION_SUBSTATION",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Etawah – Firozabad",
+      "location": "Firozabad, km 203+000",
+      "healthScore": 88,
+      "status": "GOOD",
+      "lastMaintenance": "2026-08-17T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-26T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.002Z"
+    },
+    {
+      "_id": 8,
+      "assetId": "AST-TSS-02",
+      "name": "Traction Substation TSS-7 Agra",
+      "assetType": "TRACTION_SUBSTATION",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "section": "AGC",
+      "location": "Agra Cantonment, km 188+000",
+      "healthScore": 94,
+      "status": "GOOD",
+      "lastMaintenance": "2026-09-01T18:30:00.000Z",
+      "nextInspectionDue": "2026-11-30T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.005Z"
+    },
+    {
+      "_id": 9,
+      "assetId": "AST-OHE-02",
+      "name": "OHE CNB-SP-UP Section",
+      "assetType": "OHE_SECTION",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "section": "Kanpur – Fatehpur",
+      "location": "Kanpur Jn, km 100+000 to 125+000",
+      "healthScore": 76,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-07-18T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-23T18:30:00.000Z",
+      "defectsCount": 1,
+      "updatedAt": "2026-09-11T19:24:32.009Z"
+    },
+    {
+      "_id": 10,
+      "assetId": "AST-SIG-01",
+      "name": "Signal ALJN-44 Home Signal",
+      "assetType": "SIGNAL_SYSTEM",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Aligarh Junction",
+      "location": "Aligarh Junction, Platform 4",
+      "healthScore": 58,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-08-07T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-14T18:30:00.000Z",
+      "defectsCount": 1,
+      "updatedAt": "2026-09-11T19:24:32.012Z"
+    },
+    {
+      "_id": 11,
+      "assetId": "AST-PM-01",
+      "name": "Point Machine PM-17 Mathura Jn",
+      "assetType": "INTERLOCKING_SYSTEM",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "section": "Mathura Junction",
+      "location": "Mathura Junction, km 130+500, Road 17",
+      "healthScore": 70,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-07-23T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-19T18:30:00.000Z",
+      "defectsCount": 1,
+      "updatedAt": "2026-09-11T19:24:32.016Z"
+    },
+    {
+      "_id": 12,
+      "assetId": "AST-AXC-01",
+      "name": "Axle Counter AC-CNB-12",
+      "assetType": "AXLE_COUNTER",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "section": "Kanpur Central",
+      "location": "Kanpur Central, km 100+800",
+      "healthScore": 45,
+      "status": "CRITICAL",
+      "lastMaintenance": "2026-06-23T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-12T18:30:00.000Z",
+      "defectsCount": 2,
+      "updatedAt": "2026-09-11T19:24:32.020Z"
+    },
+    {
+      "_id": 13,
+      "assetId": "AST-SIG-02",
+      "name": "Block Instrument BI-GZB-7",
+      "assetType": "SIGNAL_SYSTEM",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Ghaziabad",
+      "location": "Ghaziabad Jn, Section-7",
+      "healthScore": 92,
+      "status": "GOOD",
+      "lastMaintenance": "2026-08-27T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-26T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.023Z"
+    },
+    {
+      "_id": 14,
+      "assetId": "AST-CRN-01",
+      "name": "Breakdown Crane BCR-05 (140T)",
+      "assetType": "CRANE",
+      "department": {
+        "collection": "departments",
+        "id": 4
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "section": "Agra Cantonment Loco Shed",
+      "location": "Agra Cantonment, Loco Shed",
+      "healthScore": 96,
+      "status": "GOOD",
+      "lastMaintenance": "2026-09-06T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-11T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.026Z"
+    },
+    {
+      "_id": 15,
+      "assetId": "AST-LOCO-01",
+      "name": "WAP-7 Loco #30411",
+      "assetType": "ROLLING_STOCK",
+      "department": {
+        "collection": "departments",
+        "id": 4
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Kanpur Loco Shed",
+      "location": "Kanpur Loco Shed, Pit No. 3",
+      "healthScore": 72,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-08-02T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-01T18:30:00.000Z",
+      "defectsCount": 1,
+      "updatedAt": "2026-09-11T19:24:32.030Z"
+    },
+    {
+      "_id": 16,
+      "assetId": "AST-LOCO-02",
+      "name": "WAG-9H Loco #31207",
+      "assetType": "ROLLING_STOCK",
+      "department": {
+        "collection": "departments",
+        "id": 4
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "section": "Allahabad Shed",
+      "location": "Prayagraj Loco Shed, Pit No. 1",
+      "healthScore": 98,
+      "status": "GOOD",
+      "lastMaintenance": "2026-09-03T18:30:00.000Z",
+      "nextInspectionDue": "2026-12-10T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.033Z"
+    },
+    {
+      "_id": 17,
+      "assetId": "AST-MCH-01",
+      "name": "CSM 09-32 Continuous Tamping Machine",
+      "assetType": "TRACK_MACHINE",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Tundla Depot",
+      "location": "Tundla Track Machine Siding",
+      "healthScore": 92,
+      "status": "GOOD",
+      "lastMaintenance": "2026-08-28T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-26T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.036Z"
+    },
+    {
+      "_id": 18,
+      "assetId": "AST-MCH-02",
+      "name": "BCM 373 Ballast Cleaning Machine",
+      "assetType": "TRACK_MACHINE",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "section": "Ghaziabad Yard",
+      "location": "Ghaziabad Track Machine Base",
+      "healthScore": 85,
+      "status": "GOOD",
+      "lastMaintenance": "2026-08-14T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-16T18:30:00.000Z",
+      "defectsCount": 1,
+      "updatedAt": "2026-09-11T19:24:32.047Z"
+    },
+    {
+      "_id": 19,
+      "assetId": "AST-MCH-03",
+      "name": "UNIMAT 08-4S Point & Crossing Tamper",
+      "assetType": "TRACK_MACHINE",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "section": "Mathura Section",
+      "location": "Mathura Jn Track Depot",
+      "healthScore": 78,
+      "status": "ATTENTION_REQUIRED",
+      "lastMaintenance": "2026-07-13T18:30:00.000Z",
+      "nextInspectionDue": "2026-09-21T18:30:00.000Z",
+      "defectsCount": 2,
+      "updatedAt": "2026-09-11T19:24:32.050Z"
+    },
+    {
+      "_id": 20,
+      "assetId": "AST-MCH-04",
+      "name": "4-Wheeler OHE Tower Wagon TW-22",
+      "assetType": "TRACK_MACHINE",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "section": "Kanpur Central",
+      "location": "Kanpur TRD Siding",
+      "healthScore": 95,
+      "status": "GOOD",
+      "lastMaintenance": "2026-09-01T18:30:00.000Z",
+      "nextInspectionDue": "2026-10-31T18:30:00.000Z",
+      "defectsCount": 0,
+      "updatedAt": "2026-09-11T19:24:32.054Z"
+    }
+  ],
+  "maintenance_tasks": [
+    {
+      "_id": 1,
+      "taskId": "TASK-PWAY-001",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "assetName": "Track TDL-162",
+      "location": "Tundla Yard, km 162+400",
+      "taskType": "Track Geometry Correction",
+      "description": "[DEMO] Rectification of slew and versine defects detected during OMS run. Packing and lining required at 3 locations.",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "durationMinutes": 240,
+      "dueDate": "2026-09-16T18:30:00.000Z",
+      "status": "PENDING",
+      "updatedAt": "2026-09-11T19:24:32.071Z"
+    },
+    {
+      "_id": 2,
+      "taskId": "TASK-PWAY-002",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "assetName": "Track CNB-105",
+      "location": "Kanpur Junction, km 105+200",
+      "taskType": "Rail Replacement",
+      "description": "[DEMO] 90R rail replacement due to hogged joint. Three rails (total 36m) to be replaced on UP main line.",
+      "severity": "CRITICAL",
+      "priority": "URGENT",
+      "durationMinutes": 300,
+      "dueDate": "2026-09-13T18:30:00.000Z",
+      "status": "SCHEDULED",
+      "updatedAt": "2026-09-11T19:24:32.075Z"
+    },
+    {
+      "_id": 3,
+      "taskId": "TASK-PWAY-003",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "assetName": "Level Crossing LC-47",
+      "location": "Etawah, km 219+750",
+      "taskType": "Renewal of Crossing Panels",
+      "description": "[DEMO] Worn check rails and crossing panels at manned LC-47 require renewal. Traffic restriction (30 kmph) currently in force.",
+      "severity": "MEDIUM",
+      "priority": "MEDIUM",
+      "durationMinutes": 180,
+      "dueDate": "2026-09-21T18:30:00.000Z",
+      "status": "PENDING",
+      "updatedAt": "2026-09-11T19:24:32.078Z"
+    },
+    {
+      "_id": 4,
+      "taskId": "TASK-PWAY-004",
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "assetName": "Track GZB-018 DN Main",
+      "location": "Ghaziabad, km 18+600",
+      "taskType": "Ballast Tamping & Deep Screening",
+      "description": "[DEMO] Annual tamping and screening required. BCM to be deployed for 4 km section.",
+      "severity": "MEDIUM",
+      "priority": "MEDIUM",
+      "durationMinutes": 360,
+      "dueDate": "2026-09-25T18:30:00.000Z",
+      "status": "PENDING",
+      "updatedAt": "2026-09-11T19:24:32.081Z"
+    },
+    {
+      "_id": 5,
+      "taskId": "TASK-TRD-001",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "assetName": "OHE ALJN-22",
+      "location": "Aligarh Junction, km 122+300",
+      "taskType": "OHE Contact Wire Replacement",
+      "description": "[DEMO] Contact wire wear beyond permissible limit (7mm residual). Replacement of 1500m section on UP line required.",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "durationMinutes": 360,
+      "dueDate": "2026-09-18T18:30:00.000Z",
+      "status": "PENDING",
+      "updatedAt": "2026-09-11T19:24:32.084Z"
+    },
+    {
+      "_id": 6,
+      "taskId": "TASK-TRD-002",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "assetName": "Traction Substation TSS-4",
+      "location": "Firozabad, km 203+000",
+      "taskType": "Transformer Preventive Maintenance",
+      "description": "[DEMO] Annual preventive maintenance of 25kV traction transformer. Insulation testing, oil sampling, and bushing inspection.",
+      "severity": "MEDIUM",
+      "priority": "MEDIUM",
+      "durationMinutes": 480,
+      "dueDate": "2026-09-26T18:30:00.000Z",
+      "status": "SCHEDULED",
+      "updatedAt": "2026-09-11T19:24:32.087Z"
+    },
+    {
+      "_id": 7,
+      "taskId": "TASK-TRD-003",
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "assetName": "OHE CNB-SP-UP Section",
+      "location": "Kanpur Jn, km 100+000 to 125+000",
+      "taskType": "OHE Section Inspection & Tensioning",
+      "description": "[DEMO] OHE wire sagging detected in 25km section. Wire height correction and re-tensioning required.",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "durationMinutes": 420,
+      "dueDate": "2026-09-20T18:30:00.000Z",
+      "status": "PENDING",
+      "updatedAt": "2026-09-11T19:24:32.089Z"
+    },
+    {
+      "_id": 8,
+      "taskId": "TASK-ST-001",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "assetName": "Signal ALJN-44",
+      "location": "Aligarh Junction, Platform 4",
+      "taskType": "Signal Lamp Replacement",
+      "description": "[DEMO] LED cluster replacement on home signal ALJN-44. Signal showing degraded luminosity during last inspection.",
+      "severity": "HIGH",
+      "priority": "HIGH",
+      "durationMinutes": 120,
+      "dueDate": "2026-09-14T18:30:00.000Z",
+      "status": "IN_PROGRESS",
+      "updatedAt": "2026-09-11T19:24:32.093Z"
+    },
+    {
+      "_id": 9,
+      "taskId": "TASK-ST-002",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "assetName": "Point Machine PM-17",
+      "location": "Mathura Junction, km 130+500, Road 17",
+      "taskType": "Point Machine Overhaul",
+      "description": "[DEMO] Periodic overhaul of clamp-lock point machine. Current stroke time 4.2s — threshold is 4.0s.",
+      "severity": "MEDIUM",
+      "priority": "MEDIUM",
+      "durationMinutes": 150,
+      "dueDate": "2026-09-19T18:30:00.000Z",
+      "status": "PENDING",
+      "updatedAt": "2026-09-11T19:24:32.096Z"
+    },
+    {
+      "_id": 10,
+      "taskId": "TASK-ST-003",
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "assetName": "Axle Counter AC-CNB-12",
+      "location": "Kanpur Central, km 100+800",
+      "taskType": "Axle Counter Calibration",
+      "description": "[DEMO] Calibration and reset of axle counter section CNB-12 following intermittent failure reports from loco pilots.",
+      "severity": "CRITICAL",
+      "priority": "URGENT",
+      "durationMinutes": 90,
+      "dueDate": "2026-09-12T18:30:00.000Z",
+      "status": "SCHEDULED",
+      "updatedAt": "2026-09-11T19:24:32.099Z"
+    },
+    {
+      "_id": 12,
+      "taskId": "TASK-MECH-002",
+      "department": {
+        "collection": "departments",
+        "id": 4
+      },
+      "assetName": "WAP-7 Loco #30411",
+      "location": "Kanpur Loco Shed, Pit No. 3",
+      "taskType": "Scheduled IOH",
+      "description": "[DEMO] Intermediate Overhaul (IOH) of WAP-7 locomotive #30411. Current mileage: 2,25,000 km. IOH due at 2,40,000 km.",
+      "severity": "MEDIUM",
+      "priority": "MEDIUM",
+      "durationMinutes": 1440,
+      "dueDate": "2026-10-01T18:30:00.000Z",
+      "status": "DEFERRED",
+      "updatedAt": "2026-09-11T19:24:32.105Z"
+    }
+  ],
+  "block_requests": [
+    {
+      "_id": 1,
+      "blockId": "BLK-REQ-PWAY-001",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "01:00",
+      "requestedEnd": "04:30",
+      "durationMinutes": 210,
+      "priority": "HIGH",
+      "status": "PENDING",
+      "notes": "Track geometry correction at TDL-162. CSM 09-32 required.",
+      "requestedBy": "SSE/PWAY/TDL"
+    },
+    {
+      "_id": 2,
+      "blockId": "BLK-REQ-PWAY-002",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "00:30",
+      "requestedEnd": "05:00",
+      "durationMinutes": 270,
+      "priority": "URGENT",
+      "status": "APPROVED",
+      "notes": "Urgent rail replacement at CNB-105. Night block essential.",
+      "requestedBy": "SSE/PWAY/CNB"
+    },
+    {
+      "_id": 3,
+      "blockId": "BLK-REQ-TRD-001",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "01:30",
+      "requestedEnd": "05:30",
+      "durationMinutes": 240,
+      "priority": "HIGH",
+      "status": "PENDING",
+      "notes": "OHE contact wire replacement ALJN-22. Power block + LWR isolation required.",
+      "requestedBy": "SSE/TRD/ALJN"
+    },
+    {
+      "_id": 4,
+      "blockId": "BLK-REQ-ST-001",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "trackLine": "DN_MAIN",
+      "requestedStart": "02:00",
+      "requestedEnd": "03:30",
+      "durationMinutes": 90,
+      "priority": "URGENT",
+      "status": "APPROVED",
+      "notes": "Axle counter calibration AC-CNB-12. Safety critical — urgent completion.",
+      "requestedBy": "SSE/ST/CNB"
+    },
+    {
+      "_id": 5,
+      "blockId": "BLK-REQ-PWAY-003",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "trackLine": "DN_MAIN",
+      "requestedStart": "00:00",
+      "requestedEnd": "06:00",
+      "durationMinutes": 360,
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "notes": "Ballast tamping GZB-018 DN Main. BCM deployment planned.",
+      "requestedBy": "SSE/PWAY/GZB"
+    },
+    {
+      "_id": 6,
+      "blockId": "BLK-REQ-TRD-002",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "02:00",
+      "requestedEnd": "09:00",
+      "durationMinutes": 420,
+      "priority": "HIGH",
+      "status": "PENDING",
+      "notes": "OHE tensioning CNB–FTP section. 25km stretch, multi-gang deployment.",
+      "requestedBy": "SSE/TRD/CNB"
+    },
+    {
+      "_id": 7,
+      "blockId": "BLK-REQ-ST-002",
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "department": {
+        "collection": "departments",
+        "id": 3
+      },
+      "trackLine": "DN_MAIN",
+      "requestedStart": "03:00",
+      "requestedEnd": "05:30",
+      "durationMinutes": 150,
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "notes": "Point machine overhaul PM-17. Special tools required from DEN office.",
+      "requestedBy": "SSE/ST/MTJ"
+    },
+    {
+      "_id": 8,
+      "blockId": "BLK-REQ-PWAY-004",
+      "corridor": {
+        "collection": "corridors",
+        "id": 2
+      },
+      "department": {
+        "collection": "departments",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "01:00",
+      "requestedEnd": "03:30",
+      "durationMinutes": 150,
+      "priority": "LOW",
+      "status": "PENDING",
+      "notes": "Routine inspection of LC-47 panels and check rails.",
+      "requestedBy": "JE/PWAY/ETA"
+    },
+    {
+      "_id": 9,
+      "blockId": "BLK-REQ-TRD-003",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "department": {
+        "collection": "departments",
+        "id": 2
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "00:00",
+      "requestedEnd": "08:00",
+      "durationMinutes": 480,
+      "priority": "MEDIUM",
+      "status": "PENDING",
+      "notes": "TSS-4 transformer annual PM. Full isolation of CNB-FTP section required.",
+      "requestedBy": "SSE/TRD/FZB"
+    },
+    {
+      "_id": 10,
+      "blockId": "BLK-REQ-MECH-001",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "department": {
+        "collection": "departments",
+        "id": 4
+      },
+      "trackLine": "UP_MAIN",
+      "requestedStart": "10:00",
+      "requestedEnd": "20:00",
+      "durationMinutes": 600,
+      "priority": "LOW",
+      "status": "PENDING",
+      "notes": "BCR-05 crane annual load test at Agra. Non-traffic block during day hours.",
+      "requestedBy": "SSE/MECH/AGC"
+    }
+  ],
+  "ai_block_plans": [
+    {
+      "_id": 1,
+      "planId": "BLK-AI-2026-9001",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "scheduledDate": "2026-09-12T18:30:00.000Z",
+      "windowStart": "01:00",
+      "windowEnd": "05:30",
+      "durationHours": 4.5,
+      "optimizationScore": 94.2,
+      "status": "APPROVED",
+      "reasoningJson": "[{\"title\":\"Task Analysis\",\"detail\":\"Identified 2 critical PWAY tasks (TDL-162 geometry, CNB-105 rail replacement) requiring combined 540 min. Shadow bundled with TRD OHE inspection.\",\"step\":\"1\"},{\"title\":\"Train Conflict Scan\",\"detail\":\"Night window 01:00-05:30 has 1 freight train (FR-BOXN-4012) at 02:00. Regulated to Tundla loop for 22 min — within acceptable delay tolerance.\",\"step\":\"2\"},{\"title\":\"Window Selection\",\"detail\":\"01:00-05:30 IST selected. Lowest train density on NDLS-CNB UP Main. 3 Rajdhani/SF trains clear the section by 00:48 IST.\",\"step\":\"3\"},{\"title\":\"Optimization Score\",\"detail\":\"Score: 94.2/100. Shadow bundling reduces total block time by 38%. One minor delay (22 min freight). Zero passenger train impact.\",\"step\":\"4\"}]",
+      "affectedTrainsJson": "[{\"trainName\":\"BOXN Freight – Khurja to CNB\",\"regulation\":\"Regulated at Tundla Loop 2 for 22 min\",\"impactLevel\":\"LOW\",\"delayMinutes\":22,\"trainNumber\":\"FR-BOXN-4012\"}]",
+      "assignedTasksJson": "[{\"type\":\"Track Geometry Correction\",\"dept\":\"PWAY\",\"durationMin\":240,\"taskId\":\"TASK-PWAY-001\"},{\"type\":\"Rail Replacement\",\"dept\":\"PWAY\",\"durationMin\":300,\"taskId\":\"TASK-PWAY-002\"},{\"type\":\"OHE Contact Wire Replacement\",\"dept\":\"TRD\",\"durationMin\":360,\"taskId\":\"TASK-TRD-001\"}]",
+      "departments": "PWAY,TRD",
+      "approvedBy": "Rajesh K. Sharma (Chief Controller)"
+    },
+    {
+      "_id": 2,
+      "planId": "BLK-AI-2026-9002",
+      "corridor": {
+        "collection": "corridors",
+        "id": 3
+      },
+      "trackLine": "DN_MAIN",
+      "scheduledDate": "2026-09-11T18:30:00.000Z",
+      "windowStart": "02:00",
+      "windowEnd": "03:30",
+      "durationHours": 1.5,
+      "optimizationScore": 98.7,
+      "status": "PROPOSED",
+      "reasoningJson": "[{\"title\":\"Task Analysis\",\"detail\":\"ST urgent task AC-CNB-12 axle counter calibration (90 min). Single-dept block.\",\"step\":\"1\"},{\"title\":\"Optimal Window\",\"detail\":\"02:00-03:30 IST on CNB-PRYG DN Main. Zero passenger trains in this 90-min slot.\",\"step\":\"2\"},{\"title\":\"Optimization Score\",\"detail\":\"Score: 98.7/100. No train impacts. Zero delay. Single-department block — highly efficient.\",\"step\":\"3\"}]",
+      "affectedTrainsJson": "[]",
+      "assignedTasksJson": "[{\"type\":\"Axle Counter Calibration\",\"dept\":\"ST\",\"durationMin\":90,\"taskId\":\"TASK-ST-003\"}]",
+      "departments": "ST"
+    },
+    {
+      "_id": 3,
+      "planId": "BLK-AI-2026-8000",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "scheduledDate": "2026-09-12T18:30:00.000Z",
+      "windowStart": "01:00",
+      "windowEnd": "05:00",
+      "durationHours": 3.5,
+      "optimizationScore": 92,
+      "status": "APPROVED",
+      "reasoningJson": "[{\"confidence\":98,\"badge\":\"TIMETABLE_FIT\",\"description\":\"Traffic density in this window is significantly lower than daytime peak hours. 6 premium express paths protected.\",\"title\":\"Optimal Night Traffic Valley\"},{\"confidence\":97,\"badge\":\"MULTI_DEPT_BUNDLING\",\"description\":\"Bundled 4 departmental tasks into a single possession window, saving 6 hours of independent track closures.\",\"title\":\"Shadow Block Multi-Department Bundling\"},{\"confidence\":99,\"badge\":\"SAFETY_CRITICAL\",\"description\":\"1 critical maintenance task(s) scheduled immediately to avoid track speed restrictions.\",\"title\":\"Safety-Critical Requisitions Prioritized\"},{\"confidence\":92,\"badge\":\"ASSET_OPTIMIZED\",\"description\":\"Maintenance machines and crew staged at nearest siding buffer, minimizing dead possession time.\",\"title\":\"Resource & Machinery Logistics Aligned\"}]",
+      "affectedTrainsJson": "[{\"scheduledPass\":\"01:00 IST\",\"name\":\"Howrah Rajdhani Express\",\"direction\":\"UP_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"12301\",\"category\":\"Rajdhani\",\"remarks\":\"Delay recovered before terminal arrival.\"},{\"scheduledPass\":\"01:00 IST\",\"name\":\"Howrah Rajdhani Express\",\"direction\":\"DN_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"12302\",\"category\":\"Rajdhani\",\"remarks\":\"Delay recovered before terminal arrival.\"},{\"scheduledPass\":\"01:00 IST\",\"name\":\"Vande Bharat Express (Delhi-CNB)\",\"direction\":\"UP_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"22436\",\"category\":\"Vande Bharat\",\"remarks\":\"Delay recovered before terminal arrival.\"}]",
+      "assignedTasksJson": "[{\"machine\":\"Mechanized Maintenance Gang\",\"taskId\":\"TASK-PWAY-002\",\"dept\":\"PWAY\",\"allocatedWindow\":\"01:00 - 06:00 (5 hrs)\",\"title\":\"Rail Replacement — Track CNB-105\",\"crew\":8},{\"machine\":\"Mechanized Maintenance Gang\",\"taskId\":\"TASK-PWAY-003\",\"dept\":\"PWAY\",\"allocatedWindow\":\"06:00 - 09:00 (3 hrs)\",\"title\":\"Renewal of Crossing Panels — Level Crossing LC-47\",\"crew\":8},{\"machine\":\"Mechanized Maintenance Gang\",\"taskId\":\"TASK-TRD-003\",\"dept\":\"TRD\",\"allocatedWindow\":\"09:00 - 16:00 (7 hrs)\",\"title\":\"OHE Section Inspection & Tensioning — OHE CNB-SP-UP Section\",\"crew\":8},{\"machine\":\"Mechanized Maintenance Gang\",\"taskId\":\"TASK-PWAY-001\",\"dept\":\"PWAY\",\"allocatedWindow\":\"16:00 - 20:00 (4 hrs)\",\"title\":\"Track Geometry Correction — Track TDL-162\",\"crew\":8}]",
+      "departments": "PWAY,TRD",
+      "approvedBy": "Chief Controller"
+    },
+    {
+      "_id": 4,
+      "planId": "BLK-AI-2026-5328",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "scheduledDate": "2026-09-11T18:30:00.000Z",
+      "windowStart": "01:00",
+      "windowEnd": "05:00",
+      "durationHours": 3.5,
+      "optimizationScore": 95.5,
+      "status": "PROPOSED",
+      "reasoningJson": "[{\"confidence\":98,\"badge\":\"TIMETABLE_FIT\",\"description\":\"Traffic density in this window is significantly lower than daytime peak hours. 6 premium express paths protected.\",\"title\":\"Optimal Night Traffic Valley\"},{\"confidence\":97,\"badge\":\"MULTI_DEPT_BUNDLING\",\"description\":\"Bundled 4 departmental tasks into a single possession window, saving 6 hours of independent track closures.\",\"title\":\"Shadow Block Multi-Department Bundling\"},{\"confidence\":99,\"badge\":\"SAFETY_CRITICAL\",\"description\":\"2 critical maintenance task(s) scheduled immediately to avoid track speed restrictions.\",\"title\":\"Safety-Critical Requisitions Prioritized\"},{\"confidence\":92,\"badge\":\"ASSET_OPTIMIZED\",\"description\":\"Maintenance machines and crew staged at nearest siding buffer, minimizing dead possession time.\",\"title\":\"Resource & Machinery Logistics Aligned\"}]",
+      "affectedTrainsJson": "[{\"scheduledPass\":\"01:00 IST\",\"name\":\"Howrah Rajdhani Express\",\"direction\":\"UP_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"12301\",\"category\":\"Rajdhani\",\"remarks\":\"Delay recovered before terminal arrival.\"},{\"scheduledPass\":\"01:00 IST\",\"name\":\"Howrah Rajdhani Express\",\"direction\":\"DN_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"12302\",\"category\":\"Rajdhani\",\"remarks\":\"Delay recovered before terminal arrival.\"},{\"scheduledPass\":\"01:00 IST\",\"name\":\"Vande Bharat Express (Delhi-CNB)\",\"direction\":\"UP_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"22436\",\"category\":\"Vande Bharat\",\"remarks\":\"Delay recovered before terminal arrival.\"}]",
+      "assignedTasksJson": "[{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-ST-003\",\"dept\":\"ST\",\"allocatedWindow\":\"01:00 - 02:00 (1 hrs)\",\"title\":\"Axle Counter Calibration — Axle Counter AC-CNB-12\",\"crew\":8},{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-PWAY-002\",\"dept\":\"PWAY\",\"allocatedWindow\":\"02:00 - 07:00 (5 hrs)\",\"title\":\"Rail Replacement — Track CNB-105\",\"crew\":8},{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-PWAY-003\",\"dept\":\"PWAY\",\"allocatedWindow\":\"07:00 - 10:00 (3 hrs)\",\"title\":\"Renewal of Crossing Panels — Level Crossing LC-47\",\"crew\":8},{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-TRD-003\",\"dept\":\"TRD\",\"allocatedWindow\":\"10:00 - 17:00 (7 hrs)\",\"title\":\"OHE Section Inspection & Tensioning — OHE CNB-SP-UP Section\",\"crew\":8}]",
+      "departments": "PWAY,TRD,ST"
+    },
+    {
+      "_id": 5,
+      "planId": "BLK-AI-2026-9649",
+      "corridor": {
+        "collection": "corridors",
+        "id": 1
+      },
+      "trackLine": "UP_MAIN",
+      "scheduledDate": "2026-09-11T18:30:00.000Z",
+      "windowStart": "01:00",
+      "windowEnd": "05:00",
+      "durationHours": 3.5,
+      "optimizationScore": 95.5,
+      "status": "PROPOSED",
+      "reasoningJson": "[{\"confidence\":98,\"badge\":\"TIMETABLE_FIT\",\"description\":\"Traffic density in this window is significantly lower than daytime peak hours. 6 premium express paths protected.\",\"title\":\"Optimal Night Traffic Valley\"},{\"confidence\":97,\"badge\":\"MULTI_DEPT_BUNDLING\",\"description\":\"Bundled 4 departmental tasks into a single possession window, saving 6 hours of independent track closures.\",\"title\":\"Shadow Block Multi-Department Bundling\"},{\"confidence\":99,\"badge\":\"SAFETY_CRITICAL\",\"description\":\"2 critical maintenance task(s) scheduled immediately to avoid track speed restrictions.\",\"title\":\"Safety-Critical Requisitions Prioritized\"},{\"confidence\":92,\"badge\":\"ASSET_OPTIMIZED\",\"description\":\"Maintenance machines and crew staged at nearest siding buffer, minimizing dead possession time.\",\"title\":\"Resource & Machinery Logistics Aligned\"}]",
+      "affectedTrainsJson": "[{\"scheduledPass\":\"01:00 IST\",\"name\":\"Howrah Rajdhani Express\",\"direction\":\"UP_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"12301\",\"category\":\"Rajdhani\",\"remarks\":\"Delay recovered before terminal arrival.\"},{\"scheduledPass\":\"01:00 IST\",\"name\":\"Howrah Rajdhani Express\",\"direction\":\"DN_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"12302\",\"category\":\"Rajdhani\",\"remarks\":\"Delay recovered before terminal arrival.\"},{\"scheduledPass\":\"01:00 IST\",\"name\":\"Vande Bharat Express (Delhi-CNB)\",\"direction\":\"UP_MAIN\",\"recoveryBufferMins\":15,\"actionRequired\":\"REGULATE\",\"netArrivalDelayAtDelhi\":0,\"delayMinutes\":12,\"trainNo\":\"22436\",\"category\":\"Vande Bharat\",\"remarks\":\"Delay recovered before terminal arrival.\"}]",
+      "assignedTasksJson": "[{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-ST-003\",\"dept\":\"ST\",\"allocatedWindow\":\"01:00 - 02:00 (1 hrs)\",\"title\":\"Axle Counter Calibration — Axle Counter AC-CNB-12\",\"crew\":8},{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-PWAY-002\",\"dept\":\"PWAY\",\"allocatedWindow\":\"02:00 - 07:00 (5 hrs)\",\"title\":\"Rail Replacement — Track CNB-105\",\"crew\":8},{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-PWAY-003\",\"dept\":\"PWAY\",\"allocatedWindow\":\"07:00 - 10:00 (3 hrs)\",\"title\":\"Renewal of Crossing Panels — Level Crossing LC-47\",\"crew\":8},{\"machine\":\"CSM (09-32 Tamping Machine)\",\"taskId\":\"TASK-TRD-003\",\"dept\":\"TRD\",\"allocatedWindow\":\"10:00 - 17:00 (7 hrs)\",\"title\":\"OHE Section Inspection & Tensioning — OHE CNB-SP-UP Section\",\"crew\":8}]",
+      "departments": "PWAY,TRD,ST"
+    }
+  ],
+  "database_sequences": [
+    {
+      "_id": "departments",
+      "seq": 4
+    },
+    {
+      "_id": "corridors",
+      "seq": 3
+    },
+    {
+      "_id": "trains",
+      "seq": 18
+    },
+    {
+      "_id": "railway_assets",
+      "seq": 20
+    },
+    {
+      "_id": "maintenance_tasks",
+      "seq": 12
+    },
+    {
+      "_id": "block_requests",
+      "seq": 10
+    },
+    {
+      "_id": "ai_block_plans",
+      "seq": 5
+    }
+  ]
+}
