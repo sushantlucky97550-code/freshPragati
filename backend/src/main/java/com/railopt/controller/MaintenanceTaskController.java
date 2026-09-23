@@ -1,5 +1,6 @@
 package com.railopt.controller;
 
+import com.railopt.dto.AuthorizeTodayRequest;
 import com.railopt.dto.MaintenanceTaskRequest;
 import com.railopt.dto.MaintenanceTaskResponse;
 import com.railopt.entity.Priority;
@@ -15,7 +16,6 @@ import java.util.List;
 
 /**
  * REST controller for MaintenanceTask CRUD and filter operations.
- *
  * Base path: /api/maintenance-tasks
  */
 @RestController
@@ -27,11 +27,62 @@ public class MaintenanceTaskController {
 
     /**
      * GET /api/maintenance-tasks
-     * Returns all maintenance tasks.
+     * Returns all maintenance tasks, optionally filtered by zone.
      */
     @GetMapping
-    public ResponseEntity<List<MaintenanceTaskResponse>> getAllTasks() {
+    public ResponseEntity<List<MaintenanceTaskResponse>> getAllTasks(
+            @RequestParam(required = false) String zone) {
+        if (zone != null && !zone.isBlank()) {
+            return ResponseEntity.ok(taskService.getTasksByZone(zone));
+        }
         return ResponseEntity.ok(taskService.getAllTasks());
+    }
+
+    /**
+     * GET /api/maintenance-tasks/zone/{zone}
+     * Returns tasks strictly scoped to a Railway Zone.
+     */
+    @GetMapping("/zone/{zone}")
+    public ResponseEntity<List<MaintenanceTaskResponse>> getTasksByZone(@PathVariable String zone) {
+        return ResponseEntity.ok(taskService.getTasksByZone(zone));
+    }
+
+    /**
+     * GET /api/maintenance-tasks/today
+     * Returns tasks selected & authorized by DOM for Today's Maintenance Work.
+     */
+    @GetMapping("/today")
+    public ResponseEntity<List<MaintenanceTaskResponse>> getTodayTasks(
+            @RequestParam(required = false) String zone) {
+        return ResponseEntity.ok(taskService.getTodayTasks(zone));
+    }
+
+    /**
+     * GET /api/maintenance-tasks/active
+     * Returns currently active maintenance works.
+     */
+    @GetMapping("/active")
+    public ResponseEntity<List<MaintenanceTaskResponse>> getActiveTasks(
+            @RequestParam(required = false) String zone) {
+        return ResponseEntity.ok(taskService.getActiveTasks(zone));
+    }
+
+    /**
+     * POST /api/maintenance-tasks/authorize-today
+     * DOM / Sr. DOM Authorization to add selected tasks to Today's Maintenance Work.
+     */
+    @PostMapping("/authorize-today")
+    public ResponseEntity<?> authorizeTodayTasks(@Valid @RequestBody AuthorizeTodayRequest request) {
+        try {
+            List<MaintenanceTaskResponse> authorized = taskService.authorizeTodayTasks(request);
+            return ResponseEntity.ok(authorized);
+        } catch (org.springframework.security.authentication.BadCredentialsException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(java.util.Map.of(
+                    "success", false,
+                    "error", "AUTHORIZATION_FAILED",
+                    "message", e.getMessage()
+            ));
+        }
     }
 
     /**
@@ -45,8 +96,6 @@ public class MaintenanceTaskController {
 
     /**
      * GET /api/maintenance-tasks/status/{status}
-     * Returns all tasks matching the given status.
-     * Valid values: PENDING, SCHEDULED, IN_PROGRESS, COMPLETED, DEFERRED, CANCELLED
      */
     @GetMapping("/status/{status}")
     public ResponseEntity<List<MaintenanceTaskResponse>> getTasksByStatus(
@@ -56,8 +105,6 @@ public class MaintenanceTaskController {
 
     /**
      * GET /api/maintenance-tasks/priority/{priority}
-     * Returns all tasks matching the given priority.
-     * Valid values: LOW, MEDIUM, HIGH, URGENT
      */
     @GetMapping("/priority/{priority}")
     public ResponseEntity<List<MaintenanceTaskResponse>> getTasksByPriority(
@@ -67,7 +114,6 @@ public class MaintenanceTaskController {
 
     /**
      * GET /api/maintenance-tasks/department/{departmentId}
-     * Returns all tasks belonging to a specific department.
      */
     @GetMapping("/department/{departmentId}")
     public ResponseEntity<List<MaintenanceTaskResponse>> getTasksByDepartment(
@@ -88,7 +134,6 @@ public class MaintenanceTaskController {
 
     /**
      * PUT /api/maintenance-tasks/{id}
-     * Updates an existing maintenance task.
      */
     @PutMapping("/{id}")
     public ResponseEntity<MaintenanceTaskResponse> updateTask(
@@ -99,7 +144,6 @@ public class MaintenanceTaskController {
 
     /**
      * DELETE /api/maintenance-tasks/{id}
-     * Deletes a maintenance task. Returns 204 No Content.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable Long id) {

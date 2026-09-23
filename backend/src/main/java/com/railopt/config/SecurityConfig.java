@@ -2,7 +2,6 @@ package com.railopt.config;
 
 import com.railopt.security.JwtAuthenticationFilter;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -55,7 +54,7 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        .requestMatchers("/api/auth/login", "/api/health", "/error", "/").permitAll()
+                        .requestMatchers("/api/auth/login", "/api/health", "/api/zones/**", "/error", "/").permitAll()
                         .requestMatchers("/api/auth/audit-logs", "/api/auth/users").hasRole("ADMIN")
                         .requestMatchers("/api/**").authenticated()
                         .anyRequest().permitAll()

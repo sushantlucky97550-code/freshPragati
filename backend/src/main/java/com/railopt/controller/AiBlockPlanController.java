@@ -3,6 +3,7 @@ package com.railopt.controller;
 import com.railopt.dto.AiBlockPlanGenerateRequest;
 import com.railopt.dto.AiBlockPlanResponse;
 import com.railopt.dto.BlockPlanExplanationResponse;
+import com.railopt.entity.BlockPlanVersion;
 import com.railopt.service.AiBlockPlanService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,11 +23,16 @@ public class AiBlockPlanController {
 
     /**
      * GET /api/ai/block-plans
+     * GET /api/ai/block-plans?zone=WCR
      * GET /api/ai/block-plans?status=PROPOSED
      */
     @GetMapping("/block-plans")
     public ResponseEntity<List<AiBlockPlanResponse>> getBlockPlans(
-            @RequestParam(required = false) String status) {
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String zone) {
+        if (zone != null && !zone.isBlank()) {
+            return ResponseEntity.ok(aiBlockPlanService.getBlockPlansByZone(zone));
+        }
         if (status != null) {
             return ResponseEntity.ok(aiBlockPlanService.getBlockPlansByStatus(status));
         }
@@ -40,10 +46,6 @@ public class AiBlockPlanController {
 
     /**
      * GET /api/ai/block-plans/{id}/explanation
-     * Returns structured operational explanation from Gemini AI (or deterministic fallback).
-     *
-     * STRICT SAFETY INVARIANT:
-     * This endpoint is strictly read-only. It does NOT recalculate, approve, or modify the block plan.
      */
     @GetMapping("/block-plans/{id}/explanation")
     public ResponseEntity<BlockPlanExplanationResponse> getBlockPlanExplanation(@PathVariable String id) {
@@ -52,7 +54,7 @@ public class AiBlockPlanController {
 
     /**
      * POST /api/ai/block-plans/generate
-     * Triggers the AI Priority Engine to generate an optimal block plan.
+     * Triggers AI Block Optimizer strictly for selected tasks.
      */
     @PostMapping("/block-plans/generate")
     public ResponseEntity<AiBlockPlanResponse> generateBlockPlan(
@@ -70,5 +72,43 @@ public class AiBlockPlanController {
             @RequestBody(required = false) Map<String, String> body) {
         String approvedBy = body != null ? body.getOrDefault("approvedBy", "Section Controller") : "Section Controller";
         return ResponseEntity.ok(aiBlockPlanService.approveBlockPlan(id, approvedBy));
+    }
+
+    /**
+     * POST /api/ai/block-plans/{id}/approve-step
+     * Sequential Department Approval step execution.
+     * When all steps complete -> automatically transitions to ACTIVE!
+     */
+    @PostMapping("/block-plans/{id}/approve-step")
+    public ResponseEntity<AiBlockPlanResponse> approveDepartmentStep(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        String deptCode = body.getOrDefault("departmentCode", "PWAY");
+        String officerName = body.getOrDefault("officerName", "Senior Section Engineer");
+        String remarks = body.getOrDefault("remarks", "Clearance approved.");
+        return ResponseEntity.ok(aiBlockPlanService.approveDepartmentStep(id, deptCode, officerName, remarks));
+    }
+
+    /**
+     * POST /api/ai/block-plans/{id}/update-timing
+     * Modifies block window with version increment and audit history.
+     */
+    @PostMapping("/block-plans/{id}/update-timing")
+    public ResponseEntity<AiBlockPlanResponse> updateTiming(
+            @PathVariable Long id,
+            @RequestBody Map<String, String> body) {
+        String newStart = body.getOrDefault("windowStart", "02:00");
+        String newEnd = body.getOrDefault("windowEnd", "05:30");
+        String reason = body.getOrDefault("reason", "Operational conflict / authorized update");
+        String authorizedBy = body.getOrDefault("authorizedBy", "Section Controller");
+        return ResponseEntity.ok(aiBlockPlanService.updateBlockTiming(id, newStart, newEnd, reason, authorizedBy));
+    }
+
+    /**
+     * GET /api/ai/block-plans/{planId}/versions
+     */
+    @GetMapping("/block-plans/{planId}/versions")
+    public ResponseEntity<List<BlockPlanVersion>> getPlanVersions(@PathVariable String planId) {
+        return ResponseEntity.ok(aiBlockPlanService.getPlanVersions(planId));
     }
 }

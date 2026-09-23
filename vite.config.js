@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true,
+    watch: {
+      ignored: ['**/scratch/**', '**/backend/**']
+    },
     proxy: {
       '/api': {
         target: 'http://localhost:8080',

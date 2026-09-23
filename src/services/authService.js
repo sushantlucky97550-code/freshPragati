@@ -1,6 +1,7 @@
 /**
  * Pragati - Officer Authentication Service
  * Communicates with Spring Boot backend at /api/auth
+ * Enforces server-side and client-side Railway Zone access boundaries.
  */
 
 const TOKEN_KEY = 'railopt_auth_token';
@@ -57,18 +58,111 @@ export const authService = {
     }
   },
 
-  async login(officerId, password) {
+  async login(officerId, password, zone = 'WCR') {
     const trimmedId = (officerId || '').trim();
+    const targetZone = (typeof zone === 'object' && zone !== null) ? (zone.code || 'WCR') : (zone || 'WCR');
 
-    // Defined authorized officer accounts
+    // Defined authorized officer accounts for fallback
     const KNOWN_OFFICERS = {
+      'OFF-WCR-DOM-01': {
+        officerId: 'OFF-WCR-DOM-01',
+        name: 'Shri Sanjay Srivastava',
+        role: 'DOM',
+        title: 'Divisional Operations Manager (DOM)',
+        department: 'OPERATIONS',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Ops2026'
+      },
+      'OFF-WCR-DRM-01': {
+        officerId: 'OFF-WCR-DRM-01',
+        name: 'Shri Devendra Kumar',
+        role: 'DRM',
+        title: 'Divisional Railway Manager (DRM)',
+        department: 'OPERATIONS',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Ops2026'
+      },
+      'OFF-WCR-ENG-01': {
+        officerId: 'OFF-WCR-ENG-01',
+        name: 'Er. Vikram Singh',
+        role: 'ENGINEERING_OFFICER',
+        title: 'Senior Section Engineer (P-Way)',
+        department: 'ENGINEERING',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Eng2026'
+      },
+      'OFF-WCR-SIG-01': {
+        officerId: 'OFF-WCR-SIG-01',
+        name: 'Er. Priya Sundaram',
+        role: 'ST_OFFICER',
+        title: 'Senior Section Engineer (S&T)',
+        department: 'SIGNAL_AND_TELECOM',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Sig2026'
+      },
+      'OFF-WCR-TRD-01': {
+        officerId: 'OFF-WCR-TRD-01',
+        name: 'Er. Amitav Sen',
+        role: 'TRD_OFFICER',
+        title: 'Senior Section Engineer (TRD / OHE)',
+        department: 'TRACTION_DISTRIBUTION',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Trd2026'
+      },
+      'OFF-WCR-SEC-01': {
+        officerId: 'OFF-WCR-SEC-01',
+        name: 'Anil Sharma',
+        role: 'SECTION_OFFICER',
+        title: 'Section Officer (Bhopal – Sehore)',
+        department: 'OPERATIONS',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Sec2026'
+      },
+      'OFF-WCR-SM-01': {
+        officerId: 'OFF-WCR-SM-01',
+        name: 'Ramesh Chandra',
+        role: 'STATION_MASTER',
+        title: 'Station Master (Bhopal Junction)',
+        department: 'OPERATIONS',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Sm2026'
+      },
+      'OFF-ADMIN-01': {
+        officerId: 'OFF-ADMIN-01',
+        name: 'Shri A. K. Verma',
+        role: 'ADMIN',
+        title: 'Principal Chief Operations Manager (PCOM)',
+        department: 'ADMINISTRATION',
+        zone: 'WCR',
+        division: 'Bhopal',
+        validPass: 'RailOpt@Admin2026'
+      },
+      'OFF-NR-DOM-01': {
+        officerId: 'OFF-NR-DOM-01',
+        name: 'Shri R. P. Gupta',
+        role: 'DOM',
+        title: 'Senior Divisional Operations Manager (Sr. DOM)',
+        department: 'OPERATIONS',
+        zone: 'NR',
+        division: 'Delhi',
+        validPass: 'RailOpt@Nr2026'
+      },
+      // Legacy compatibility
       'OFF-OPS-101': {
         officerId: 'OFF-OPS-101',
         name: 'Rajesh K. Sharma',
         role: 'OPERATIONS_CONTROL',
         title: 'Chief Controller (Operations)',
         department: 'OPERATIONS',
-        division: 'NCR - Prayagraj Division',
+        zone: 'WCR',
+        division: 'Bhopal',
         validPass: 'RailOpt@Ops2026'
       },
       'OFF-ENG-201': {
@@ -77,7 +171,8 @@ export const authService = {
         role: 'ENGINEERING_OFFICER',
         title: 'Senior Section Engineer (P-Way)',
         department: 'ENGINEERING',
-        division: 'NCR - Prayagraj Division',
+        zone: 'WCR',
+        division: 'Bhopal',
         validPass: 'RailOpt@Eng2026'
       },
       'OFF-SIG-301': {
@@ -86,7 +181,8 @@ export const authService = {
         role: 'ST_OFFICER',
         title: 'Senior Section Engineer (S&T)',
         department: 'SIGNAL_AND_TELECOM',
-        division: 'NCR - Prayagraj Division',
+        zone: 'WCR',
+        division: 'Bhopal',
         validPass: 'RailOpt@Sig2026'
       },
       'OFF-TRD-401': {
@@ -95,19 +191,13 @@ export const authService = {
         role: 'TRD_OFFICER',
         title: 'Senior Section Engineer (TRD / OHE)',
         department: 'TRACTION_DISTRIBUTION',
-        division: 'NCR - Prayagraj Division',
+        zone: 'WCR',
+        division: 'Bhopal',
         validPass: 'RailOpt@Trd2026'
-      },
-      'OFF-ADMIN-01': {
-        officerId: 'OFF-ADMIN-01',
-        name: 'Shri A. K. Verma',
-        role: 'ADMIN',
-        title: 'Principal Chief Operations Manager (PCOM)',
-        department: 'ADMINISTRATION',
-        division: 'NCR - Prayagraj Division',
-        validPass: 'RailOpt@Admin2026'
       }
     };
+
+    const matched = KNOWN_OFFICERS[trimmedId];
 
     try {
       const response = await fetch('/api/auth/login', {
@@ -115,30 +205,37 @@ export const authService = {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ officerId: trimmedId, password })
+        body: JSON.stringify({ officerId: trimmedId, password, zone: targetZone })
       });
 
-      const data = await response.json().catch(() => ({}));
-
-      if (response.ok && data.token && data.officer) {
-        this.setToken(data.token);
-        this.setUser(data.officer);
-        return data;
+      // If backend responded with valid auth
+      if (response.ok) {
+        const data = await response.json().catch(() => ({}));
+        if (data.token && data.officer) {
+          this.setToken(data.token);
+          this.setUser(data.officer);
+          return data;
+        }
       }
     } catch (networkErr) {
-      console.warn('[authService] Backend unreachable, falling back to local verification:', networkErr.message);
+      console.warn('[authService] Backend offline, validating via local station roster:', networkErr.message);
     }
 
     // Local authentication fallback
     const matched = KNOWN_OFFICERS[trimmedId];
     if (matched && matched.validPass === password) {
+      if (targetZone && matched.zone && matched.zone.toUpperCase() !== targetZone.toUpperCase() && matched.role !== 'ADMIN') {
+        throw new Error(`Access Denied: Officer ${trimmedId} is authorized for ${matched.zone} Zone only. You cannot authenticate into ${targetZone} context.`);
+      }
+
       const fallbackOfficer = {
         officerId: matched.officerId,
         name: matched.name,
         role: matched.role,
         title: matched.title,
         department: matched.department,
-        division: matched.division
+        zone: matched.zone || targetZone,
+        division: matched.division || 'Bhopal'
       };
       const fallbackToken = 'simulated_jwt_' + Date.now();
       this.setToken(fallbackToken);
@@ -217,22 +314,6 @@ export const authService = {
 
     if (!response.ok) {
       throw new Error('Failed to load audit logs. Requires Administrator authorization.');
-    }
-
-    return await response.json();
-  },
-
-  async getAllOfficers() {
-    const token = this.getToken();
-    const response = await fetch('/api/auth/users', {
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {})
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to load officer directory. Requires Administrator authorization.');
     }
 
     return await response.json();

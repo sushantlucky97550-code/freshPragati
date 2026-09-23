@@ -7,6 +7,10 @@ import { Sidebar } from './components/common/Sidebar';
 
 // Pages
 import { DashboardPage } from './pages/DashboardPage';
+import { TodaysMaintenancePage } from './pages/TodaysMaintenancePage';
+import { ActiveMaintenancePage } from './pages/ActiveMaintenancePage';
+import { EmergencyMaintenancePage } from './pages/EmergencyMaintenancePage';
+import { BlockPlanChangesPage } from './pages/BlockPlanChangesPage';
 import { BlockPlanningPage } from './pages/BlockPlanningPage';
 import { MaintenanceTasksPage } from './pages/MaintenanceTasksPage';
 import { RailwayAssetsPage } from './pages/RailwayAssetsPage';
@@ -14,8 +18,11 @@ import { TrainsCorridorsPage } from './pages/TrainsCorridorsPage';
 import { WeeklyPlannerPage } from './pages/WeeklyPlannerPage';
 import { RecommendationsPage } from './pages/RecommendationsPage';
 import { ReportsPage } from './pages/ReportsPage';
+import { NotificationsPage } from './pages/NotificationsPage';
 import { LoginPage } from './pages/LoginPage';
 import { GatewayPage } from './pages/GatewayPage';
+import { DivisionSelectionPage } from './pages/DivisionSelectionPage';
+import { PersistentAiAssistant } from './components/common/PersistentAiAssistant';
 
 import { Train, ShieldCheck } from 'lucide-react';
 
@@ -23,8 +30,15 @@ import { Train, ShieldCheck } from 'lucide-react';
 const PATH_TO_PAGE_MAP = {
   '/': 'gateway',
   '/gateway': 'gateway',
+  '/division': 'division',
+  '/divisions': 'division',
   '/login': 'login',
   '/dashboard': 'dashboard',
+  '/todays-work': 'todays-work',
+  '/active-work': 'active-work',
+  '/emergency-work': 'emergency-work',
+  '/block-changes': 'block-changes',
+  '/notifications': 'notifications',
   '/ai-planning': 'ai-planning',
   '/block-planner': 'ai-planning',
   '/maintenance': 'maintenance-tasks',
@@ -40,8 +54,14 @@ const PATH_TO_PAGE_MAP = {
 
 const PAGE_TO_PATH_MAP = {
   'gateway': '/gateway',
+  'division': '/division',
   'login': '/login',
   'dashboard': '/dashboard',
+  'todays-work': '/todays-work',
+  'active-work': '/active-work',
+  'emergency-work': '/emergency-work',
+  'block-changes': '/block-changes',
+  'notifications': '/notifications',
   'ai-planning': '/block-planner',
   'maintenance-tasks': '/maintenance',
   'railway-assets': '/assets',
@@ -138,7 +158,7 @@ function VerifyingSessionSplash() {
 
 function AppContent() {
   const { isAuthenticated, isLoading, user: authUser } = useAuth();
-  const { setCurrentUser } = useRailway();
+  const { setCurrentUser, setCurrentDivision } = useRailway();
 
   const [selectedZone, setSelectedZone] = useState(() => {
     try {
@@ -146,6 +166,15 @@ function AppContent() {
       return saved ? JSON.parse(saved) : null;
     } catch {
       return null;
+    }
+  });
+
+  const [selectedDivision, setSelectedDivision] = useState(() => {
+    try {
+      const saved = sessionStorage.getItem('railopt_selected_division');
+      return saved ? JSON.parse(saved) : { name: 'Bhopal', code: 'BPL', isPrimary: true };
+    } catch {
+      return { name: 'Bhopal', code: 'BPL', isPrimary: true };
     }
   });
 
@@ -178,13 +207,15 @@ function AppContent() {
       if (!isAuthenticated) {
         if (path === '/login') {
           setActivePage('login');
+        } else if (path === '/division' || path === '/divisions') {
+          setActivePage('division');
         } else {
           window.history.replaceState(null, '', '/gateway');
           setActivePage('gateway');
         }
       } else {
         const page = PATH_TO_PAGE_MAP[path] || 'dashboard';
-        setActivePage(page === 'login' || page === 'gateway' ? 'dashboard' : page);
+        setActivePage(page === 'login' || page === 'gateway' || page === 'division' ? 'dashboard' : page);
       }
     };
 
@@ -197,13 +228,13 @@ function AppContent() {
     if (!isLoading) {
       if (!isAuthenticated) {
         const path = window.location.pathname;
-        if (path !== '/login' && path !== '/gateway') {
+        if (path !== '/login' && path !== '/gateway' && path !== '/division' && path !== '/divisions') {
           window.history.replaceState(null, '', '/gateway');
           setActivePage('gateway');
         }
       } else {
-        // Authenticated: if currently on /login, /gateway or /, move to dashboard
-        if (window.location.pathname === '/login' || window.location.pathname === '/gateway' || window.location.pathname === '/') {
+        // Authenticated: if currently on /login, /gateway, /division or /, move to dashboard
+        if (window.location.pathname === '/login' || window.location.pathname === '/gateway' || window.location.pathname === '/division' || window.location.pathname === '/') {
           window.history.replaceState(null, '', '/dashboard');
           setActivePage('dashboard');
         }
@@ -225,6 +256,18 @@ function AppContent() {
     try {
       sessionStorage.setItem('railopt_selected_zone', JSON.stringify(zone));
     } catch (e) {}
+    // Navigate to Divisional selection page right after zone selection
+    navigateTo('division');
+  };
+
+  const handleSelectDivision = (division) => {
+    setSelectedDivision(division);
+    try {
+      sessionStorage.setItem('railopt_selected_division', JSON.stringify(division));
+    } catch (e) {}
+    if (division?.name && setCurrentDivision) {
+      setCurrentDivision(division.name);
+    }
     navigateTo('login');
   };
 
@@ -237,18 +280,29 @@ function AppContent() {
     return <VerifyingSessionSplash />;
   }
 
-  // ─── 2. UNAUTHENTICATED: RENDER GATEWAY OR OFFICER LOGIN ───────
+  // ─── 2. UNAUTHENTICATED: RENDER GATEWAY, DIVISION SELECTION, OR OFFICER LOGIN ───────
   // No Navbar, no Sidebar, no application data rendered in DOM!
   if (!isAuthenticated) {
     if (activePage === 'login') {
       return (
         <LoginPage
           selectedZone={selectedZone}
+          selectedDivision={selectedDivision}
+          onBackToDivision={() => navigateTo('division')}
           onBackToGateway={() => navigateTo('gateway')}
           onLoginSuccess={() => {
             window.history.pushState(null, '', '/dashboard');
             setActivePage('dashboard');
           }}
+        />
+      );
+    }
+    if (activePage === 'division') {
+      return (
+        <DivisionSelectionPage
+          selectedZone={selectedZone}
+          onSelectDivision={handleSelectDivision}
+          onBackToGateway={() => navigateTo('gateway')}
         />
       );
     }
@@ -264,6 +318,16 @@ function AppContent() {
     switch (activePage) {
       case 'dashboard':
         return <DashboardPage onNavigate={navigateTo} />;
+      case 'todays-work':
+        return <TodaysMaintenancePage onNavigate={navigateTo} />;
+      case 'active-work':
+        return <ActiveMaintenancePage onNavigate={navigateTo} />;
+      case 'emergency-work':
+        return <EmergencyMaintenancePage onNavigate={navigateTo} />;
+      case 'block-changes':
+        return <BlockPlanChangesPage />;
+      case 'notifications':
+        return <NotificationsPage onNavigate={navigateTo} />;
       case 'ai-planning':
         return <BlockPlanningPage />;
       case 'maintenance-tasks':
@@ -315,6 +379,9 @@ function AppContent() {
           </div>
         </main>
       </div>
+
+      {/* 34. Persistent Floating RailOpt AI Assistant */}
+      <PersistentAiAssistant />
     </div>
   );
 }

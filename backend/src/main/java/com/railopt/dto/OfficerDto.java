@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Builder
@@ -19,7 +20,10 @@ public class OfficerDto {
     private String department;
     private String role;
     private String title;
+    private String zone;
     private String division;
+    private List<String> authorizedDivisions;
+    private List<String> permissions;
     private String accountStatus;
     private LocalDateTime lastLogin;
 }

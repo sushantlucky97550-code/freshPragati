@@ -39,6 +39,18 @@ public class MongoIdGeneratorListener extends AbstractMongoEventListener<Object>
             u.setId(sequenceGenerator.generateSequence(collection));
         } else if (entity instanceof AuthAuditLog l && l.getId() == null) {
             l.setId(sequenceGenerator.generateSequence(collection));
+        } else if (entity instanceof MlTrainingRecord r && r.getId() == null) {
+            r.setId(sequenceGenerator.generateSequence(collection));
+        } else if (entity instanceof MaintenanceReport rep && rep.getId() == null) {
+            rep.setId(sequenceGenerator.generateSequence(collection));
+        } else if (entity instanceof BlockPlanVersion bpv && bpv.getId() == null) {
+            bpv.setId(sequenceGenerator.generateSequence(collection));
+        } else if (entity instanceof EmergencyEvent emg && emg.getId() == null) {
+            emg.setId(sequenceGenerator.generateSequence(collection));
+        } else if (entity instanceof StationCommunication comm && comm.getId() == null) {
+            comm.setId(sequenceGenerator.generateSequence(collection));
+        } else if (entity instanceof TcpRequest tcp && tcp.getId() == null) {
+            tcp.setId(sequenceGenerator.generateSequence(collection));
         }
     }
 }

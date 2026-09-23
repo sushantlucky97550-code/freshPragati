@@ -96,7 +96,21 @@ public class AuthServiceImpl implements AuthService {
                 }
             }
 
-            // 4. Successful Authentication
+            // 4. Strict Zone-Specific Access Control Enforcement (Requirement 4 & 41)
+            // Backend is the security boundary!
+            if (request.getZone() != null && !request.getZone().isBlank()
+                    && user.getZone() != null && !user.getZone().isBlank()
+                    && !user.getZone().equalsIgnoreCase(request.getZone().trim())
+                    && !"ADMIN".equalsIgnoreCase(user.getRole())) {
+                recordAudit(officerId, AuthEventType.LOGIN_FAILED, ipAddress, userAgent, false,
+                        "Zone boundary violation: Attempted access to " + request.getZone() + " but officer is authorized for " + user.getZone());
+                log.warn("[AuthService] Officer {} attempted unauthorized access to zone {} (Authorized: {})",
+                        officerId, request.getZone(), user.getZone());
+                throw new BadCredentialsException("Access Denied: Officer " + officerId + " is authorized for "
+                        + user.getZone() + " Zone only. You cannot authenticate into " + request.getZone() + " context.");
+            }
+
+            // 5. Successful Authentication
             user.setFailedLoginAttempts(0);
             user.setLockedUntil(null);
             user.setLastLogin(LocalDateTime.now());
@@ -105,8 +119,8 @@ public class AuthServiceImpl implements AuthService {
             String token = jwtService.generateToken(user);
 
             recordAudit(officerId, AuthEventType.LOGIN_SUCCESS, ipAddress, userAgent, true,
-                    "Officer authenticated successfully");
-            log.info("[AuthService] Officer {} ({}) successfully authenticated", officerId, user.getRole());
+                    "Officer authenticated successfully for zone " + user.getZone());
+            log.info("[AuthService] Officer {} ({}) successfully authenticated for zone {}", officerId, user.getRole(), user.getZone());
 
             return AuthResponse.builder()
                     .authenticated(true)
@@ -159,7 +173,14 @@ public class AuthServiceImpl implements AuthService {
                 .department(user.getDepartment())
                 .role(user.getRole())
                 .title(user.getTitle())
-                .division(user.getDivision())
+                .zone(user.getZone() != null ? user.getZone() : "WCR")
+                .division(user.getDivision() != null ? user.getDivision() : "Bhopal")
+                .authorizedDivisions(user.getAuthorizedDivisions() != null && !user.getAuthorizedDivisions().isEmpty()
+                        ? user.getAuthorizedDivisions()
+                        : List.of(user.getDivision() != null ? user.getDivision() : "Bhopal"))
+                .permissions(user.getPermissions() != null && !user.getPermissions().isEmpty()
+                        ? user.getPermissions()
+                        : List.of("READ", "WRITE", "APPROVE", "OPERATIONS"))
                 .accountStatus(user.getAccountStatus() != null ? user.getAccountStatus().name() : "ACTIVE")
                 .lastLogin(user.getLastLogin())
                 .build();

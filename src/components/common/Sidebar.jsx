@@ -1,21 +1,19 @@
 import React from 'react';
 import {
   LayoutDashboard,
-  Cpu,
-  Wrench,
-  Layers,
-  Train,
   Calendar,
-  Lightbulb,
+  Activity,
+  Flame,
+  GitBranch,
+  Bell,
   BarChart3,
-  LogIn,
   LogOut,
   ChevronLeft,
   ChevronRight,
   ShieldCheck,
-  Radio,
-  ExternalLink,
-  Activity
+  Train,
+  Clock,
+  Layers
 } from 'lucide-react';
 import { useRailway } from '../../context/RailwayContext';
 import { useAuth } from '../../context/AuthContext';
@@ -28,61 +26,68 @@ export const Sidebar = ({
   isOpenMobile,
   onCloseMobile
 }) => {
-  const { tasks, recommendations, blockPlans, todayWorkTasks, removeFromTodayWork } = useRailway();
+  const {
+    currentZone,
+    currentDivision,
+    todayWorkTasks,
+    activeWorkTasks,
+    notifications
+  } = useRailway();
   const { user: authUser, logout } = useAuth();
 
-  const pendingTasksCount = tasks.filter(t => t.status === 'PENDING_BLOCK').length;
-  const recommendationsCount = recommendations.length;
+  const unreadAlerts = notifications.filter(n => !n.read).length;
 
   const rawNavItems = [
     {
       id: 'dashboard',
-      label: 'Control Dashboard',
+      label: 'Main Command Center',
       icon: LayoutDashboard,
       badge: null,
       roles: ['ALL']
     },
     {
-      id: 'ai-planning',
-      label: 'Automatic Block Planning',
-      icon: Cpu,
-      badge: 'AI SOLVER',
-      isAi: true,
-      roles: ['ALL']
-    },
-    {
-      id: 'maintenance-tasks',
-      label: 'Maintenance Tasks',
-      icon: Wrench,
-      badge: pendingTasksCount > 0 ? `${pendingTasksCount} Pending` : null,
-      badgeColor: 'amber',
-      roles: ['ADMIN', 'ENGINEERING_OFFICER', 'ST_OFFICER', 'TRD_OFFICER', 'SSE_PWAY', 'SSE_TRD', 'SSE_SIG']
-    },
-    {
-      id: 'railway-assets',
-      label: 'Railway Assets & Telemetry',
-      icon: Layers,
-      badge: null,
-      roles: ['ADMIN', 'ENGINEERING_OFFICER', 'ST_OFFICER', 'TRD_OFFICER', 'OPERATIONS_CONTROL', 'CHIEF_CONTROLLER']
-    },
-    {
-      id: 'trains-corridors',
-      label: 'Trains & Corridors',
-      icon: Train,
-      badge: 'LIVE',
-      roles: ['ADMIN', 'OPERATIONS_CONTROL', 'CHIEF_CONTROLLER', 'ENGINEERING_OFFICER']
-    },
-    {
-      id: 'recommendations',
-      label: 'AI Recommendations',
-      icon: Lightbulb,
-      badge: recommendationsCount > 0 ? `${recommendationsCount} New` : null,
+      id: 'todays-work',
+      label: "Today's Maintenance Work",
+      icon: Calendar,
+      badge: todayWorkTasks.length > 0 ? `${todayWorkTasks.length}` : null,
       badgeColor: 'sky',
       roles: ['ALL']
     },
     {
+      id: 'active-work',
+      label: 'Currently Active Maintenance Work',
+      icon: Activity,
+      badge: activeWorkTasks.length > 0 ? `${activeWorkTasks.length} Active` : 'LIVE',
+      badgeColor: 'emerald',
+      roles: ['ALL']
+    },
+    {
+      id: 'emergency-work',
+      label: 'Emergency Maintenance Works',
+      icon: Flame,
+      badge: 'RAPID',
+      badgeColor: 'red',
+      roles: ['ALL']
+    },
+    {
+      id: 'block-changes',
+      label: 'Changes in Block Plans',
+      icon: GitBranch,
+      badge: 'v3',
+      badgeColor: 'amber',
+      roles: ['ALL']
+    },
+    {
+      id: 'notifications',
+      label: 'Notifications & Alerts',
+      icon: Bell,
+      badge: unreadAlerts > 0 ? `${unreadAlerts}` : null,
+      badgeColor: 'red',
+      roles: ['ALL']
+    },
+    {
       id: 'reports',
-      label: 'Reports & Analytics',
+      label: 'Reports & Audit Dossier',
       icon: BarChart3,
       badge: null,
       roles: ['ALL']

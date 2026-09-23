@@ -175,6 +175,18 @@ export const api = {
         return localTasks;
       }
     },
+    getByZone: async (zone = 'WCR') => {
+      return RailwayApiService.getTasksByZone(zone);
+    },
+    getToday: async (zone = 'WCR') => {
+      return RailwayApiService.getTodayMaintenanceTasks(zone);
+    },
+    getActive: async (zone = 'WCR') => {
+      return RailwayApiService.getActiveMaintenanceTasks(zone);
+    },
+    authorizeToday: async (data) => {
+      return RailwayApiService.authorizeTodayTasks(data);
+    },
     create: async (taskData) => {
       try {
         const created = await request('/maintenance-tasks', {
@@ -578,12 +590,200 @@ export const RailwayApiService = {
         safetyNotice: 'Pragati selected this block using deterministic optimization. Gemini generated the explanation.'
       };
     }
+  },
+
+  // ─── Zones ─────────────────────────────────────────────────────────────
+  async getZones() {
+    try {
+      const data = await request('/zones');
+      return Array.isArray(data) ? data : null;
+    } catch {
+      return null;
+    }
+  },
+
+  // ─── Scoped Maintenance Tasks ──────────────────────────────────────────
+  async getTasksByZone(zone = 'WCR') {
+    try {
+      const data = await request(`/maintenance-tasks/zone/${encodeURIComponent(zone)}`);
+      return Array.isArray(data) ? data.map(normalizeTask) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async getTodayMaintenanceTasks(zone = 'WCR') {
+    try {
+      const data = await request(`/maintenance-tasks/today?zone=${encodeURIComponent(zone)}`);
+      return Array.isArray(data) ? data.map(normalizeTask) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async getActiveMaintenanceTasks(zone = 'WCR') {
+    try {
+      const data = await request(`/maintenance-tasks/active?zone=${encodeURIComponent(zone)}`);
+      return Array.isArray(data) ? data.map(normalizeTask) : [];
+    } catch {
+      return [];
+    }
+  },
+
+  async authorizeTodayTasks(data) {
+    return await request('/maintenance-tasks/authorize-today', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  async createMaintenanceTask(data) {
+    const res = await request('/maintenance-tasks', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+    return normalizeTask(res);
+  },
+
+  async approveDepartmentStep(planId, deptCode, officerName, remarks) {
+    const res = await request(`/ai/block-plans/${planId}/approve-step`, {
+      method: 'POST',
+      body: JSON.stringify({ departmentCode: deptCode, officerName, remarks })
+    });
+    return normalizePlan(res);
+  },
+
+  async approveBlockPlanStep(planId, department, officerId, officerName, role, remarks) {
+    return this.approveDepartmentStep(planId, department, officerName, remarks);
+  },
+
+  async generateBlockPlan(params) {
+    return this.generateAiBlockPlan(params);
+  },
+
+  async submitFinalReport(data) {
+    return this.submitFinalMaintenanceReport(data);
+  },
+
+  async updateBlockTiming(planId, windowStart, windowEnd, reason, authorizedBy) {
+    const res = await request(`/ai/block-plans/${planId}/update-timing`, {
+      method: 'POST',
+      body: JSON.stringify({ windowStart, windowEnd, reason, authorizedBy })
+    });
+    return normalizePlan(res);
+  },
+
+  async getBlockPlanVersions(planId) {
+    try {
+      return await request(`/ai/block-plans/${encodeURIComponent(planId)}/versions`);
+    } catch {
+      return [];
+    }
+  },
+
+  // ─── Live Operations & Digital Twin ───────────────────────────────────────
+  async getLiveCommunications(workId, zone = 'WCR') {
+    try {
+      let url = `/live/communication?zone=${encodeURIComponent(zone)}`;
+      if (workId) url += `&workId=${encodeURIComponent(workId)}`;
+      return await request(url);
+    } catch {
+      return [];
+    }
+  },
+
+  async sendLiveCommunication(msg) {
+    return await request('/live/communication', {
+      method: 'POST',
+      body: JSON.stringify(msg)
+    });
+  },
+
+  async acknowledgeLiveCommunication(id, officerName) {
+    return await request(`/live/communication/${id}/acknowledge`, {
+      method: 'POST',
+      body: JSON.stringify({ officerName })
+    });
+  },
+
+  async toggleTrackPossession(data) {
+    return await request('/live/track-possession', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  async getTcpRequests(zone = 'WCR') {
+    try {
+      return await request(`/live/tcp-requests?zone=${encodeURIComponent(zone)}`);
+    } catch {
+      return [];
+    }
+  },
+
+  async createTcpRequest(req) {
+    return await request('/live/tcp-requests', {
+      method: 'POST',
+      body: JSON.stringify(req)
+    });
+  },
+
+  async updateTcpStatus(id, status, officerName, remarks) {
+    return await request(`/live/tcp-requests/${id}/status`, {
+      method: 'POST',
+      body: JSON.stringify({ status, officerName, remarks })
+    });
+  },
+
+  async getEmergencies(zone = 'WCR') {
+    try {
+      return await request(`/live/emergencies?zone=${encodeURIComponent(zone)}`);
+    } catch {
+      return [];
+    }
+  },
+
+  async reportEmergency(data) {
+    return await request('/live/emergencies', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  async resolveEmergency(id, resolvedBy) {
+    return await request(`/live/emergencies/${id}/resolve`, {
+      method: 'POST',
+      body: JSON.stringify({ resolvedBy })
+    });
+  },
+
+  async submitFinalMaintenanceReport(data) {
+    return await request('/live/maintenance-reports', {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  async getMaintenanceReports(zone = 'WCR') {
+    try {
+      return await request(`/live/maintenance-reports?zone=${encodeURIComponent(zone)}`);
+    } catch {
+      return [];
+    }
+  },
+
+  async getMlInsights(zone = 'WCR') {
+    try {
+      return await request(`/live/ml-insights?zone=${encodeURIComponent(zone)}`);
+    } catch {
+      return [];
+    }
   }
 };
 
 /**
  * Normalizes a backend AiBlockPlanResponse into the shape expected by
- * the frontend PlanResultCard and BlockPlanningPage components.
+ * the frontend components.
  */
 function normalizePlan(plan) {
   if (!plan) return null;
@@ -591,6 +791,10 @@ function normalizePlan(plan) {
     planId: plan.planId,
     corridorId: plan.corridorCode || plan.corridorId,
     corridorName: plan.corridorName,
+    zone: plan.zone || 'WCR',
+    division: plan.division || 'Bhopal',
+    fromStation: plan.fromStation || 'BPL',
+    toStation: plan.toStation || 'SEH',
     trackLine: plan.trackLine,
     scheduledDate: plan.scheduledDate,
     windowStart: plan.windowStart ? (plan.windowStart.includes('IST') ? plan.windowStart : plan.windowStart + ' IST') : '01:00 IST',
@@ -600,7 +804,11 @@ function normalizePlan(plan) {
     priority: plan.priority || 'CRITICAL',
     recommendedAction: plan.recommendedAction || 'Approve and transmit block requisition to Section Controller & COIS.',
     status: plan.status || 'PROPOSED',
+    version: plan.version || 1,
     departments: plan.departments ? (Array.isArray(plan.departments) ? plan.departments : plan.departments.split(',')) : ['PWAY'],
+    approvalChain: plan.approvalChain || [],
+    weatherAlert: plan.weatherAlert || null,
+    assignedTaskIds: plan.assignedTaskIds || [],
     aiReasons: plan.aiReasons || [],
     affectedTrains: plan.affectedTrains || [],
     assignedTasks: plan.assignedTasks || [],
@@ -612,3 +820,4 @@ function normalizePlan(plan) {
 }
 
 export { departmentService };
+

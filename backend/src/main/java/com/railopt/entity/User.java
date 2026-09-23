@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Represents an authorized Indian Railway officer account for RailOpt AI.
@@ -45,8 +47,17 @@ public class User {
     @Size(max = 100)
     private String title;
 
+    @Size(max = 50)
+    private String zone; // e.g. "WCR", "NR", "NCR", "WR"
+
     @Size(max = 100)
-    private String division;
+    private String division; // e.g. "Bhopal", "Jabalpur", "Delhi", "Prayagraj"
+
+    @Builder.Default
+    private List<String> authorizedDivisions = new ArrayList<>();
+
+    @Builder.Default
+    private List<String> permissions = new ArrayList<>();
 
     @NotBlank
     private String passwordHash;

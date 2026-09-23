@@ -1,20 +1,24 @@
 package com.railopt.service;
 
+import com.railopt.dto.AuthorizeTodayRequest;
 import com.railopt.dto.MaintenanceTaskRequest;
 import com.railopt.dto.MaintenanceTaskResponse;
-import com.railopt.entity.Department;
-import com.railopt.entity.MaintenanceTask;
-import com.railopt.entity.Priority;
-import com.railopt.entity.TaskStatus;
+import com.railopt.entity.*;
 import com.railopt.exception.DuplicateResourceException;
 import com.railopt.exception.ResourceNotFoundException;
+import com.railopt.repository.AuthAuditLogRepository;
 import com.railopt.repository.DepartmentRepository;
 import com.railopt.repository.MaintenanceTaskRepository;
+import com.railopt.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -25,25 +29,71 @@ public class MaintenanceTaskService {
 
     private final MaintenanceTaskRepository taskRepository;
     private final DepartmentRepository departmentRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final AuthAuditLogRepository auditLogRepository;
 
     /**
      * Returns all maintenance tasks with their department info eagerly loaded.
      */
     public List<MaintenanceTaskResponse> getAllTasks() {
-        log.debug("Fetching all maintenance tasks");
-        return taskRepository.findAllWithDepartment()
+        return taskRepository.findAll()
                 .stream()
                 .map(MaintenanceTaskResponse::from)
                 .toList();
     }
 
     /**
+     * Returns tasks scoped by Railway Zone (Requirement 6 & 41).
+     */
+    public List<MaintenanceTaskResponse> getTasksByZone(String zone) {
+        if (zone == null || zone.isBlank()) return getAllTasks();
+        return taskRepository.findByZone(zone.toUpperCase())
+                .stream()
+                .map(MaintenanceTaskResponse::from)
+                .toList();
+    }
+
+    /**
+     * Returns Today's Maintenance Work — tasks selected and authorized by DOM/Sr. DOM.
+     * (Requirement 18)
+     */
+    public List<MaintenanceTaskResponse> getTodayTasks(String zone) {
+        List<MaintenanceTask> tasks = (zone != null && !zone.isBlank())
+                ? taskRepository.findByZone(zone.toUpperCase())
+                : taskRepository.findAll();
+
+        return tasks.stream()
+                .filter(t -> "DOM_AUTHORIZED".equalsIgnoreCase(t.getLifecycleState())
+                        || "SELECTED_FOR_TODAY".equalsIgnoreCase(t.getLifecycleState())
+                        || "BLOCK_PLAN_GENERATED".equalsIgnoreCase(t.getLifecycleState())
+                        || "APPROVAL_IN_PROGRESS".equalsIgnoreCase(t.getLifecycleState())
+                        || "FULLY_APPROVED".equalsIgnoreCase(t.getLifecycleState()))
+                .map(MaintenanceTaskResponse::from)
+                .toList();
+    }
+
+    /**
+     * Returns Currently Active Maintenance Work.
+     * (Requirement 25 & 26)
+     */
+    public List<MaintenanceTaskResponse> getActiveTasks(String zone) {
+        List<MaintenanceTask> tasks = (zone != null && !zone.isBlank())
+                ? taskRepository.findByZone(zone.toUpperCase())
+                : taskRepository.findAll();
+
+        return tasks.stream()
+                .filter(t -> "ACTIVE".equalsIgnoreCase(t.getLifecycleState())
+                        || "WORK_IN_PROGRESS".equalsIgnoreCase(t.getLifecycleState())
+                        || t.getStatus() == TaskStatus.IN_PROGRESS)
+                .map(MaintenanceTaskResponse::from)
+                .toList();
+    }
+
+    /**
      * Returns a single maintenance task by its database ID.
-     *
-     * @throws ResourceNotFoundException if not found
      */
     public MaintenanceTaskResponse getTaskById(Long id) {
-        log.debug("Fetching maintenance task id: {}", id);
         MaintenanceTask task = findTaskOrThrow(id);
         return MaintenanceTaskResponse.from(task);
     }
@@ -52,8 +102,7 @@ public class MaintenanceTaskService {
      * Returns all tasks matching a given lifecycle status.
      */
     public List<MaintenanceTaskResponse> getTasksByStatus(TaskStatus status) {
-        log.debug("Fetching tasks with status: {}", status);
-        return taskRepository.findByStatusWithDepartment(status)
+        return taskRepository.findByStatus(status)
                 .stream()
                 .map(MaintenanceTaskResponse::from)
                 .toList();
@@ -63,8 +112,7 @@ public class MaintenanceTaskService {
      * Returns all tasks matching a given scheduling priority.
      */
     public List<MaintenanceTaskResponse> getTasksByPriority(Priority priority) {
-        log.debug("Fetching tasks with priority: {}", priority);
-        return taskRepository.findByPriorityWithDepartment(priority)
+        return taskRepository.findByPriority(priority)
                 .stream()
                 .map(MaintenanceTaskResponse::from)
                 .toList();
@@ -72,15 +120,12 @@ public class MaintenanceTaskService {
 
     /**
      * Returns all tasks belonging to a specific department.
-     *
-     * @throws ResourceNotFoundException if the department does not exist
      */
     public List<MaintenanceTaskResponse> getTasksByDepartment(Long departmentId) {
-        log.debug("Fetching tasks for department id: {}", departmentId);
         if (!departmentRepository.existsById(departmentId)) {
             throw new ResourceNotFoundException("Department not found with id: " + departmentId);
         }
-        return taskRepository.findByDepartmentIdWithDepartment(departmentId)
+        return taskRepository.findByDepartmentId(departmentId)
                 .stream()
                 .map(MaintenanceTaskResponse::from)
                 .toList();
@@ -88,9 +133,7 @@ public class MaintenanceTaskService {
 
     /**
      * Creates a new maintenance task.
-     *
-     * @throws ResourceNotFoundException  if the referenced department does not exist
-     * @throws DuplicateResourceException if a task with the same taskId already exists
+     * Persists in MongoDB with complete metadata (Requirement 10).
      */
     @Transactional
     public MaintenanceTaskResponse createTask(MaintenanceTaskRequest request) {
@@ -106,15 +149,27 @@ public class MaintenanceTaskService {
         MaintenanceTask task = MaintenanceTask.builder()
                 .taskId(request.getTaskId())
                 .department(department)
+                .zone(request.getZone() != null ? request.getZone().toUpperCase() : "WCR")
+                .division(request.getDivision() != null ? request.getDivision() : "Bhopal")
+                .fromStation(request.getFromStation() != null ? request.getFromStation() : "BPL")
+                .toStation(request.getToStation() != null ? request.getToStation() : "SEH")
+                .section(request.getSection() != null ? request.getSection() : "Bhopal – Sehore")
                 .assetName(request.getAssetName())
                 .location(request.getLocation())
                 .taskType(request.getTaskType())
                 .description(request.getDescription())
-                .severity(request.getSeverity())
-                .priority(request.getPriority())
+                .severity(request.getSeverity() != null ? request.getSeverity() : Severity.MEDIUM)
+                .priority(request.getPriority() != null ? request.getPriority() : Priority.MEDIUM)
+                .criticality(request.getCriticality() != null ? request.getCriticality() : "HIGH")
                 .durationMinutes(request.getDurationMinutes())
                 .dueDate(request.getDueDate())
+                .manpower(request.getManpower() != null ? request.getManpower() : 12)
+                .equipment(request.getEquipment())
+                .dependencies(request.getDependencies())
+                .supportingDepartments(request.getSupportingDepartments() != null ? request.getSupportingDepartments() : new ArrayList<>())
                 .status(request.getStatus() != null ? request.getStatus() : TaskStatus.PENDING)
+                .lifecycleState(request.getLifecycleState() != null ? request.getLifecycleState() : "REQUESTED")
+                .submittedBy(request.getSubmittedBy() != null ? request.getSubmittedBy() : "OFFICER")
                 .build();
 
         MaintenanceTask saved = taskRepository.save(task);
@@ -123,10 +178,74 @@ public class MaintenanceTaskService {
     }
 
     /**
+     * DOM / Sr. DOM Authorization to add selected tasks to Today's Maintenance Work.
+     * (Requirement 14 & 15)
+     */
+    @Transactional
+    public List<MaintenanceTaskResponse> authorizeTodayTasks(AuthorizeTodayRequest request) {
+        String officerId = request.getOfficerId().trim();
+        log.info("[DOM Auth] Verifying DOM authorization for officer: {}", officerId);
+
+        User officer = userRepository.findByOfficerId(officerId)
+                .orElseThrow(() -> new BadCredentialsException("Invalid DOM Officer ID or unauthorized credentials."));
+
+        if (!passwordEncoder.matches(request.getPassword(), officer.getPasswordHash())) {
+            throw new BadCredentialsException("Invalid DOM Officer password.");
+        }
+
+        // Verify role is authorized (DOM, Sr. DOM, DRM, ADMIN, OPERATIONS_CONTROL)
+        String role = officer.getRole();
+        boolean isAuthorizedRole = "DOM".equalsIgnoreCase(role)
+                || "SR_DOM".equalsIgnoreCase(role)
+                || "DRM".equalsIgnoreCase(role)
+                || "ADMIN".equalsIgnoreCase(role)
+                || "OPERATIONS_CONTROL".equalsIgnoreCase(role);
+
+        if (!isAuthorizedRole) {
+            throw new BadCredentialsException("Officer " + officerId + " does not hold DOM / Sr. DOM operating authorization.");
+        }
+
+        List<MaintenanceTaskResponse> authorizedList = new ArrayList<>();
+
+        for (String tid : request.getTaskIds()) {
+            MaintenanceTask task = null;
+            try {
+                Long numId = Long.parseLong(tid);
+                task = taskRepository.findById(numId).orElse(null);
+            } catch (NumberFormatException ignored) {}
+
+            if (task == null) {
+                task = taskRepository.findByTaskId(tid).orElse(null);
+            }
+
+            if (task != null) {
+                task.setLifecycleState("DOM_AUTHORIZED");
+                task.setStatus(TaskStatus.SCHEDULED);
+                taskRepository.save(task);
+                authorizedList.add(MaintenanceTaskResponse.from(task));
+            }
+        }
+
+        // Record audit trail
+        try {
+            AuthAuditLog audit = AuthAuditLog.builder()
+                    .officerId(officerId)
+                    .eventType(AuthEventType.LOGIN_SUCCESS)
+                    .timestamp(LocalDateTime.now())
+                    .ipAddress("127.0.0.1")
+                    .userAgent("RailOpt Control Console")
+                    .success(true)
+                    .details("DOM Authorization: Added " + authorizedList.size() + " tasks to Today's Maintenance Work. Remarks: " + request.getRemarks())
+                    .build();
+            auditLogRepository.save(audit);
+        } catch (Exception ignored) {}
+
+        log.info("[DOM Auth] Successfully authorized {} tasks for Today's Work by officer {}", authorizedList.size(), officerId);
+        return authorizedList;
+    }
+
+    /**
      * Updates an existing maintenance task.
-     *
-     * @throws ResourceNotFoundException  if the task or referenced department does not exist
-     * @throws DuplicateResourceException if the new taskId conflicts with another task
      */
     @Transactional
     public MaintenanceTaskResponse updateTask(Long id, MaintenanceTaskRequest request) {
@@ -142,17 +261,24 @@ public class MaintenanceTaskService {
 
         task.setTaskId(request.getTaskId());
         task.setDepartment(department);
+        if (request.getZone() != null) task.setZone(request.getZone());
+        if (request.getDivision() != null) task.setDivision(request.getDivision());
+        if (request.getFromStation() != null) task.setFromStation(request.getFromStation());
+        if (request.getToStation() != null) task.setToStation(request.getToStation());
+        if (request.getSection() != null) task.setSection(request.getSection());
         task.setAssetName(request.getAssetName());
         task.setLocation(request.getLocation());
         task.setTaskType(request.getTaskType());
         task.setDescription(request.getDescription());
         task.setSeverity(request.getSeverity());
         task.setPriority(request.getPriority());
+        if (request.getCriticality() != null) task.setCriticality(request.getCriticality());
         task.setDurationMinutes(request.getDurationMinutes());
         task.setDueDate(request.getDueDate());
-        if (request.getStatus() != null) {
-            task.setStatus(request.getStatus());
-        }
+        if (request.getManpower() != null) task.setManpower(request.getManpower());
+        if (request.getEquipment() != null) task.setEquipment(request.getEquipment());
+        if (request.getStatus() != null) task.setStatus(request.getStatus());
+        if (request.getLifecycleState() != null) task.setLifecycleState(request.getLifecycleState());
 
         MaintenanceTask saved = taskRepository.save(task);
         log.info("Updated maintenance task id={}", saved.getId());
@@ -161,8 +287,6 @@ public class MaintenanceTaskService {
 
     /**
      * Deletes a maintenance task by ID.
-     *
-     * @throws ResourceNotFoundException if not found
      */
     @Transactional
     public void deleteTask(Long id) {
@@ -171,8 +295,6 @@ public class MaintenanceTaskService {
         taskRepository.delete(task);
         log.info("Deleted maintenance task id={}", id);
     }
-
-    // ─── Internal helpers ────────────────────────────────────────────────────
 
     private MaintenanceTask findTaskOrThrow(Long id) {
         return taskRepository.findById(id)

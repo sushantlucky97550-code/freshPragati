@@ -25,15 +25,19 @@ import {
 } from 'lucide-react';
 
 import { IstClock } from './IstClock';
+import { NotificationCenter } from './NotificationCenter';
 
 export const Navbar = ({ onToggleSidebar, activePage, onNavigate }) => {
   const {
+    currentZone,
+    currentDivision,
     currentUser,
     switchRole,
     selectedCorridor,
     selectedCorridorId,
     setSelectedCorridorId,
     corridors,
+    notifications,
     toasts
   } = useRailway();
 
@@ -44,23 +48,25 @@ export const Navbar = ({ onToggleSidebar, activePage, onNavigate }) => {
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [isAdminAuditOpen, setIsAdminAuditOpen] = useState(false);
 
+  const unreadAlerts = notifications.filter(n => !n.read).length;
+
   return (
     <header className="sticky top-0 z-30 w-full border-b border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-[#090E1A]/95 backdrop-blur-md">
       {/* Upper Technical Ticker Bar */}
       <div className="hidden lg:flex items-center justify-between px-6 py-1 text-[11px] bg-slate-900 text-slate-300 dark:bg-black/60 dark:text-slate-400 border-b border-slate-800 font-mono">
         <div className="flex items-center gap-4">
-          <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            MINISTRY OF RAILWAYS (INDIAN RAILWAYS) • CRIS / COIS FEED CONNECTED
+          <span className="flex items-center gap-1.5 text-cyan-400 font-bold uppercase tracking-wider">
+            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+            {currentZone === 'WCR' ? 'WEST CENTRAL RAILWAY' : `${currentZone} RAILWAY`} • {currentDivision.toUpperCase()} DIVISION
           </span>
           <span className="text-slate-600">|</span>
           <span className="text-slate-400">
             SYSTEM ENGINE: <strong className="text-white">RailOpt AI MILP-v4.2</strong>
           </span>
           <span className="text-slate-600">|</span>
-          <span className="text-amber-400 flex items-center gap-1">
-            <AlertTriangle className="w-3 h-3" />
-            2 ACTIVE CAUTION ORDERS (TSR) IN NCR DIVISION
+          <span className="text-emerald-400 flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            CRIS / COIS SECURE
           </span>
         </div>
 
@@ -174,6 +180,18 @@ export const Navbar = ({ onToggleSidebar, activePage, onNavigate }) => {
             title={isDark ? "Switch to High-Contrast Light Sheet" : "Switch to Control Room Dark Mode"}
           >
             {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-700" />}
+          </button>
+
+          {/* Notifications Center Toggle */}
+          <button
+            onClick={() => setNotificationsOpen(!notificationsOpen)}
+            className="relative p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+            title="Real-Time Control Room Notifications"
+          >
+            <Bell className="w-4 h-4 text-amber-400" />
+            {unreadAlerts > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-red-500 animate-ping" />
+            )}
           </button>
 
           {/* Admin Audit Console Button (Only visible for ADMIN officers) */}
@@ -312,6 +330,12 @@ export const Navbar = ({ onToggleSidebar, activePage, onNavigate }) => {
       <AdminAuditModal
         isOpen={isAdminAuditOpen}
         onClose={() => setIsAdminAuditOpen(false)}
+      />
+
+      {/* Real-time Notification Center Drawer */}
+      <NotificationCenter
+        isOpen={notificationsOpen}
+        onClose={() => setNotificationsOpen(false)}
       />
 
       {/* Floating Toasts */}

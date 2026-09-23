@@ -48,7 +48,7 @@ export const AuthProvider = ({ children }) => {
     const handleAuthExpired = () => {
       setUser(null);
       setToken(null);
-      setAuthError('Your officer session has expired. Please authenticate again.');
+      setAuthError(null);
     };
 
     window.addEventListener('railopt:auth_expired', handleAuthExpired);
@@ -58,10 +58,10 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  const login = useCallback(async (officerId, password) => {
+  const login = useCallback(async (officerId, password, zone) => {
     setAuthError(null);
     try {
-      const result = await authService.login(officerId, password);
+      const result = await authService.login(officerId, password, zone);
       setUser(result.officer);
       setToken(result.token);
       return result;

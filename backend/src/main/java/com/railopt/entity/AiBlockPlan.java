@@ -9,11 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An AI-generated maintenance block plan.
- * Stores the optimization result including affected trains,
- * reasoning, and approval details as JSON text.
+ * Stores optimization result, weather intelligence, version history, and sequential approval status.
  */
 @Document(collection = "ai_block_plans")
 @Getter
@@ -33,7 +34,18 @@ public class AiBlockPlan {
     @DBRef
     private Corridor corridor;
 
-    /** Track line e.g. "UP_MAIN" */
+    /** Railway Zone e.g. "WCR", "NR" */
+    @Builder.Default
+    private String zone = "WCR";
+
+    /** Railway Division e.g. "Bhopal", "Jabalpur" */
+    @Builder.Default
+    private String division = "Bhopal";
+
+    private String fromStation;
+    private String toStation;
+
+    /** Track line e.g. "UP_MAIN", "DN_MAIN" */
     private String trackLine;
 
     private LocalDate scheduledDate;
@@ -53,6 +65,10 @@ public class AiBlockPlan {
     @Builder.Default
     private BlockPlanStatus status = BlockPlanStatus.PROPOSED;
 
+    /** Plan version (e.g. 1, 2, 3...) */
+    @Builder.Default
+    private Integer version = 1;
+
     /** JSON text: list of AI reasoning objects */
     private String reasoningJson;
 
@@ -62,8 +78,27 @@ public class AiBlockPlan {
     /** JSON text: list of assigned tasks */
     private String assignedTasksJson;
 
+    /** List of assigned maintenance task IDs (e.g. ["TSK-WCR-ENG-101", "TSK-WCR-SIG-201"]) */
+    @Builder.Default
+    private List<String> assignedTaskIds = new ArrayList<>();
+
     /** Departments involved e.g. "PWAY,TRD,ST" */
     private String departments;
+
+    /**
+     * Sequential Department Approval Chain JSON:
+     * e.g. [
+     *   {"dept": "PWAY", "name": "Engineering (P-Way)", "status": "APPROVED", "approvedBy": "Er. Vikram Singh", "approvedAt": "..."},
+     *   {"dept": "ST", "name": "Signal & Telecom", "status": "PENDING", "approvedBy": null}
+     * ]
+     */
+    private String approvalChainJson;
+
+    /**
+     * Weather Intelligence & Operational Alert JSON:
+     * e.g. {"forecast": "Clear / 28°C", "riskLevel": "LOW", "affectedWork": "Track Tamping", "advisory": "Optimal window"}
+     */
+    private String weatherAlertJson;
 
     private String approvedBy;
 

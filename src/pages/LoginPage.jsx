@@ -102,7 +102,7 @@ const SignalLight = ({ color = 'green', label }) => {
   );
 };
 
-export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => {
+export const LoginPage = ({ onLoginSuccess, selectedZone, selectedDivision, onBackToGateway, onBackToDivision }) => {
   const { login, authError, setAuthError } = useAuth();
 
   const [officerId, setOfficerId] = useState('');
@@ -115,22 +115,42 @@ export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => 
 
   useEffect(() => {
     const timer = setTimeout(() => setIntroComplete(true), 600);
+    // Ensure any stale error is cleared when entering login
+    if (setAuthError) setAuthError(null);
     return () => clearTimeout(timer);
-  }, []);
+  }, [setAuthError, selectedZone, selectedDivision]);
+
+  const zoneCode = selectedZone?.code || (typeof selectedZone === 'string' ? selectedZone : 'WCR');
+  const zoneName = selectedZone?.name || (zoneCode === 'WCR' ? 'WEST CENTRAL RAILWAY' : `${zoneCode} RAILWAY`);
+  const divName = selectedDivision?.name || (typeof selectedDivision === 'string' ? selectedDivision : 'Bhopal');
+  const divCode = selectedDivision?.code || (divName === 'Bhopal' ? 'BPL' : (divName === 'Jabalpur' ? 'JBP' : (divName === 'Kota' ? 'KTT' : 'DIV')));
 
   const demoAccounts = [
-    { roleName: 'Operations Controller', dept: 'OPERATIONS', id: 'OFF-OPS-101', pass: 'RailOpt@Ops2026', badge: 'CC-OPS', color: 'border-emerald-500/30 text-emerald-400' },
-    { roleName: 'Engineering Officer (P-Way)', dept: 'ENGINEERING', id: 'OFF-ENG-201', pass: 'RailOpt@Eng2026', badge: 'SSE-PWAY', color: 'border-amber-500/30 text-amber-400' },
-    { roleName: 'Signal & Telecom Officer', dept: 'SIGNAL_AND_TELECOM', id: 'OFF-SIG-301', pass: 'RailOpt@Sig2026', badge: 'SSE-SIG', color: 'border-sky-500/30 text-sky-400' },
-    { roleName: 'Traction Distribution (TRD)', dept: 'TRACTION_DISTRIBUTION', id: 'OFF-TRD-401', pass: 'RailOpt@Trd2026', badge: 'SSE-TRD', color: 'border-purple-500/30 text-purple-400' },
-    { roleName: 'System Administrator', dept: 'ADMINISTRATION', id: 'OFF-ADMIN-01', pass: 'RailOpt@Admin2026', badge: 'ADMIN', color: 'border-red-500/30 text-red-400' },
+    { roleName: 'DOM (Divisional Operations Manager)', dept: 'OPERATIONS', id: 'OFF-WCR-DOM-01', pass: 'RailOpt@Ops2026', badge: 'DOM / SR. DOM', color: 'border-emerald-500/40 text-emerald-400' },
+    { roleName: 'Divisional Railway Manager (DRM)', dept: 'ADMINISTRATION', id: 'OFF-WCR-DRM-01', pass: 'RailOpt@Ops2026', badge: 'DRM-BHOPAL', color: 'border-blue-500/40 text-blue-400' },
+    { roleName: 'Engineering Officer (P-Way)', dept: 'ENGINEERING', id: 'OFF-WCR-ENG-01', pass: 'RailOpt@Eng2026', badge: 'SSE-PWAY', color: 'border-amber-500/40 text-amber-400' },
+    { roleName: 'Signal & Telecom (S&T)', dept: 'SIGNAL_AND_TELECOM', id: 'OFF-WCR-SIG-01', pass: 'RailOpt@Sig2026', badge: 'SSE-SIG', color: 'border-sky-500/40 text-sky-400' },
+    { roleName: 'Traction Distribution (TRD)', dept: 'TRACTION_DISTRIBUTION', id: 'OFF-WCR-TRD-01', pass: 'RailOpt@Trd2026', badge: 'SSE-TRD', color: 'border-purple-500/40 text-purple-400' },
+    { roleName: 'Section Officer (BPL - SEH)', dept: 'OPERATIONS', id: 'OFF-WCR-SEC-01', pass: 'RailOpt@Sec2026', badge: 'SEC-OFFICER', color: 'border-cyan-500/40 text-cyan-400' },
+    { roleName: 'Station Master (Bhopal Jn)', dept: 'OPERATIONS', id: 'OFF-WCR-SM-01', pass: 'RailOpt@Sm2026', badge: 'SM-BHOPAL', color: 'border-yellow-500/40 text-yellow-400' },
+    { roleName: 'PCOM / Admin Officer', dept: 'ADMINISTRATION', id: 'OFF-ADMIN-01', pass: 'RailOpt@Admin2026', badge: 'PCOM-HQ', color: 'border-indigo-500/40 text-indigo-400' },
+    { roleName: 'NR DOM (Cross-Zone Security Test)', dept: 'OPERATIONS', id: 'OFF-NR-DOM-01', pass: 'RailOpt@Nr2026', badge: 'NR-DELHI', color: 'border-red-500/50 text-red-400' }
   ];
 
-  const handleSelectDemo = (account) => {
+  const handleSelectDemo = async (account) => {
     setOfficerId(account.id);
     setPassword(account.pass);
     setValidationError('');
     if (setAuthError) setAuthError(null);
+    setIsSubmitting(true);
+    try {
+      await login(account.id, account.pass, zoneCode);
+      if (onLoginSuccess) onLoginSuccess();
+    } catch (err) {
+      // Error handled in AuthContext
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -144,7 +164,7 @@ export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => 
 
     setIsSubmitting(true);
     try {
-      await login(trimmedId, password);
+      await login(trimmedId, password, zoneCode);
       if (onLoginSuccess) onLoginSuccess();
     } catch (err) {
       // Error stored in authError by AuthContext
@@ -153,7 +173,8 @@ export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => 
     }
   };
 
-  const displayError = validationError || authError;
+  // Filter out any stale session expired message completely
+  const displayError = validationError || (authError && !authError.toLowerCase().includes('expired') ? authError : null);
 
   return (
     <div className="min-h-screen w-full bg-[#060A12] text-white flex relative overflow-hidden">
@@ -202,16 +223,24 @@ export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => 
         <div className="absolute inset-0 bg-grid-fine opacity-30 pointer-events-none" />
 
         <div className={`w-full max-w-md relative z-10 ${introComplete ? 'login-fade-in' : 'opacity-0'}`}>
-          {/* Back to Zonal Selection Link */}
-          {onBackToGateway && (
+          {/* Back Navigation Link */}
+          {onBackToDivision ? (
+            <button
+              onClick={onBackToDivision}
+              className="mb-6 flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors group"
+            >
+              <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
+              <span>CHANGE DIVISION ({divName.toUpperCase()})</span>
+            </button>
+          ) : onBackToGateway ? (
             <button
               onClick={onBackToGateway}
-              className="mb-6 flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors"
+              className="mb-6 flex items-center gap-1.5 text-xs font-mono text-cyan-400 hover:text-cyan-300 transition-colors group"
             >
-              <span>←</span>
+              <span className="group-hover:-translate-x-0.5 transition-transform">←</span>
               <span>CHANGE ZONAL COMMAND CENTER</span>
             </button>
-          )}
+          ) : null}
 
           {/* Mobile logo */}
           <div className="lg:hidden flex items-center gap-3 mb-6">
@@ -233,17 +262,29 @@ export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => 
                   Secure Access
                 </span>
               </div>
-              {selectedZone && (
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-950/80 text-cyan-300 border border-blue-700/60">
-                  ZONE: {selectedZone.code || selectedZone}
-                </span>
-              )}
+              <div className="flex items-center gap-1.5">
+                {selectedZone && (
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-blue-950/80 text-cyan-300 border border-blue-700/60">
+                    ZONE: {zoneCode}
+                  </span>
+                )}
+                {selectedDivision && (
+                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-700/60">
+                    DIV: {divCode}
+                  </span>
+                )}
+              </div>
             </div>
-            <h2 className="text-2xl font-bold text-white mb-1">
-              Railway Operations Control
+            <h2 className="text-xl sm:text-2xl font-black text-white mb-0.5 tracking-tight uppercase">
+              {zoneName}
             </h2>
-            <p className="text-sm text-slate-400">
-              Authenticate as an authorized Railway Officer to access the command center.
+            <div className="text-xs font-mono font-bold text-amber-400 tracking-wider uppercase mb-1 flex items-center gap-1.5">
+              <span>{divName.toUpperCase()} DIVISION</span>
+              <span className="text-slate-600">•</span>
+              <span className="text-cyan-400">SECURE OPERATIONS ACCESS</span>
+            </div>
+            <p className="text-[11px] font-mono text-slate-400">
+              AUTHORIZED RAILWAY PERSONNEL ONLY
             </p>
           </div>
 
@@ -257,10 +298,10 @@ export const LoginPage = ({ onLoginSuccess, selectedZone, onBackToGateway }) => 
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Officer ID */}
+            {/* Employee ID */}
             <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider">
-                Officer ID
+              <label className="block text-xs font-semibold text-slate-300 mb-2 uppercase tracking-wider font-mono">
+                Employee ID
               </label>
               <div className="relative">
                 <KeyRound className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />

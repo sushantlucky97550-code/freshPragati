@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Train,
   ShieldCheck,
@@ -14,8 +14,9 @@ import {
   MapPin,
   Lock
 } from 'lucide-react';
+import { RailwayApiService } from '../services/api';
 
-export const ZONAL_RAILWAYS = [
+const ZONAL_RAILWAYS = [
   {
     code: 'WCR',
     name: 'West Central Railway',
@@ -153,7 +154,40 @@ export const ZONAL_RAILWAYS = [
 ];
 
 export const GatewayPage = ({ onSelectZone }) => {
+  const [zonesList, setZonesList] = useState(ZONAL_RAILWAYS);
   const [selectedZone, setSelectedZone] = useState('WCR');
+
+  useEffect(() => {
+    let cancelled = false;
+    RailwayApiService.getZones()
+      .then(data => {
+        if (!cancelled && Array.isArray(data) && data.length > 0) {
+          // Merge dynamic zones with rich frontend visuals
+          const merged = data.map(dz => {
+            const staticMatch = ZONAL_RAILWAYS.find(z => z.code === dz.code);
+            return {
+              code: dz.code,
+              name: dz.name,
+              hq: dz.headquarters || staticMatch?.hq || 'Zonal HQ',
+              isPrimary: dz.code === 'WCR',
+              divisions: (dz.divisions || []).map(divName => ({
+                name: divName,
+                active: divName === 'Bhopal' || divName === 'Delhi' || divName === 'Prayagraj'
+              })),
+              electrified: staticMatch?.electrified || '3000+ Route Km',
+              kavach: staticMatch?.kavach || '400+ Km',
+              zoneColor: staticMatch?.zoneColor || 'from-slate-700 to-slate-900',
+              borderGlow: staticMatch?.borderGlow || 'border-slate-700/60'
+            };
+          });
+          setZonesList(merged);
+        }
+      })
+      .catch(err => {
+        console.warn('[GatewayPage] Zones API fallback:', err.message);
+      });
+    return () => { cancelled = true; };
+  }, []);
 
   const handleZoneClick = (zone) => {
     setSelectedZone(zone.code);
@@ -188,25 +222,18 @@ export const GatewayPage = ({ onSelectZone }) => {
                 </span>
               </div>
               <h1 className="text-base sm:text-lg font-black tracking-tight text-white flex items-center gap-2">
-                PRAGATI / RAILOPT AI
+                RailOpt AI — Indian Railways Command Gateway
                 <span className="text-slate-400 font-normal text-xs sm:text-sm hidden sm:inline">
-                  | Predictive Rail Asset-availability & Grid-Aligned Traffic Integration
+                  | Multi-Zone Operations Center
                 </span>
               </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-3 self-start md:self-auto">
-            <button
-              onClick={() => onSelectZone && onSelectZone(ZONAL_RAILWAYS[0])}
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 text-white text-xs font-bold font-mono tracking-wider shadow-lg shadow-red-950/40 flex items-center gap-2 border border-red-500/40 transition-all group"
-            >
-              <Zap className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
-              <span>ENTER PRAGATI COMMAND CENTER</span>
-            </button>
-            <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900/80 border border-slate-800 text-[10px] font-mono text-cyan-400">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-blue-950/80 border border-blue-800 text-[10px] font-mono text-cyan-400">
               <Radio className="w-3 h-3 animate-pulse" />
-              <span>CENTRAL COIS / FOIS INTEGRATED</span>
+              <span>CENTRAL COIS / FOIS LIVE LINK ACTIVE</span>
             </div>
           </div>
         </div>
@@ -218,15 +245,15 @@ export const GatewayPage = ({ onSelectZone }) => {
         <div className="text-center max-w-3xl mx-auto my-6 space-y-3">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-950/60 border border-blue-700/50 text-blue-300 text-xs font-mono font-bold tracking-wider">
             <Layers className="w-3.5 h-3.5 text-cyan-400" />
-            MULTI-ZONE HIERARCHICAL ENTRY ARCHITECTURE
+            INDIAN RAILWAYS MULTI-ZONE HIERARCHICAL ENTRY
           </div>
           
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white">
-            Select Zonal Railway Command Center
+            RailOpt AI — Indian Railways Command Gateway
           </h2>
           
           <p className="text-xs sm:text-sm text-slate-400 leading-relaxed max-w-2xl mx-auto">
-            Access to maintenance planning, track possessions, and live corridor digital twins is strictly bound to authorized Railway Zones. Choose your operational zone to proceed to secure credential verification.
+            Select an authorized Zonal Railway command center to enter the zone-specific secure authentication context. Access to block planning, maintenance coordination, and corridor digital twins is strictly partitioned by zone and division authority.
           </p>
         </div>
 
@@ -246,7 +273,7 @@ export const GatewayPage = ({ onSelectZone }) => {
 
         {/* Zonal Railway Grid Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 my-6">
-          {ZONAL_RAILWAYS.map((zone) => {
+          {zonesList.map((zone) => {
             const isSelected = selectedZone === zone.code;
             return (
               <div

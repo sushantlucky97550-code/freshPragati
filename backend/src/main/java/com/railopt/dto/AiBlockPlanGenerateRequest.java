@@ -1,37 +1,41 @@
 package com.railopt.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 import java.util.List;
 
 /**
  * Request DTO for AI block plan generation.
- * Sent from the React frontend when user clicks "Generate AI Block Plan".
+ * Can be targeted to specific selected tasks (Today's Maintenance Work).
  */
 @Data
 public class AiBlockPlanGenerateRequest {
 
-    @NotBlank
-    private String corridorId;   // e.g. "COR-NDLS-CNB"
+    private String corridorId;   // e.g. "BPL-ITR" or "NDLS-CNB"
 
-    @NotBlank
-    private String trackLine;    // e.g. "UP_MAIN"
+    private String trackLine;    // e.g. "UP_MAIN", "DN_MAIN"
 
-    @NotBlank
     private String date;         // ISO date string "YYYY-MM-DD"
 
-    @NotBlank
     private String targetShift;  // "NIGHT", "MORNING", "AFTERNOON"
+
+    /** Specific task IDs to generate block plan for */
+    private List<String> selectedTaskIds;
+
+    private String zone;         // e.g. "WCR"
+
+    private String division;     // e.g. "Bhopal"
+
+    private String fromStation;  // e.g. "BPL"
+
+    private String toStation;    // e.g. "SEH"
 
     /** Department codes to include e.g. ["PWAY", "TRD", "ST"] */
     private List<String> departments;
 
-    @NotNull
     private Double requiredWindowHours;
 
-    @NotNull
     private Integer maxDelayToleranceMinutes;
 
     private Boolean allowShadowBlocks = true;

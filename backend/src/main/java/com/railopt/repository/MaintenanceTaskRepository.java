@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface MaintenanceTaskRepository extends MongoRepository<MaintenanceTask, Long> {
@@ -18,19 +19,27 @@ public interface MaintenanceTaskRepository extends MongoRepository<MaintenanceTa
     /** Check for duplicate taskId excluding the current task (for update operations) */
     boolean existsByTaskIdAndIdNot(String taskId, Long id);
 
+    Optional<MaintenanceTask> findByTaskId(String taskId);
+
     /** Filter tasks by lifecycle status */
     List<MaintenanceTask> findByStatus(TaskStatus status);
 
     /** Filter tasks by scheduling priority */
     List<MaintenanceTask> findByPriority(Priority priority);
 
+    /** Zone-scoped queries */
+    List<MaintenanceTask> findByZone(String zone);
+
+    List<MaintenanceTask> findByZoneAndDivision(String zone, String division);
+
+    List<MaintenanceTask> findByZoneAndStatus(String zone, TaskStatus status);
+
+    List<MaintenanceTask> findByZoneAndLifecycleState(String zone, String lifecycleState);
+
     /** All tasks belonging to a specific department */
     @Query("{'department.$id': ?0}")
     List<MaintenanceTask> findByDepartmentId(Long departmentId);
 
-    /**
-     * Fetch all tasks with department. In MongoDB, @DBRef automatically resolves.
-     */
     default List<MaintenanceTask> findAllWithDepartment() {
         return findAll();
     }
