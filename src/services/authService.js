@@ -197,8 +197,6 @@ export const authService = {
       }
     };
 
-    const matched = KNOWN_OFFICERS[trimmedId];
-
     try {
       const response = await fetch('/api/auth/login', {
         method: 'POST',
