@@ -12,10 +12,10 @@ export const StatusBadge = ({ status, size = 'sm', className = '' }) => {
       case 'APPROVED_BY_CONTROLLER':
       case 'OPTIMAL':
         return {
-          bg: 'bg-emerald-500/10 dark:bg-emerald-950/40',
-          text: 'text-emerald-700 dark:text-emerald-400',
-          border: 'border-emerald-500/30',
-          dot: 'bg-emerald-500',
+          bg: 'bg-[#E8F5E9] dark:bg-emerald-950/40',
+          text: 'text-[#168A55] dark:text-emerald-300 font-semibold',
+          border: 'border-[#168A55]/30',
+          dot: 'bg-[#168A55]',
           pulse: false,
           label: status.replace(/_/g, ' ')
         };
@@ -24,10 +24,10 @@ export const StatusBadge = ({ status, size = 'sm', className = '' }) => {
       case 'SHADOW_BUNDLING':
       case 'INTEGRATED_SHADOW_BLOCK':
         return {
-          bg: 'bg-sky-500/10 dark:bg-sky-950/40',
-          text: 'text-sky-700 dark:text-sky-400',
-          border: 'border-sky-500/30',
-          dot: 'bg-sky-500',
+          bg: 'bg-[#EBF2FA] dark:bg-blue-950/40',
+          text: 'text-[#173B73] dark:text-blue-300 font-semibold',
+          border: 'border-[#173B73]/30',
+          dot: 'bg-[#173B73]',
           pulse: true,
           label: 'SHADOW BUNDLED'
         };
@@ -43,10 +43,10 @@ export const StatusBadge = ({ status, size = 'sm', className = '' }) => {
       case 'ATTENTION_REQUIRED':
       case 'CONGESTED':
         return {
-          bg: 'bg-amber-500/10 dark:bg-amber-950/40',
-          text: 'text-amber-700 dark:text-amber-400',
-          border: 'border-amber-500/30',
-          dot: 'bg-amber-500',
+          bg: 'bg-[#FFF8E1] dark:bg-amber-950/40',
+          text: 'text-[#D98C00] dark:text-amber-300 font-semibold',
+          border: 'border-[#D98C00]/40',
+          dot: 'bg-[#D98C00]',
           pulse: true,
           label: status.replace(/_/g, ' ')
         };
@@ -57,20 +57,20 @@ export const StatusBadge = ({ status, size = 'sm', className = '' }) => {
       case 'FAILED':
       case 'DANGER':
         return {
-          bg: 'bg-red-500/10 dark:bg-red-950/40',
-          text: 'text-red-700 dark:text-red-400',
-          border: 'border-red-500/30',
-          dot: 'bg-red-500',
+          bg: 'bg-[#FFEBEE] dark:bg-red-950/40',
+          text: 'text-[#C62828] dark:text-red-300 font-semibold',
+          border: 'border-[#C62828]/40',
+          dot: 'bg-[#C62828]',
           pulse: true,
           label: status.replace(/_/g, ' ')
         };
 
       default:
         return {
-          bg: 'bg-slate-500/10 dark:bg-slate-800/40',
-          text: 'text-slate-700 dark:text-slate-300',
-          border: 'border-slate-500/30',
-          dot: 'bg-slate-400',
+          bg: 'bg-[#F4F6F8] dark:bg-slate-800/40',
+          text: 'text-[#5B6575] dark:text-slate-300',
+          border: 'border-[#D9DEE7] dark:border-slate-700',
+          dot: 'bg-[#5B6575]',
           pulse: false,
           label: status.replace(/_/g, ' ')
         };

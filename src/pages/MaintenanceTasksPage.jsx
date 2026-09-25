@@ -111,7 +111,8 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
     const matchesDept =
       departmentFilter === 'ALL' ||
       t.department === departmentFilter ||
-      t.departmentCode === departmentFilter;
+      t.departmentCode === departmentFilter ||
+      (t.departmentsList && t.departmentsList.includes(departmentFilter));
 
     const matchesPriority = priorityFilter === 'ALL' || t.priority === priorityFilter;
 
@@ -222,53 +223,57 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 flex-wrap">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Wrench className="w-5 h-5 text-red-600 dark:text-red-400" />
-              Railway Maintenance Requisitions
-            </h1>
-            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-              {tasks.length} Requisitions (Spring Boot)
-            </span>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-              Live Backend
-            </span>
+      {/* Header Banner - White + Navy */}
+      <div className="rounded-xl overflow-hidden border border-[#D9DEE7] shadow-sm bg-white">
+        <div className="bg-[#173B73] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-6 rounded-full bg-amber-400 flex-shrink-0" />
+            <div>
+              <div className="flex items-center gap-2 font-mono text-[10px] text-blue-200 font-bold uppercase tracking-widest mb-0.5">
+                {tasks.length} Requisitions (Spring Boot)
+              </div>
+              <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                Railway Maintenance Requisitions
+              </h1>
+            </div>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-300 bg-[#10274C] px-3 py-1.5 rounded-xl border border-blue-600/40">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            Live Backend
+          </div>
+        </div>
+        <div className="px-5 py-3 border-b border-[#D9DEE7] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <p className="text-xs text-[#5B6575] font-medium">
             Permanent Way (P-Way), Traction Distribution (TRD), and S&T maintenance tasks synchronized with Spring Boot REST API
           </p>
-        </div>
 
-        <div className="flex items-center gap-3">
-          {/* Refresh Button */}
-          <button
-            onClick={() => fetchData(true)}
-            disabled={refreshing || loading}
-            title="Refresh from Spring Boot API"
-            className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold transition-colors flex items-center gap-1.5"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-red-600' : ''}`} />
-            <span className="hidden sm:inline">Refresh</span>
-          </button>
+          <div className="flex items-center gap-2.5">
+            {/* Refresh Button */}
+            <button
+              onClick={() => fetchData(true)}
+              disabled={refreshing || loading}
+              title="Refresh from Spring Boot API"
+              className="px-3.5 py-2 rounded-xl bg-white border border-[#D9DEE7] hover:bg-[#F4F6F8] text-[#173B73] text-xs font-semibold transition-colors flex items-center gap-1.5"
+            >
+              <RefreshCw className={`w-3.5 h-3.5 ${refreshing ? 'animate-spin text-red-600' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
 
-          <button
-            onClick={() => setViewMode(viewMode === 'TABLE' ? 'KANBAN' : 'TABLE')}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 text-slate-700 dark:text-slate-200 hover:bg-slate-100 text-xs font-semibold transition-colors"
-          >
-            {viewMode === 'TABLE' ? 'Kanban View' : 'Table View'}
-          </button>
+            <button
+              onClick={() => setViewMode(viewMode === 'TABLE' ? 'KANBAN' : 'TABLE')}
+              className="px-3.5 py-2 rounded-xl bg-white border border-[#D9DEE7] hover:bg-[#F4F6F8] text-[#173B73] text-xs font-semibold transition-colors"
+            >
+              {viewMode === 'TABLE' ? 'Kanban View' : 'Table View'}
+            </button>
 
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-700 to-railway-maroon hover:from-red-600 hover:to-red-700 text-white text-xs font-bold shadow-md shadow-red-950/30 flex items-center gap-2 transition-all"
-          >
-            <Plus className="w-4 h-4" />
-            <span>New Requisition</span>
-          </button>
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-[#C62828] hover:bg-red-800 text-white text-xs font-bold shadow-sm flex items-center gap-2 transition-all"
+            >
+              <Plus className="w-4 h-4" />
+              <span>New Requisition</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -300,7 +305,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
       )}
 
       {/* Filter & Search Bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-xl border border-[#D9DEE7] bg-white shadow-sm">
         <div className="relative flex-1 max-w-md">
           <input
             type="text"
@@ -357,7 +362,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
 
       {/* Loading State */}
       {loading ? (
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-12 text-center shadow-sm">
+        <div className="rounded-xl border border-[#D9DEE7] bg-white p-12 text-center shadow-sm">
           <Loader2 className="w-8 h-8 text-red-600 dark:text-red-400 animate-spin mx-auto mb-3" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">Connecting to Spring Boot Backend</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
@@ -365,7 +370,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
           </p>
         </div>
       ) : error && tasks.length === 0 ? (
-        <div className="rounded-xl border border-red-200 dark:border-red-900/50 bg-white dark:bg-[#0E1626] p-12 text-center shadow-sm">
+        <div className="rounded-xl border border-red-200 bg-white p-12 text-center shadow-sm">
           <AlertCircle className="w-10 h-10 text-red-600 dark:text-red-400 mx-auto mb-3" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">Failed to Connect to Backend</h3>
           <p className="text-xs text-red-600 dark:text-red-400 max-w-md mx-auto mt-1 mb-4 font-mono">
@@ -380,7 +385,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
         </div>
       ) : filteredTasks.length === 0 ? (
         /* Empty State */
-        <div className="rounded-xl border border-dashed border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-12 text-center shadow-sm">
+        <div className="rounded-xl border border-dashed border-[#D9DEE7] bg-white p-12 text-center shadow-sm">
           <Inbox className="w-10 h-10 text-slate-400 mx-auto mb-3" />
           <h3 className="text-sm font-bold text-slate-900 dark:text-white">No Maintenance Tasks Found</h3>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-sm mx-auto mt-1">
@@ -411,7 +416,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
         </div>
       ) : viewMode === 'TABLE' ? (
         /* Table View */
-        <div className="rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] shadow-sm overflow-hidden">
+        <div className="rounded-xl border border-[#D9DEE7] bg-white shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs min-w-[760px]">
               <thead className="bg-slate-100 dark:bg-slate-900/80 text-slate-500 dark:text-slate-400 font-mono uppercase text-[10px] border-b border-slate-200 dark:border-slate-800">
@@ -430,25 +435,57 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
                 {filteredTasks.map((t) => (
                   <tr key={t.backendId || t.id} className="hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors">
                     <td className="px-4 py-3.5">
-                      <div className="font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                      <div className="font-bold text-slate-900 flex items-center gap-1.5">
                         <span>{t.taskId || t.id}</span>
                         {t.backendId && (
-                          <span className="text-[9px] px-1 py-0.2 rounded bg-slate-200 dark:bg-slate-800 text-slate-500 font-normal">
+                          <span className="text-[9px] px-1 py-0.2 rounded bg-slate-200 text-slate-500 font-normal">
                             #{t.backendId}
                           </span>
                         )}
+                        {t.isMultiDepartment && (
+                          <span className="text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-blue-100 text-blue-700 uppercase tracking-widest border border-blue-200">
+                            MULTI-DEPT
+                          </span>
+                        )}
                       </div>
-                      <div className="text-[10px] text-slate-400 font-sans">{t.departmentName}</div>
+                      <div className="flex flex-wrap gap-1 mt-1.5">
+                        {t.isMultiDepartment && t.departmentsList ? (
+                          t.departmentsList.map(dept => (
+                            <span key={dept} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 uppercase">
+                              {dept}
+                            </span>
+                          ))
+                        ) : (
+                          <div className="text-[10px] text-slate-500 font-sans">{t.departmentName}</div>
+                        )}
+                      </div>
                     </td>
 
                     <td className="px-4 py-3.5 font-sans">
-                      <div className="font-bold text-slate-800 dark:text-slate-200 max-w-xs">{t.title}</div>
+                      <div className="font-bold text-slate-800 max-w-xs">{t.title}</div>
                       <div className="text-[10px] text-slate-500 truncate max-w-xs mt-0.5">{t.reason}</div>
+                      {t.isMultiDepartment && (
+                        <div className="mt-1.5 p-1.5 rounded-md bg-blue-50 border border-blue-100/50">
+                          <div className="text-[9px] font-bold text-blue-800 mb-0.5 flex items-center gap-1">
+                            <Zap className="w-3 h-3 text-amber-500" />
+                            AI PRIORITY: {t.aiScore || 95} / 100 • OVERLAP DETECTED
+                          </div>
+                          <div className="text-[9px] text-blue-700 italic max-w-xs leading-tight">
+                            {t.aiOverlapReason}
+                          </div>
+                        </div>
+                      )}
                     </td>
 
                     <td className="px-3 py-3.5">
-                      <div className="font-bold text-slate-700 dark:text-slate-300">{t.section}</div>
+                      <div className="font-bold text-slate-700">{t.section}</div>
                       <span className="text-[10px] text-slate-500">{t.track}</span>
+                      {t.isMultiDepartment && (
+                        <div className="text-[9px] text-slate-500 mt-1">
+                          {t.corridorName} <br/>
+                          {t.stationFrom} → {t.stationTo}
+                        </div>
+                      )}
                     </td>
 
                     <td className="px-3 py-3.5">
@@ -568,7 +605,7 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
                   {columnTasks.map((t) => (
                     <div
                       key={t.backendId || t.id}
-                      className="p-3.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] shadow-sm hover:border-slate-300 transition-all space-y-2 text-xs"
+                      className="p-3.5 rounded-xl border border-[#D9DEE7] bg-white shadow-sm hover:border-slate-300 transition-all space-y-2 text-xs"
                     >
                       <div className="flex items-center justify-between">
                         <span className="font-mono font-bold text-slate-900 dark:text-white text-[11px]">
@@ -587,10 +624,40 @@ export const MaintenanceTasksPage = ({ onNavigateToPlanning }) => {
                       </div>
 
                       <div className="font-bold text-slate-800 dark:text-slate-100">{t.title}</div>
+                      
+                      <div className="flex flex-wrap gap-1 mt-1">
+                        {t.isMultiDepartment && t.departmentsList ? (
+                          t.departmentsList.map(dept => (
+                            <span key={dept} className="text-[9px] font-mono px-1.5 py-0.5 rounded bg-slate-100 text-slate-600 border border-slate-200 uppercase">
+                              {dept}
+                            </span>
+                          ))
+                        ) : (
+                          <div className="text-[9px] text-slate-500 font-sans">{t.departmentName}</div>
+                        )}
+                      </div>
 
                       <div className="text-[11px] text-slate-500 font-mono">
                         {t.section} • {t.track}
+                        {t.isMultiDepartment && (
+                          <div className="mt-1 text-[9px] text-slate-400">
+                            {t.corridorName} ({t.stationFrom} → {t.stationTo})<br/>
+                            Deadline: {t.scheduledDate || t.dueDate}
+                          </div>
+                        )}
                       </div>
+
+                      {t.isMultiDepartment && (
+                        <div className="mt-2 p-1.5 rounded-md bg-blue-50 border border-blue-100/50">
+                          <div className="text-[9px] font-bold text-blue-800 mb-0.5 flex items-center gap-1">
+                            <Zap className="w-3 h-3 text-amber-500" />
+                            AI SCORE: {t.aiScore || 95} • OVERLAP
+                          </div>
+                          <div className="text-[9px] text-blue-700 italic leading-tight">
+                            {t.aiOverlapReason}
+                          </div>
+                        </div>
+                      )}
 
                       <div className="pt-2 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-[11px] font-mono">
                         <span className="text-slate-400">{t.requiredWindowHours}h window</span>

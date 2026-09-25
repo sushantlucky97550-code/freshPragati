@@ -40,6 +40,16 @@ export const RailwayProvider = ({ children }) => {
   const [blockPlans, setBlockPlans] = useState(mockGeneratedBlockPlans);
   const [recommendations, setRecommendations] = useState(initialRecommendations);
 
+  // Development HMR sync: Ensure new seed data appears immediately without manual browser refresh
+  useEffect(() => {
+    setTasks(prev => {
+      const existingIds = new Set(prev.map(t => t.taskId || t.id));
+      const missing = initialTasks.filter(t => !existingIds.has(t.taskId || t.id));
+      if (missing.length > 0) return [...prev, ...missing];
+      return prev;
+    });
+  }, [initialTasks]);
+
   // Today's Maintenance Work queue selected & authorized by DOM Officer
   const [todayWorkTasks, setTodayWorkTasks] = useState(() => {
     try {

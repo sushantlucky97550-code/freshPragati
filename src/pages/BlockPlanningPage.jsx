@@ -97,27 +97,31 @@ export const BlockPlanningPage = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header Banner */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-gradient-to-r from-slate-900 via-railway-navy to-slate-900 text-white p-5 sm:p-6 shadow-md">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2 font-mono text-xs text-amber-400 font-bold">
-              <Sparkles className="w-4 h-4 text-amber-300" />
-              <span>INDIAN RAILWAYS AUTOMATIC BLOCK OPTIMIZER</span>
+    <div className="space-y-6 selection:bg-[#173B73] selection:text-white">
+      {/* Header Banner - White + Navy */}
+      <div className="rounded-xl overflow-hidden border border-[#D9DEE7] shadow-md bg-white">
+        <div className="bg-[#173B73] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-6 rounded-full bg-amber-400 flex-shrink-0" />
+            <div>
+              <div className="flex items-center gap-2 font-mono text-[10px] text-blue-200 font-bold uppercase tracking-widest mb-0.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                <span>INDIAN RAILWAYS AUTOMATIC BLOCK OPTIMIZER</span>
+              </div>
+              <h1 className="text-lg font-black text-white tracking-tight">
+                AI-Powered Automatic Block Planning
+              </h1>
             </div>
-            <h1 className="text-xl sm:text-2xl font-black tracking-tight text-white flex items-center gap-2">
-              AI-Powered Automatic Block Planning
-            </h1>
-            <p className="text-xs text-slate-300 font-mono">
-              Constraint satisfaction solver balancing track maintenance possession against coaching & freight punctuality
-            </p>
           </div>
-
-          <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 bg-slate-800/80 px-3 py-1.5 rounded-xl border border-slate-700">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="flex items-center gap-2 text-xs font-mono text-emerald-300 bg-[#10274C] px-3 py-1.5 rounded-xl border border-blue-600/40">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
             MILP Mathematical Solver Online
           </div>
+        </div>
+        <div className="px-5 py-3">
+          <p className="text-xs text-[#5B6575] font-mono">
+            Constraint satisfaction solver balancing track maintenance possession against coaching &amp; freight punctuality
+          </p>
         </div>
       </div>
 
@@ -125,7 +129,7 @@ export const BlockPlanningPage = () => {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* Left Column: Constraints & Parameters Form (5 Cols) */}
         <div className="lg:col-span-5 space-y-5">
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#D9DEE7] bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
               <h3 className="font-bold text-slate-900 dark:text-white text-sm flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-red-600 dark:text-red-400" />
@@ -166,7 +170,7 @@ export const BlockPlanningPage = () => {
                       onClick={() => setSelectedTrack(track.id)}
                       className={`p-2 rounded-xl border text-center font-mono font-semibold text-[11px] transition-all ${
                         selectedTrack === track.id
-                          ? 'border-red-600 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400'
+                          ? 'border-[#173B73] bg-[#EBF2FA] text-[#173B73]'
                           : 'border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#111A2E] text-slate-600 dark:text-slate-400 hover:border-slate-300'
                       }`}
                     >
@@ -344,7 +348,7 @@ export const BlockPlanningPage = () => {
           </div>
 
           {/* Historical / Saved Plans List */}
-          <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-5 shadow-sm">
+          <div className="rounded-2xl border border-[#D9DEE7] bg-white p-5 shadow-sm">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800/80">
               <h4 className="font-bold text-slate-900 dark:text-white text-xs flex items-center gap-2">
                 <History className="w-4 h-4 text-slate-400" />

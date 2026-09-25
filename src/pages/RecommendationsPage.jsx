@@ -26,19 +26,23 @@ export const RecommendationsPage = ({ onNavigateToPlanning }) => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-5 sm:p-6 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-              <Sparkles className="w-5 h-5 text-amber-500" />
-              AI Prescriptive Optimization Insights
-            </h1>
-            <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 dark:bg-amber-950/70 text-amber-700 dark:text-amber-400">
-              {recommendations.length} Actionable Insights
-            </span>
+      {/* Header Banner - White + Navy */}
+      <div className="rounded-xl overflow-hidden border border-[#D9DEE7] shadow-sm bg-white">
+        <div className="bg-[#173B73] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-6 rounded-full bg-amber-400 flex-shrink-0" />
+            <div>
+              <div className="flex items-center gap-2 font-mono text-[10px] text-blue-200 font-bold uppercase tracking-widest mb-0.5">
+                {recommendations.length} Actionable Insights
+              </div>
+              <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                AI Prescriptive Optimization Insights
+              </h1>
+            </div>
           </div>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+        </div>
+        <div className="px-5 py-3 border-b border-[#D9DEE7]">
+          <p className="text-xs text-[#5B6575] font-medium">
             Proactive recommendations detecting shadow block bundling, machine staging, and punctuality recovery
           </p>
         </div>
@@ -53,12 +57,12 @@ export const RecommendationsPage = ({ onNavigateToPlanning }) => {
           return (
             <div
               key={rec.id}
-              className={`rounded-2xl border p-5 sm:p-6 shadow-sm flex flex-col justify-between transition-all ${
+              className={`rounded-xl border p-5 sm:p-6 shadow-sm flex flex-col justify-between transition-all ${
                 isEmergency
-                  ? 'border-red-500/50 bg-red-50/20 dark:bg-red-950/10'
+                  ? 'border-red-200 bg-red-50'
                   : isShadow
-                  ? 'border-sky-500/50 bg-sky-50/20 dark:bg-sky-950/10'
-                  : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626]'
+                  ? 'border-sky-200 bg-sky-50'
+                  : 'border-[#D9DEE7] bg-white hover:border-slate-300'
               }`}
             >
               <div>

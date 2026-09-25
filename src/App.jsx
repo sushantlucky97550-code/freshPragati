@@ -89,18 +89,18 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.hasError) {
       return (
-        <div className="min-h-screen bg-[#080C14] text-white flex items-center justify-center p-6 font-sans">
-          <div className="max-w-md w-full bg-[#0E1626] border border-red-500/40 rounded-2xl p-6 text-center shadow-2xl">
-            <div className="w-12 h-12 rounded-xl bg-red-900/40 border border-red-500 text-red-400 flex items-center justify-center mx-auto mb-4 font-bold text-xl font-mono">
+        <div className="min-h-screen bg-[#F4F6F8] text-[#172033] flex items-center justify-center p-6 font-sans">
+          <div className="max-w-md w-full bg-white border border-[#D9DEE7] rounded-2xl p-6 text-center shadow-lg">
+            <div className="w-12 h-12 rounded-xl bg-red-50 border border-[#C62828]/30 text-[#C62828] flex items-center justify-center mx-auto mb-4 font-bold text-xl font-mono">
               !
             </div>
-            <h2 className="text-base font-bold text-white mb-1">
-              RailOpt Control Console Recovered
+            <h2 className="text-base font-bold text-[#172033] mb-1">
+              PRAGATI : Predictive Rail Asset-availability & Grid-Aligned Traffic Integration — System Recovery
             </h2>
-            <p className="text-xs text-slate-400 mb-4">
-              An unexpected render exception was trapped to maintain control room stability.
+            <p className="text-xs text-[#5B6575] mb-4">
+              An unexpected render exception was trapped to maintain operational stability.
             </p>
-            <div className="p-3 bg-black/40 rounded-lg text-left font-mono text-[11px] text-red-300 mb-4 overflow-x-auto">
+            <div className="p-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-left font-mono text-[11px] text-[#C62828] mb-4 overflow-x-auto">
               {this.state.error?.message || 'Interface Render Error'}
             </div>
             <button
@@ -108,7 +108,7 @@ class ErrorBoundary extends React.Component {
                 this.setState({ hasError: false, error: null });
                 window.location.reload();
               }}
-              className="w-full py-2.5 px-4 bg-gradient-to-r from-red-700 to-red-800 text-white text-xs font-bold rounded-xl shadow-lg hover:from-red-600 transition-all"
+              className="w-full py-2.5 px-4 bg-[#173B73] hover:bg-[#1F4380] text-white text-xs font-bold rounded-xl shadow transition-all"
             >
               Reload Operational Dashboard
             </button>
@@ -126,30 +126,31 @@ class ErrorBoundary extends React.Component {
  */
 function VerifyingSessionSplash() {
   return (
-    <div className="min-h-screen w-full bg-[#050811] text-white flex flex-col items-center justify-center p-6 relative select-none">
-      {/* Background track grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#141e33_1px,transparent_1px),linear-gradient(to_bottom,#141e33_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-25 pointer-events-none" />
+    <div className="min-h-screen w-full bg-white flex flex-col items-center justify-center p-6 relative select-none">
+      <div className="absolute inset-0 bg-grid-pattern-light opacity-60 pointer-events-none" />
 
       <div className="relative z-10 flex flex-col items-center max-w-sm text-center">
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-red-700 via-red-900 to-slate-900 border border-red-500/50 flex items-center justify-center shadow-2xl shadow-red-950/70 mb-5 animate-pulse">
-          <Train className="w-8 h-8 text-amber-300" />
-        </div>
+        <img
+          src="/assets/indian_railways_logo.png"
+          alt="Indian Railways"
+          className="w-16 h-16 object-contain mb-5 animate-pulse"
+        />
 
-        <h1 className="text-lg font-black tracking-tight mb-1 text-white">
+        <h1 className="text-lg font-black tracking-tight mb-1 text-[#173B73]">
           PRAGATI
         </h1>
-        <div className="flex items-center gap-2 text-xs font-mono text-emerald-400 mb-6 font-semibold">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+        <p className="text-[11px] font-mono text-[#5B6575] font-semibold mb-1">RailOpt AI — Railway Maintenance &amp; Block Planning</p>
+        <div className="flex items-center gap-2 text-xs font-mono text-[#168A55] mb-6 font-semibold">
+          <span className="w-2 h-2 rounded-full bg-[#168A55] animate-ping" />
           VERIFYING SECURE SESSION...
         </div>
 
-        {/* Progress track animation */}
-        <div className="w-48 h-1 bg-slate-800 rounded-full overflow-hidden mb-4">
-          <div className="w-full h-full bg-gradient-to-r from-red-600 via-amber-400 to-emerald-400 -translate-x-full animate-[shimmer_1.5s_infinite]" />
+        <div className="w-48 h-1.5 bg-[#D9DEE7] rounded-full overflow-hidden mb-4">
+          <div className="w-full h-full bg-gradient-to-r from-[#173B73] via-[#1F4380] to-[#168A55] -translate-x-full animate-[shimmer_1.5s_infinite]" />
         </div>
 
-        <p className="text-[11px] text-slate-500 font-mono">
-          Indian Railways • CRIS Control Handshake In Progress
+        <p className="text-[11px] text-[#5B6575] font-mono">
+          Indian Railways &bull; CRIS Control Handshake In Progress
         </p>
       </div>
     </div>
@@ -348,7 +349,7 @@ function AppContent() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-100 dark:bg-[#070B12] text-slate-900 dark:text-slate-100 flex flex-col w-full overflow-x-hidden selection:bg-red-700 selection:text-white">
+    <div className="min-h-screen bg-[#F4F6F8] text-[#172033] flex flex-col w-full overflow-x-hidden selection:bg-[#173B73] selection:text-white">
       {/* Top Navigation Bar */}
       <Navbar
         onToggleSidebar={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
@@ -380,7 +381,7 @@ function AppContent() {
         </main>
       </div>
 
-      {/* 34. Persistent Floating RailOpt AI Assistant */}
+      {/* Persistent Floating RailOpt AI Assistant */}
       <PersistentAiAssistant />
     </div>
   );

@@ -37,23 +37,25 @@ export const TrainsCorridorsPage = () => {
 
   return (
     <div className="space-y-6">
-      {/* Top Banner */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] p-5 sm:p-6 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2">
-                <Train className="w-5 h-5 text-red-600 dark:text-red-400" />
+      {/* Header Banner - White + Navy */}
+      <div className="rounded-xl overflow-hidden border border-[#D9DEE7] shadow-sm bg-white">
+        <div className="bg-[#173B73] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-6 rounded-full bg-amber-400 flex-shrink-0" />
+            <div>
+              <div className="flex items-center gap-2 font-mono text-[10px] text-blue-200 font-bold uppercase tracking-widest mb-0.5">
+                HDN Network
+              </div>
+              <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
                 Corridor Capacity & Train Directory
               </h1>
-              <span className="text-xs font-mono font-bold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
-                HDN Network
-              </span>
             </div>
-            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
-              Sectional capacity utilization, timetable slot allocations, and active speed restrictions
-            </p>
           </div>
+        </div>
+        <div className="px-5 py-3 border-b border-[#D9DEE7]">
+          <p className="text-xs text-[#5B6575] font-medium">
+            Sectional capacity utilization, timetable slot allocations, and active speed restrictions
+          </p>
         </div>
       </div>
 
@@ -63,10 +65,10 @@ export const TrainsCorridorsPage = () => {
           <div
             key={c.id}
             onClick={() => setSelectedCorridorId(c.id)}
-            className={`p-5 rounded-2xl border cursor-pointer transition-all ${
+            className={`p-5 rounded-xl border cursor-pointer transition-all ${
               c.id === selectedCorridor.id
-                ? 'border-red-600 bg-red-50/40 dark:bg-red-950/20 shadow-md ring-1 ring-red-600'
-                : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] hover:border-slate-300'
+                ? 'border-[#173B73] bg-blue-50 shadow-sm ring-1 ring-[#173B73]'
+                : 'border-[#D9DEE7] bg-white hover:border-slate-300 hover:bg-[#F4F6F8]'
             }`}
           >
             <div className="flex items-center justify-between mb-2">
@@ -116,7 +118,7 @@ export const TrainsCorridorsPage = () => {
       </div>
 
       {/* Train Schedule Table */}
-      <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0E1626] shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-[#D9DEE7] bg-white shadow-sm overflow-hidden">
         <div className="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <h3 className="font-bold text-slate-900 dark:text-white text-sm">

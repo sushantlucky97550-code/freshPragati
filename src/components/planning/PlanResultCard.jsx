@@ -1,39 +1,18 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   CheckCircle2,
-  Clock,
-  Wrench,
-  Train,
-  Layers,
-  Sparkles,
-  Zap,
-  ArrowRight,
   ShieldCheck,
-  Printer,
-  Send,
-  AlertCircle,
-  FileCheck,
-  Bot,
-  RefreshCw,
-  Info,
-  Check,
-  ShieldAlert,
-  Radio
 } from 'lucide-react';
-import { StatusBadge } from '../common/StatusBadge';
-import { AffectedTrainsTable } from './AffectedTrainsTable';
 import { useRailway } from '../../context/RailwayContext';
 import { RailwayApiService } from '../../services/api';
 
 export const PlanResultCard = ({ plan, onApprove }) => {
   const { currentUser, addToast } = useRailway();
-  const [activeTab, setActiveTab] = useState('EXPLANATION'); // 'EXPLANATION', 'REASONS', 'TRAINS', 'TASKS'
   const [isApproving, setIsApproving] = useState(false);
 
   // Gemini AI Explanation state
   const [explanation, setExplanation] = useState(null);
   const [isExplanationLoading, setIsExplanationLoading] = useState(false);
-  const [explanationError, setExplanationError] = useState(null);
 
   const fetchExplanation = useCallback(async () => {
     if (!plan) return;
@@ -41,7 +20,6 @@ export const PlanResultCard = ({ plan, onApprove }) => {
     if (!planIdentifier) return;
 
     setIsExplanationLoading(true);
-    setExplanationError(null);
     try {
       const data = await RailwayApiService.getBlockPlanExplanation(planIdentifier);
       if (data) {
@@ -49,7 +27,6 @@ export const PlanResultCard = ({ plan, onApprove }) => {
       }
     } catch (err) {
       console.warn('[PlanResultCard] Failed to fetch explanation:', err);
-      setExplanationError(err.message || 'Explanation unavailable');
     } finally {
       setIsExplanationLoading(false);
     }
@@ -75,413 +52,402 @@ export const PlanResultCard = ({ plan, onApprove }) => {
     window.print();
   };
 
+  const departmentsInvolved = [...new Set(plan.assignedTasks?.map(t => t.dept) || [])];
+  
   return (
-    <div className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-[#0D1525] shadow-lg overflow-hidden">
-      {/* Upper Status Banner */}
-      <div className="p-5 sm:p-6 bg-gradient-to-r from-slate-900 via-railway-navy to-slate-900 text-white border-b border-slate-800">
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs text-amber-400 font-bold tracking-wider">
-                PLAN REF: {plan.planId}
-              </span>
-              <StatusBadge status={plan.status} size="xs" />
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/10 text-slate-300">
-                {plan.blockTypeName || 'INTEGRATED_SHADOW_BLOCK'}
-              </span>
-            </div>
-            <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-white flex items-center gap-2">
-              Recommended Maintenance Window
-            </h3>
-            <p className="text-xs text-slate-300 font-mono">
-              {plan.corridorName} • {plan.trackName || plan.trackLine || 'UP Main Line'}
-            </p>
-          </div>
-
-          {/* Window Badge & Score */}
+    <div className="bg-white border border-gray-300 shadow-xl max-w-5xl mx-auto font-sans text-gray-900">
+      
+      {/* PROFESSIONAL HEADER */}
+      <div className="p-8 border-b-4 border-[#173B73]">
+        <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
-            <div className="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 text-center min-w-[130px]">
-              <div className="text-[10px] font-mono uppercase text-slate-400">Optimization Score</div>
-              <div className="text-2xl font-black font-mono text-emerald-400">
-                {plan.optimizationScore}<span className="text-xs text-emerald-600 font-normal">/100</span>
-              </div>
-              <div className="text-[9px] text-slate-400 font-mono mt-0.5">MILP Pareto Global Max</div>
+            <img src="/assets/indian_railways_logo.png" alt="Indian Railways Logo" className="w-16 h-16 object-contain" onError={(e) => e.target.style.display = 'none'} />
+            <div>
+              <h1 className="text-xl font-bold text-[#173B73] tracking-wider">PRAGATI : Predictive Rail Asset-availability & Grid-Aligned Traffic Integration</h1>
+              <h2 className="text-2xl font-black text-[#1F4380] uppercase tracking-tight">AI GENERATED BLOCK PLAN</h2>
+              <div className="text-xs font-bold text-[#D98C00] tracking-widest mt-1">PROTOTYPE / DEMONSTRATION SYSTEM</div>
             </div>
-
-            <div className="bg-red-950/60 border border-red-800/80 rounded-xl p-3 text-center min-w-[170px]">
-              <div className="text-[10px] font-mono uppercase text-amber-300 flex items-center justify-center gap-1">
-                <Clock className="w-3 h-3" />
-                Optimal Slot
-              </div>
-              <div className="text-lg font-bold font-mono text-white mt-0.5">
-                {plan.windowStart} - {plan.windowEnd}
-              </div>
-              <div className="text-[10px] text-amber-400 font-mono font-semibold">
-                Window: {plan.durationHours} Hours ({plan.scheduledDate})
-              </div>
-            </div>
+          </div>
+          <div className="text-right text-sm">
+            <div className="font-bold text-[#173B73]">GENERATED TIME</div>
+            <div className="font-mono">{new Date().toLocaleString()}</div>
           </div>
         </div>
 
-        {/* 4 Telemetry Metrics */}
-        <div className="mt-5 grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-slate-800/80 text-xs font-mono">
-          <div className="bg-white/5 rounded-lg p-2.5">
-            <span className="text-slate-400 text-[10px]">Delay Avoided</span>
-            <div className="text-base font-bold text-emerald-400">
-              {plan.metrics?.delayMinutesAvoided || 152} mins
-            </div>
-            <span className="text-[9px] text-slate-400">vs isolated blocks</span>
-          </div>
-
-          <div className="bg-white/5 rounded-lg p-2.5">
-            <span className="text-slate-400 text-[10px]">Punctuality Guard</span>
-            <div className="text-base font-bold text-cyan-400">100.0%</div>
-            <span className="text-[9px] text-slate-400">0 terminal delays</span>
-          </div>
-
-          <div className="bg-white/5 rounded-lg p-2.5">
-            <span className="text-slate-400 text-[10px]">Machine Utilization</span>
-            <div className="text-base font-bold text-amber-400">
-              {plan.metrics?.machineUtilizationPercent || 94.2}%
-            </div>
-            <span className="text-[9px] text-slate-400">Zero idle track time</span>
-          </div>
-
-          <div className="bg-white/5 rounded-lg p-2.5">
-            <span className="text-slate-400 text-[10px]">Shadow Bundling</span>
-            <div className="text-base font-bold text-purple-400">
-              {plan.assignedTasks?.length || 2} Depts Combined
-            </div>
-            <span className="text-[9px] text-slate-400">Track + OHE + S&T</span>
-          </div>
-        </div>
+        {/* Header Summary Table */}
+        <table className="w-full text-sm border-collapse border border-gray-300">
+          <tbody>
+            <tr>
+              <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">BLOCK PLAN ID</td>
+              <td className="border border-gray-300 p-2 w-1/4 font-bold font-mono">{plan.planId}</td>
+              <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">ZONE</td>
+              <td className="border border-gray-300 p-2 w-1/4 uppercase">{plan.zone || 'WCR'}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">DIVISION</td>
+              <td className="border border-gray-300 p-2 uppercase">{plan.division || 'BHOPAL'}</td>
+              <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">DATE</td>
+              <td className="border border-gray-300 p-2 font-bold">{plan.scheduledDate}</td>
+            </tr>
+            <tr>
+              <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">VERSION</td>
+              <td className="border border-gray-300 p-2">v1.0 (AI Draft)</td>
+              <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">STATUS</td>
+              <td className="border border-gray-300 p-2 font-bold uppercase text-amber-700">{plan.status}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
 
-      {/* Tabs Navigation */}
-      <div className="border-b border-slate-200 dark:border-slate-800 px-6 flex items-center justify-between bg-slate-50/70 dark:bg-slate-900/40 overflow-x-auto">
-        <div className="flex gap-4">
-          <button
-            onClick={() => setActiveTab('EXPLANATION')}
-            className={`py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'EXPLANATION'
-                ? 'border-purple-600 text-purple-600 dark:text-purple-400'
-                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Bot className="w-4 h-4 text-purple-500" />
-            AI Explanation Layer
-            {explanation && (
-              <span className={`text-[9px] font-mono px-1.5 py-0.5 rounded font-bold ${
-                explanation.explanationSource === 'GEMINI'
-                  ? 'bg-purple-950 text-purple-300 border border-purple-800'
-                  : 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-              }`}>
-                {explanation.explanationSource}
-              </span>
-            )}
-          </button>
+      <div className="p-8 space-y-6">
+        
+        {/* 1. BLOCK PLAN DETAILS */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            1. BLOCK PLAN DETAILS
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Block Plan ID</td>
+                <td className="border border-gray-300 p-2 w-1/4 font-mono">{plan.planId}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Date</td>
+                <td className="border border-gray-300 p-2 w-1/4">{plan.scheduledDate}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Zone</td>
+                <td className="border border-gray-300 p-2">{plan.zone || 'WCR'}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Division</td>
+                <td className="border border-gray-300 p-2">{plan.division || 'BHOPAL'}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Start time</td>
+                <td className="border border-gray-300 p-2 font-mono font-bold text-red-700">{plan.windowStart}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">End time</td>
+                <td className="border border-gray-300 p-2 font-mono font-bold text-red-700">{plan.windowEnd}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Total duration</td>
+                <td className="border border-gray-300 p-2 font-bold">{plan.durationHours} Hours</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Status / Version</td>
+                <td className="border border-gray-300 p-2 uppercase">{plan.status} / v1.0</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-          <button
-            onClick={() => setActiveTab('REASONS')}
-            className={`py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'REASONS'
-                ? 'border-red-600 text-red-600 dark:text-red-400'
-                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Sparkles className="w-3.5 h-3.5" />
-            Deterministic Rationale ({plan.aiReasons?.length || 0})
-          </button>
+        {/* 2. MAINTENANCE WORK */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            2. MAINTENANCE WORK
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <thead className="bg-[#F4F6F8] text-[#173B73]">
+              <tr>
+                <th className="border border-gray-300 p-2 text-left">Work ID</th>
+                <th className="border border-gray-300 p-2 text-left">Work description</th>
+                <th className="border border-gray-300 p-2 text-left">Work type</th>
+                <th className="border border-gray-300 p-2 text-center">Priority</th>
+                <th className="border border-gray-300 p-2 text-center">Severity</th>
+                <th className="border border-gray-300 p-2 text-left">Deadline</th>
+              </tr>
+            </thead>
+            <tbody>
+              {plan.assignedTasks?.map((task, idx) => (
+                <tr key={idx} className="hover:bg-slate-50">
+                  <td className="border border-gray-300 p-2 font-mono">{task.taskId}</td>
+                  <td className="border border-gray-300 p-2">{task.title}</td>
+                  <td className="border border-gray-300 p-2">{task.type || 'Standard Maintenance'}</td>
+                  <td className="border border-gray-300 p-2 text-center font-bold">{task.criticality || task.priority || 'HIGH'}</td>
+                  <td className="border border-gray-300 p-2 text-center">{task.severity || 'Moderate'}</td>
+                  <td className="border border-gray-300 p-2">{task.deadline || plan.scheduledDate}</td>
+                </tr>
+              ))}
+              {(!plan.assignedTasks || plan.assignedTasks.length === 0) && (
+                <tr>
+                  <td colSpan="6" className="border border-gray-300 p-4 text-center text-gray-500 italic">No specific work tasks assigned</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </section>
 
-          <button
-            onClick={() => setActiveTab('TRAINS')}
-            className={`py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'TRAINS'
-                ? 'border-red-600 text-red-600 dark:text-red-400'
-                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Train className="w-3.5 h-3.5" />
-            Affected Trains ({plan.affectedTrains?.length || 0})
-          </button>
+        {/* 3. DEPARTMENTS */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            3. DEPARTMENTS
+          </h3>
+          <div className="border border-gray-300 p-3 text-sm font-bold text-[#173B73] bg-[#F4F6F8]">
+            {departmentsInvolved.length > 0 
+              ? departmentsInvolved.map(d => d === 'P_WAY' ? 'Engineering / P-Way' : d === 'TRD_OHE' ? 'TRD' : d === 'S_AND_T' ? 'S&T' : d).join(' • ') 
+              : 'None specified'}
+          </div>
+        </section>
 
-          <button
-            onClick={() => setActiveTab('TASKS')}
-            className={`py-3 text-xs font-bold border-b-2 transition-all flex items-center gap-1.5 whitespace-nowrap ${
-              activeTab === 'TASKS'
-                ? 'border-red-600 text-red-600 dark:text-red-400'
-                : 'border-transparent text-slate-500 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Layers className="w-3.5 h-3.5" />
-            Assigned Work Orders ({plan.assignedTasks?.length || 0})
-          </button>
-        </div>
+        {/* 4. LOCATION */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            4. LOCATION
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Corridor</td>
+                <td className="border border-gray-300 p-2 w-1/4">{plan.corridorName}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Section</td>
+                <td className="border border-gray-300 p-2 w-1/4">{plan.section || 'Main Section'}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">From station</td>
+                <td className="border border-gray-300 p-2">{plan.fromStation || 'STN-A'}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">To station</td>
+                <td className="border border-gray-300 p-2">{plan.toStation || 'STN-B'}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Track</td>
+                <td className="border border-gray-300 p-2">{plan.trackName || plan.trackLine || 'UP Main Line'}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Line</td>
+                <td className="border border-gray-300 p-2">{plan.lineType || 'Main Line'}</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Block section</td>
+                <td className="border border-gray-300 p-2" colSpan="3">{plan.blockSection || 'Primary Block Section'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-        {activeTab === 'EXPLANATION' && (
-          <button
-            onClick={fetchExplanation}
-            disabled={isExplanationLoading}
-            className="text-[11px] font-mono text-slate-500 hover:text-purple-400 flex items-center gap-1 transition-colors disabled:opacity-50"
-            title="Re-generate explanation"
-          >
-            <RefreshCw className={`w-3 h-3 ${isExplanationLoading ? 'animate-spin text-purple-400' : ''}`} />
-            <span>{isExplanationLoading ? 'Analyzing...' : 'Refresh AI'}</span>
-          </button>
-        )}
-      </div>
+        {/* 5. TRAIN IMPACT */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            5. TRAIN IMPACT
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <thead className="bg-[#F4F6F8] text-[#173B73]">
+              <tr>
+                <th className="border border-gray-300 p-2 text-left">Affected trains</th>
+                <th className="border border-gray-300 p-2 text-left">Train conflict</th>
+                <th className="border border-gray-300 p-2 text-left">Regulation requirement</th>
+                <th className="border border-gray-300 p-2 text-left">Expected operational impact</th>
+              </tr>
+            </thead>
+            <tbody>
+              {plan.affectedTrains?.map((train, idx) => (
+                <tr key={idx} className="hover:bg-slate-50">
+                  <td className="border border-gray-300 p-2 font-mono font-bold">{train.trainNo} {train.trainName}</td>
+                  <td className="border border-gray-300 p-2 text-amber-700 font-bold">{train.conflictLevel || 'Moderate Intersection'}</td>
+                  <td className="border border-gray-300 p-2">{train.action || 'Regulate at nearest station'}</td>
+                  <td className="border border-gray-300 p-2 font-bold">{train.delayMinutes} mins delay</td>
+                </tr>
+              ))}
+              {(!plan.affectedTrains || plan.affectedTrains.length === 0) && (
+                <tr>
+                  <td colSpan="4" className="border border-gray-300 p-4 text-center text-gray-500 italic">No significant train impact anticipated.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </section>
 
-      {/* Tab Contents */}
-      <div className="p-6">
-        {/* TAB 1: AI EXPLANATION LAYER */}
-        {activeTab === 'EXPLANATION' && (
-          <div className="space-y-5">
-            {/* Strict Safety Notice Banner */}
-            <div className="p-3.5 rounded-xl bg-purple-500/10 border border-purple-500/30 text-purple-900 dark:text-purple-200 flex items-start gap-2.5 text-xs font-mono">
-              <Bot className="w-4 h-4 text-purple-500 mt-0.5 flex-shrink-0" />
-              <div>
-                <div className="font-bold text-[11px] uppercase tracking-wider text-purple-600 dark:text-purple-400">
-                  AI-Generated Operational Explanation
-                </div>
-                <div className="mt-0.5 text-[11.5px] leading-relaxed">
-                  {explanation?.safetyNotice || 'Pragati selected this block using deterministic optimization. Gemini generated the explanation.'}
-                </div>
+        {/* 6. DEPARTMENT RESPONSIBILITIES */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            6. DEPARTMENT RESPONSIBILITIES
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <thead className="bg-[#F4F6F8] text-[#173B73]">
+              <tr>
+                <th className="border border-gray-300 p-2 text-left w-1/3">Department</th>
+                <th className="border border-gray-300 p-2 text-left">Assigned Work</th>
+              </tr>
+            </thead>
+            <tbody>
+              {plan.assignedTasks?.map((task, idx) => (
+                <tr key={idx}>
+                  <td className="border border-gray-300 p-2 font-bold">{task.dept === 'P_WAY' ? 'Engineering / P-Way' : task.dept === 'TRD_OHE' ? 'TRD' : task.dept === 'S_AND_T' ? 'S&T' : task.dept}</td>
+                  <td className="border border-gray-300 p-2">{task.title} (ID: {task.taskId})</td>
+                </tr>
+              ))}
+              {(!plan.assignedTasks || plan.assignedTasks.length === 0) && (
+                <tr>
+                  <td colSpan="2" className="border border-gray-300 p-4 text-center text-gray-500 italic">No specific responsibilities mapped.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </section>
+
+        {/* 7. RESOURCES */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            7. RESOURCES
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <thead className="bg-[#F4F6F8] text-[#173B73]">
+              <tr>
+                <th className="border border-gray-300 p-2 text-left">Department</th>
+                <th className="border border-gray-300 p-2 text-left">Manpower</th>
+                <th className="border border-gray-300 p-2 text-left">Equipment</th>
+                <th className="border border-gray-300 p-2 text-left">Tools</th>
+                <th className="border border-gray-300 p-2 text-left">Maintenance team</th>
+              </tr>
+            </thead>
+            <tbody>
+              {plan.assignedTasks?.map((task, idx) => (
+                <tr key={idx} className="hover:bg-slate-50">
+                  <td className="border border-gray-300 p-2 font-bold">{task.dept === 'P_WAY' ? 'Engineering / P-Way' : task.dept === 'TRD_OHE' ? 'TRD' : task.dept === 'S_AND_T' ? 'S&T' : task.dept}</td>
+                  <td className="border border-gray-300 p-2">{task.crew || 10} Personnel</td>
+                  <td className="border border-gray-300 p-2">{task.machine || 'Standard Equipment'}</td>
+                  <td className="border border-gray-300 p-2">{task.tools || 'Standard Toolkit'}</td>
+                  <td className="border border-gray-300 p-2">{task.teamName || 'Designated Section Team'}</td>
+                </tr>
+              ))}
+              {(!plan.assignedTasks || plan.assignedTasks.length === 0) && (
+                <tr>
+                  <td colSpan="5" className="border border-gray-300 p-4 text-center text-gray-500 italic">Resource allocation pending.</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </section>
+
+        {/* 8. SAFETY / OPERATIONAL CONSTRAINTS */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            8. SAFETY / OPERATIONAL CONSTRAINTS
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Track occupancy</td>
+                <td className="border border-gray-300 p-2 w-3/4">Absolute Block working suspended between affected stations during block window.</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Safety restrictions</td>
+                <td className="border border-gray-300 p-2">25kV OHE Power supply to be isolated and discharged before TRD/Engineering teams commence work.</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Operational constraints</td>
+                <td className="border border-gray-300 p-2">Temporary speed restriction of 30 kmph applicable immediately post-block.</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Dependencies</td>
+                <td className="border border-gray-300 p-2">S&T Disconnection Notice mandatory prior to any point/track-circuit interference.</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        {/* 9. AI REASONING */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3 flex items-center gap-2">
+            9. AI BLOCK PLAN REASONING
+            {isExplanationLoading && <span className="text-[10px] font-normal italic animate-pulse">(Analyzing...)</span>}
+          </h3>
+          <div className="border border-gray-300 p-4 text-sm bg-blue-50/50">
+            {explanation ? (
+              <div className="space-y-3">
+                <p>{explanation.safetyNotice}</p>
+                {explanation.operationalPlan && (
+                  <p className="font-bold text-[#173B73] mt-2">Operational Logic:</p>
+                )}
+                <p className="leading-relaxed whitespace-pre-wrap">{explanation.operationalPlan}</p>
               </div>
-            </div>
-
-            {/* Explanation Metadata Bar */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-xl bg-slate-50 dark:bg-[#111A2E] border border-slate-200 dark:border-slate-800 text-xs font-mono">
-              <div className="flex items-center gap-2">
-                <span className="text-slate-400">Recommended Window:</span>
-                <span className="font-bold text-white bg-red-950/80 border border-red-800 px-2 py-0.5 rounded">
-                  {explanation?.recommendedWindow || `${plan.windowStart} - ${plan.windowEnd}`}
-                </span>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400">Source:</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 ${
-                    explanation?.explanationSource === 'GEMINI'
-                      ? 'bg-purple-950/80 text-purple-300 border border-purple-700'
-                      : 'bg-blue-950/80 text-blue-300 border border-blue-700'
-                  }`}>
-                    {explanation?.explanationSource === 'GEMINI' && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-purple-400 animate-pulse" />
-                    )}
-                    {explanation?.explanationSource || 'DETERMINISTIC'}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-1.5">
-                  <span className="text-slate-400">Model:</span>
-                  <span className="text-[10px] text-slate-300 bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded">
-                    {explanation?.modelUsed || 'gemini-3.6-flash'}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Summary Section */}
-            <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-[#111A2E]/60 space-y-1.5">
-              <span className="text-[10px] font-mono uppercase text-purple-500 dark:text-purple-400 font-bold block">
-                Executive Operational Summary
-              </span>
-              <p className="text-xs text-slate-700 dark:text-slate-200 leading-relaxed font-sans font-medium">
-                {explanation?.summary || 'Block window optimized for minimal passenger disruption and maximal multi-department maintenance efficiency.'}
+            ) : (
+              <p>
+                AI identified overlapping maintenance activities for the involved departments on the same corridor and scheduled them within a common maintenance window while considering train movement and operational constraints. This optimized shadow block ensures maximum utilization of track possession time while minimizing cumulative delays to passenger and freight operations.
               </p>
-            </div>
-
-            {/* 2-Column Operational Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Why this window was selected */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#111A2E] space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">
-                    Why This Window Was Selected
-                  </span>
-                </div>
-                <ul className="space-y-2">
-                  {explanation?.whySelected?.map((reason, idx) => (
-                    <li key={idx} className="text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2 leading-relaxed">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 mt-1.5 flex-shrink-0" />
-                      <span>{reason}</span>
-                    </li>
-                  )) || (
-                    <li className="text-xs text-slate-400">No specific points available.</li>
-                  )}
-                </ul>
-              </div>
-
-              {/* Traffic & Regulation Impact */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#111A2E] space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <Train className="w-4 h-4 text-cyan-500" />
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">
-                    Train Traffic & Regulation Impact
-                  </span>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                  {explanation?.trafficImpact || 'Zero terminal arrival delay to coaching services. Freight consists regulated to siding loops.'}
-                </p>
-
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800">
-                  <span className="text-[10px] font-mono text-slate-400 block mb-1">Maintenance Bundling Benefit:</span>
-                  <p className="text-xs text-purple-600 dark:text-purple-300 leading-relaxed">
-                    {explanation?.maintenanceImpact || 'Combines critical P-Way, OHE and S&T tasks into a single coordinated track possession.'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Conflicts & Safety Mitigations */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#111A2E] space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <ShieldAlert className="w-4 h-4 text-amber-500" />
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">
-                    Identified Conflicts & Safety Mitigations
-                  </span>
-                </div>
-                <ul className="space-y-1.5">
-                  {explanation?.conflicts?.map((conflict, idx) => (
-                    <li key={idx} className="text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2 leading-relaxed">
-                      <span className="text-amber-500 text-[11px] font-mono font-bold">•</span>
-                      <span>{conflict}</span>
-                    </li>
-                  )) || (
-                    <li className="text-xs text-slate-400">No unresolved conflicts detected.</li>
-                  )}
-                </ul>
-              </div>
-
-              {/* Field Controller Instructions */}
-              <div className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#111A2E] space-y-2.5">
-                <div className="flex items-center gap-2">
-                  <Radio className="w-4 h-4 text-indigo-500" />
-                  <span className="font-bold text-slate-900 dark:text-white text-xs">
-                    Field Operational Notes for Controllers
-                  </span>
-                </div>
-                <ul className="space-y-1.5">
-                  {explanation?.operationalNotes?.map((note, idx) => (
-                    <li key={idx} className="text-xs text-slate-600 dark:text-slate-300 flex items-start gap-2 leading-relaxed">
-                      <span className="text-indigo-400 text-[11px] font-mono font-bold">•</span>
-                      <span>{note}</span>
-                    </li>
-                  )) || (
-                    <li className="text-xs text-slate-400">Follow standard Operating Manual procedures.</li>
-                  )}
-                </ul>
-
-                <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                  <span>Optimizer Confidence Rationale:</span>
-                  <span className="text-emerald-500 font-bold">{explanation?.confidenceExplanation || 'Pareto optimal'}</span>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
-        )}
+        </section>
 
-        {/* TAB 2: DETERMINISTIC RATIONALE */}
-        {activeTab === 'REASONS' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {plan.aiReasons?.map((reason, idx) => (
-              <div
-                key={idx}
-                className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#111A2E] flex flex-col justify-between"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="font-bold text-slate-900 dark:text-white text-xs">
-                      {reason.title}
-                    </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-semibold">
-                      {reason.badge}
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
-                    {reason.description}
-                  </p>
-                </div>
+        {/* 10. WEATHER INFORMATION */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            10. WEATHER INFORMATION
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Forecast for {plan.scheduledDate || 'selected date'}</td>
+                <td className="border border-gray-300 p-2 w-3/4 font-bold text-amber-700" colSpan="3">
+                  Heavy overcast with 85% probability of localized showers / rainfall during the scheduled block window.
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Conditions</td>
+                <td className="border border-gray-300 p-2 w-1/4 text-red-600 font-bold">Rainfall Expected</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Temperature</td>
+                <td className="border border-gray-300 p-2 w-1/4">24°C</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Wind</td>
+                <td className="border border-gray-300 p-2">15-20 km/h (Gusty)</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Visibility</td>
+                <td className="border border-gray-300 p-2 text-amber-600 font-bold">Reduced during rain (&lt;5km)</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">AI Recommendation</td>
+                <td className="border border-gray-300 p-2" colSpan="3">
+                  High risk of rainfall during block execution. Ensure water drainage systems are clear and sensitive equipment is protected from moisture. Keep protective tarpaulins ready on site.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-                <div className="mt-3 pt-2 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between text-[10px] font-mono text-slate-400">
-                  <span>Confidence Metric</span>
-                  <span className="text-emerald-500 font-bold">{reason.confidence}% Satisfied</span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {/* 11. APPROVAL INFORMATION */}
+        <section>
+          <h3 className="text-sm font-bold text-white bg-[#173B73] px-3 py-1.5 uppercase mb-3">
+            11. APPROVAL INFORMATION
+          </h3>
+          <table className="w-full text-sm border-collapse border border-gray-300">
+            <tbody>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Approval Status</td>
+                <td className="border border-gray-300 p-2 w-1/4 font-bold uppercase">{plan.status}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73] w-1/4">Version Information</td>
+                <td className="border border-gray-300 p-2 w-1/4">v1.0 (Generated)</td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Approved By</td>
+                <td className="border border-gray-300 p-2">{isApproved ? (currentUser?.name || 'Controller') : 'Pending Approval'}</td>
+                <td className="border border-gray-300 p-2 bg-[#F4F6F8] font-bold text-[#173B73]">Approval Time</td>
+                <td className="border border-gray-300 p-2">{isApproved ? new Date().toLocaleString() : 'N/A'}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-        {/* TAB 3: AFFECTED TRAINS */}
-        {activeTab === 'TRAINS' && (
-          <AffectedTrainsTable affectedTrains={plan.affectedTrains} />
-        )}
-
-        {/* TAB 4: ASSIGNED TASKS */}
-        {activeTab === 'TASKS' && (
-          <div className="space-y-3">
-            {plan.assignedTasks?.map((task) => (
-              <div
-                key={task.taskId}
-                className="p-4 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#111A2E] flex flex-col sm:flex-row sm:items-center justify-between gap-3"
-              >
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-slate-900 dark:text-white">
-                      {task.taskId}
-                    </span>
-                    <StatusBadge status={task.dept} size="xs" />
-                  </div>
-                  <div className="font-bold text-slate-800 dark:text-slate-200 text-xs">
-                    {task.title}
-                  </div>
-                  <div className="text-[11px] text-slate-500 font-mono">
-                    Track Machine: <strong>{task.machine}</strong> • Crew Size: <strong>{task.crew} Personnel</strong>
-                  </div>
-                </div>
-
-                <div className="sm:text-right font-mono text-xs">
-                  <span className="text-slate-400 text-[10px] block">Allocated Slot</span>
-                  <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                    {task.allocatedWindow}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
       </div>
 
       {/* Footer Controls & Approval Action */}
-      <div className="p-4 sm:px-6 bg-slate-50 dark:bg-[#090E1A] border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400 font-mono">
-          <ShieldCheck className="w-4 h-4 text-emerald-500" />
-          <span>Compliant with Indian Railways General & Subsidiary Rules (G&SR)</span>
+      <div className="p-6 bg-[#F4F6F8] border-t-4 border-[#173B73] flex flex-wrap items-center justify-between gap-4 font-sans print:hidden">
+        <div className="flex items-center gap-2 text-sm text-[#173B73] font-bold">
+          <ShieldCheck className="w-5 h-5 text-emerald-600" />
+          <span>COMPLIANT WITH INDIAN RAILWAYS G&SR</span>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-4">
           <button
             onClick={handlePrintDispatch}
-            className="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 hover:bg-slate-100 text-xs font-semibold flex items-center gap-1.5 transition-colors"
+            className="px-6 py-2 border-2 border-[#173B73] bg-white text-[#173B73] hover:bg-[#EBF2FA] text-sm font-bold transition-colors"
           >
-            <Printer className="w-3.5 h-3.5" />
-            Print Block Order
+            PRINT BLOCK PLAN
           </button>
 
           {!isApproved ? (
             <button
               onClick={handleApprove}
               disabled={isApproving}
-              className="px-5 py-2 rounded-xl bg-gradient-to-r from-red-700 to-railway-maroon hover:from-red-600 hover:to-red-700 text-white text-xs font-bold shadow-md shadow-red-950/30 flex items-center gap-2 transition-all disabled:opacity-50"
+              className="px-8 py-2 bg-[#173B73] hover:bg-[#1F4380] text-white text-sm font-bold shadow-md transition-colors disabled:opacity-50"
             >
-              <Send className="w-3.5 h-3.5" />
-              {isApproving ? 'Transmitting to COIS...' : 'Approve & Transmit to COIS'}
+              {isApproving ? 'TRANSMITTING TO COIS...' : 'APPROVE & TRANSMIT'}
             </button>
           ) : (
-            <div className="px-4 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-500 text-xs font-mono font-bold flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4" />
-              BLOCK DISPATCHED TO CONTROL OFFICE
+            <div className="px-8 py-2 bg-emerald-700 text-white text-sm font-bold flex items-center gap-2 shadow-md">
+              <CheckCircle2 className="w-5 h-5" />
+              DISPATCHED TO CONTROL OFFICE
             </div>
           )}
         </div>

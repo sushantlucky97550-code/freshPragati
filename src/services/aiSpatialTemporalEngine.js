@@ -214,7 +214,15 @@ export function analyzeCombinedDepartments(tasks, options = {}) {
       }
 
       // Check if cluster spans 2 or more distinct departments
-      const depts = new Set(currentCluster.map(t => normalizeDepartment(t).code));
+      const depts = new Set();
+      currentCluster.forEach(t => {
+        if (t.isMultiDepartment && Array.isArray(t.departmentsList)) {
+          t.departmentsList.forEach(d => depts.add(d));
+        } else {
+          depts.add(normalizeDepartment(t).code);
+        }
+      });
+      
       if (depts.size >= 2) {
         clusters.push(currentCluster);
         currentCluster.forEach(t => assignedTaskIds.add(t.taskId || t.id));
@@ -226,8 +234,15 @@ export function analyzeCombinedDepartments(tasks, options = {}) {
   const combinedBundles = clusters.map((clusterTasks, index) => {
     const deptMap = {};
     clusterTasks.forEach(t => {
-      const norm = normalizeDepartment(t);
-      deptMap[norm.code] = norm;
+      if (t.isMultiDepartment && Array.isArray(t.departmentsList)) {
+        t.departmentsList.forEach(dCode => {
+          const norm = normalizeDepartment({ departmentCode: dCode });
+          deptMap[norm.code] = norm;
+        });
+      } else {
+        const norm = normalizeDepartment(t);
+        deptMap[norm.code] = norm;
+      }
     });
     const uniqueDepts = Object.values(deptMap);
 
@@ -264,7 +279,7 @@ export function analyzeCombinedDepartments(tasks, options = {}) {
     if (clusterTasks.some(t => (t.criticality || t.priority || '').includes('CRITICAL'))) synergyScore += 3;
     synergyScore = Math.min(99, synergyScore);
 
-    const bundleId = `JOINT-BLOCK-${secKey.replace(/[^A-Z0-9]/g, '')}-${String(index + 1).padStart(2, '0')}`;
+    const bundleId = `JOINT-BLOCK-${(geos[0]?.sectionKey || 'WCR').replace(/[^A-Z0-9]/g, '')}-${String(index + 1).padStart(2, '0')}`;
     const deptTitles = uniqueDepts.map(d => d.short).join(' + ');
 
     return {

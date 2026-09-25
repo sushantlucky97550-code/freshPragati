@@ -19,7 +19,7 @@ export default {
           maroon: '#801820',
           maroonBright: '#A61E28',
           track: '#475569',
-          steel: '#94A3B8',
+          steel: '#4a5c75ff',
           green: '#10B981',
           greenGlow: '#059669',
           amber: '#F59E0B',

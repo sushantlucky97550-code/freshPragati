@@ -24,6 +24,52 @@ import { useRailway } from '../context/RailwayContext';
 import { useAuth } from '../context/AuthContext';
 import { RailwayApiService } from '../services/api';
 
+
+const demoCorridors = [
+  {
+    id: 'WRK-101',
+    corridor: 'NDLS — CNB',
+    from: 'NDLS',
+    to: 'CNB',
+    departments: 'Engineering + TRD',
+    type: 'Track Maintenance',
+    status: 'ACTIVE',
+    startTime: '10:00 IST',
+    endTime: '14:00 IST',
+    track: 'TRACK 1 (UP)',
+    maintenanceStatus: 'IN PROGRESS',
+    stations: ['NDLS', 'GZB', 'CNB']
+  },
+  {
+    id: 'WRK-102',
+    corridor: 'NDLS — AGC',
+    from: 'NDLS',
+    to: 'AGC',
+    departments: 'TRD + S&T',
+    type: 'OHE + Signal Maintenance',
+    status: 'ACTIVE',
+    startTime: '11:30 IST',
+    endTime: '13:30 IST',
+    track: 'TRACK 2 (DOWN)',
+    maintenanceStatus: 'ISOLATION DONE',
+    stations: ['NDLS', 'MTJ', 'AGC']
+  },
+  {
+    id: 'WRK-103',
+    corridor: 'CNB — PRYG',
+    from: 'CNB',
+    to: 'PRYG',
+    departments: 'Engineering + S&T',
+    type: 'Track + Signalling Maintenance',
+    status: 'ACTIVE',
+    startTime: '09:00 IST',
+    endTime: '15:00 IST',
+    track: 'TRACK 3 (FAST)',
+    maintenanceStatus: 'WORK IN PROGRESS',
+    stations: ['CNB', 'FTP', 'PRYG']
+  }
+];
+
 export const ActiveMaintenancePage = ({ onNavigate }) => {
   const {
     currentZone,
@@ -38,7 +84,7 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
   const { user: authUser } = useAuth();
 
   // Active work focus
-  const [selectedActiveWork, setSelectedActiveWork] = useState(null);
+  const [selectedActiveWork, setSelectedActiveWork] = useState(demoCorridors[0]);
 
   // Train hover state
   const [hoveredTrain, setHoveredTrain] = useState(null);
@@ -245,57 +291,57 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
   };
 
   return (
-    <div className="space-y-6 pb-20 w-full max-w-7xl mx-auto selection:bg-red-700 selection:text-white font-sans">
+    <div className="space-y-6 pb-20 w-full max-w-7xl mx-auto selection:bg-[#173B73] selection:text-white font-sans">
       {/* Top Banner: Demo Mode Indicator */}
-      <div className="p-3.5 rounded-xl bg-amber-950/70 border border-amber-500/50 text-amber-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-xs shadow-md">
+      <div className="p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-[#D98C00] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-mono text-xs shadow-sm">
         <div className="flex items-center gap-2.5">
-          <AlertTriangle className="w-4 h-4 text-amber-400 animate-pulse flex-shrink-0" />
-          <span>
-            <strong>DEMO MODE:</strong> Live interface preview enabled outside scheduled execution window.
-          </span>
+          <AlertTriangle className="w-4 h-4 text-[#D98C00] animate-pulse flex-shrink-0" />
+          <span><strong>DEMO MODE:</strong> Live interface preview enabled outside scheduled execution window.</span>
         </div>
-        <span className="text-[11px] px-2 py-0.5 rounded bg-black/40 text-amber-300 border border-amber-600/40">
-          G&SR RULE 4.12 EXECUTION PREVIEW
+        <span className="text-[11px] px-2 py-0.5 rounded bg-amber-100 text-[#D98C00] border border-amber-300 font-bold">
+          G&amp;SR RULE 4.12 EXECUTION PREVIEW
         </span>
       </div>
 
       {/* Header: Corridor & Division Title */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#070D18] via-[#0A1426] to-[#070D18] border border-blue-900/40 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4 font-mono">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-bold tracking-widest text-cyan-400 uppercase">
-              {currentZone} • {currentDivision} DIVISION
-            </span>
-            <span className="text-slate-600">•</span>
-            <span className="text-[10px] text-emerald-400 font-bold flex items-center gap-1">
+      <div className="rounded-xl overflow-hidden border border-[#D9DEE7] shadow-md bg-white">
+        <div className="bg-[#173B73] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-6 rounded-full bg-amber-400 flex-shrink-0" />
+            <div>
+              <span className="text-[10px] font-mono font-bold tracking-widest text-blue-200 uppercase">
+                {currentZone} &bull; {currentDivision} DIVISION &bull; LIVE OPERATIONS
+              </span>
+              <h1 className="text-lg font-black text-white tracking-tight">CURRENTLY ACTIVE MAINTENANCE WORK</h1>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold text-emerald-300 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
               LIVE DIGITAL TWIN OPERATIONAL
             </span>
           </div>
-          <h1 className="text-2xl font-black text-white">
-            CURRENTLY ACTIVE MAINTENANCE WORK
-          </h1>
-          <p className="text-xs text-slate-400 mt-1">
+        </div>
+        <div className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <p className="text-xs text-[#5B6575] font-medium">
             Real-time track possession monitoring, train telemetry, station master communication, and safety isolations.
           </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => setIsEmergencyModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-red-950/60 border border-red-500/40 animate-pulse"
-          >
-            <Flame className="w-4 h-4 text-amber-300" />
-            <span>REPORT EMERGENCY</span>
-          </button>
-
-          <button
-            onClick={() => setIsFinalReportModalOpen(true)}
-            className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-800 hover:from-emerald-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-emerald-950/40 border border-emerald-500/40"
-          >
-            <FileCheck className="w-4 h-4 text-cyan-300" />
-            <span>SUBMIT FINAL REPORT</span>
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setIsEmergencyModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-[#C62828] hover:bg-[#B71C1C] text-white font-bold text-xs flex items-center gap-2 shadow-md border border-[#C62828]/60"
+            >
+              <Flame className="w-4 h-4 text-amber-300" />
+              <span>REPORT EMERGENCY</span>
+            </button>
+            <button
+              onClick={() => setIsFinalReportModalOpen(true)}
+              className="px-4 py-2 rounded-xl bg-[#168A55] hover:bg-[#126B43] text-white font-bold text-xs flex items-center gap-2 shadow-md border border-[#168A55]/60"
+            >
+              <FileCheck className="w-4 h-4" />
+              <span>SUBMIT FINAL REPORT</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -327,181 +373,195 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
         </div>
       )}
 
+      
+      {/* ────────────────────────────────────────────────────────── */}
+      {/* PART 1: LIVE CORRIDOR LIST                                 */}
+      {/* ────────────────────────────────────────────────────────── */}
+      <div className="space-y-4 font-mono select-none">
+        <h2 className="text-[#173B73] font-bold text-lg">LIVE CORRIDORS (ACTIVE MAINTENANCE)</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {demoCorridors.map((work, index) => (
+            <div 
+              key={work.id}
+              onClick={() => setSelectedActiveWork(work)}
+              className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${selectedActiveWork.id === work.id ? 'border-[#173B73] bg-[#EBF2FA] shadow-md' : 'border-[#D9DEE7] bg-white hover:border-[#173B73]/50'}`}
+            >
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-[#173B73] font-bold text-lg">{index + 1}. {work.corridor}</span>
+                <span className="px-2 py-1 bg-emerald-100 text-[#168A55] text-[10px] font-bold rounded">STATUS: {work.status}</span>
+              </div>
+              <div className="text-xs text-[#172033] space-y-1">
+                <p><span className="font-bold">Work ID:</span> {work.id}</p>
+                <p><span className="font-bold">From:</span> {work.from} <span className="font-bold">To:</span> {work.to}</p>
+                <p><span className="font-bold">Type:</span> {work.type}</p>
+                <p><span className="font-bold">Depts:</span> {work.departments}</p>
+                <p><span className="font-bold">Time:</span> {work.startTime} - {work.endTime}</p>
+                <p><span className="font-bold">Track:</span> {work.track}</p>
+                <p><span className="font-bold text-amber-700">Maint. Status:</span> {work.maintenanceStatus}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+
       {/* ────────────────────────────────────────────────────────── */}
       {/* 27. LIVE CORRIDOR DIGITAL TWIN                            */}
       {/* ────────────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border-2 border-cyan-500/60 bg-[#070D18] p-6 shadow-2xl relative overflow-hidden font-mono select-none">
+      
+      <div className="rounded-2xl border-2 border-cyan-500/60 bg-[#070D18] p-6 shadow-2xl relative overflow-hidden font-mono select-none my-6">
         {/* Top Status Bar of Digital Twin */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-3 h-3 rounded-full bg-cyan-400 animate-ping" />
             <h2 className="text-sm sm:text-base font-black text-white uppercase tracking-wider">
-              LIVE CORRIDOR DIGITAL TWIN — BHOPAL (BPL) ⟷ SEHORE (SEH)
+              LIVE CORRIDOR DIGITAL TWIN — {selectedActiveWork.corridor}
             </h2>
           </div>
-
-          <div className="flex items-center gap-3 text-xs">
-            <span className="px-2.5 py-1 rounded bg-slate-900 border border-slate-700 text-cyan-300 font-bold">
-              SOURCE: SIMULATION TELEMETRY
-            </span>
-            <span className="text-slate-400 hidden sm:inline">
-              TRACK SPEED LIMIT: 130 KM/H
-            </span>
+          
+          <div className="flex gap-4 text-xs text-white">
+            <div className="bg-slate-900 p-2 rounded border border-slate-700 text-center">
+              <span className="block text-slate-400">Maintenance:</span>
+              <span className="text-emerald-400 font-bold">{selectedActiveWork.status}</span>
+            </div>
+            <div className="bg-slate-900 p-2 rounded border border-slate-700 text-center">
+              <span className="block text-slate-400">Track:</span>
+              <span className="text-red-400 font-bold">RESTRICTED</span>
+            </div>
+            <div className="bg-slate-900 p-2 rounded border border-slate-700 text-center">
+              <span className="block text-slate-400">Trains:</span>
+              <span className="text-cyan-400 font-bold">3</span>
+            </div>
+            <div className="bg-slate-900 p-2 rounded border border-slate-700 text-center">
+              <span className="block text-slate-400">Maintenance Teams:</span>
+              <span className="text-amber-400 font-bold">2</span>
+            </div>
+            <div className="bg-slate-900 p-2 rounded border border-slate-700 text-center">
+              <span className="block text-slate-400">Block Status:</span>
+              <span className="text-emerald-400 font-bold">ACTIVE</span>
+            </div>
+            <div className="bg-slate-900 p-2 rounded border border-slate-700 text-center">
+              <span className="block text-slate-400">Telemetry:</span>
+              <span className="text-cyan-400 font-bold">SIMULATION</span>
+            </div>
           </div>
         </div>
 
         {/* The Track Digital Twin SVG Diagram */}
         <div className="my-8 relative">
-          <svg className="w-full h-56 rounded-xl bg-[#03060C] border border-slate-800/80" viewBox="0 0 900 220">
+          <svg className="w-full h-80 rounded-xl bg-[#03060C] border border-slate-800/80" viewBox="0 0 1000 320">
             {/* Stations Background Pillars */}
-            {/* Station 1: BPL */}
-            <line x1="80" y1="20" x2="80" y2="200" stroke="#1E293B" strokeWidth="2" strokeDasharray="4 4" />
-            <rect x="50" y="30" width="60" height="24" rx="4" fill="#0F172A" stroke="#334155" />
-            <text x="80" y="46" fill="#38BDF8" fontSize="11" fontWeight="bold" textAnchor="middle">BPL</text>
+            {selectedActiveWork.stations.map((st, i) => (
+               <g key={st}>
+                 <line x1={150 + i * 350} y1="20" x2={150 + i * 350} y2="300" stroke="#1E293B" strokeWidth="2" strokeDasharray="4 4" />
+                 <rect x={120 + i * 350} y="30" width="60" height="24" rx="4" fill="#0F172A" stroke="#334155" />
+                 <text x={150 + i * 350} y="46" fill="#38BDF8" fontSize="11" fontWeight="bold" textAnchor="middle">{st}</text>
+               </g>
+            ))}
 
-            {/* Station 2: BIH (Bairagarh / Sant Hirdaram Nagar) */}
-            <line x1="450" y1="20" x2="450" y2="200" stroke="#1E293B" strokeWidth="2" strokeDasharray="4 4" />
-            <rect x="420" y="30" width="60" height="24" rx="4" fill="#0F172A" stroke="#334155" />
-            <text x="450" y="46" fill="#38BDF8" fontSize="11" fontWeight="bold" textAnchor="middle">BIH</text>
+            {/* TRACK 1 */}
+            <line x1="40" y1="100" x2="960" y2="100" stroke="#475569" strokeWidth="3" />
+            <line x1="40" y1="106" x2="960" y2="106" stroke="#475569" strokeWidth="3" />
+            <text x="50" y="92" fill="#94A3B8" fontSize="10" fontWeight="bold">TRACK 1 ➔</text>
+            
+            {/* TRACK 2 */}
+            <line x1="40" y1="170" x2="960" y2="170" stroke="#475569" strokeWidth="3" />
+            <line x1="40" y1="176" x2="960" y2="176" stroke="#475569" strokeWidth="3" />
+            <text x="50" y="162" fill="#94A3B8" fontSize="10" fontWeight="bold">TRACK 2 ➔</text>
 
-            {/* Station 3: SEH (Sehore) */}
-            <line x1="820" y1="20" x2="820" y2="200" stroke="#1E293B" strokeWidth="2" strokeDasharray="4 4" />
-            <rect x="790" y="30" width="60" height="24" rx="4" fill="#0F172A" stroke="#334155" />
-            <text x="820" y="46" fill="#38BDF8" fontSize="11" fontWeight="bold" textAnchor="middle">SEH</text>
-
-            {/* UP MAIN LINE Track */}
-            <line x1="40" y1="100" x2="860" y2="100" stroke="#475569" strokeWidth="3" />
-            <line x1="40" y1="106" x2="860" y2="106" stroke="#475569" strokeWidth="3" />
-            <text x="50" y="92" fill="#94A3B8" fontSize="10" fontWeight="bold">UP LINE ➔</text>
-
-            {/* DOWN MAIN LINE Track */}
-            <line x1="40" y1="150" x2="860" y2="150" stroke="#475569" strokeWidth="3" />
-            <line x1="40" y1="156" x2="860" y2="156" stroke="#475569" strokeWidth="3" />
-            <text x="50" y="142" fill="#94A3B8" fontSize="10" fontWeight="bold">DOWN LINE ⬅</text>
+            {/* TRACK 3 */}
+            <line x1="40" y1="240" x2="960" y2="240" stroke="#475569" strokeWidth="3" />
+            <line x1="40" y1="246" x2="960" y2="246" stroke="#475569" strokeWidth="3" />
+            <text x="50" y="232" fill="#94A3B8" fontSize="10" fontWeight="bold">TRACK 3 ⬅</text>
 
             {/* Sleepers on tracks */}
-            {Array.from({ length: 42 }).map((_, i) => (
+            {Array.from({ length: 48 }).map((_, i) => (
               <g key={i}>
-                <line x1={50 + i * 20} y1="96" x2={50 + i * 20} y2="110" stroke="#334155" strokeWidth="2" />
-                <line x1={50 + i * 20} y1="146" x2={50 + i * 20} y2="160" stroke="#334155" strokeWidth="2" />
+                <line x1={40 + i * 20} y1="96" x2={40 + i * 20} y2="110" stroke="#334155" strokeWidth="2" />
+                <line x1={40 + i * 20} y1="166" x2={40 + i * 20} y2="180" stroke="#334155" strokeWidth="2" />
+                <line x1={40 + i * 20} y1="236" x2={40 + i * 20} y2="250" stroke="#334155" strokeWidth="2" />
               </g>
             ))}
 
-            {/* ──────────────────────────────────────────────────── */}
-            {/* ACTIVE MAINTENANCE ZONE HIGHLIGHT (ON UP LINE)       */}
-            {/* ──────────────────────────────────────────────────── */}
-            <rect
-              x="220"
-              y="85"
-              width="220"
-              height="36"
-              rx="6"
-              fill="#EF4444"
-              fillOpacity="0.25"
-              stroke="#EF4444"
-              strokeWidth="2"
-              strokeDasharray="6 4"
-            />
-            {/* Striped construction bars inside */}
-            <text x="330" y="80" fill="#F87171" fontSize="10" fontWeight="bold" textAnchor="middle">
-              ⚠ ACTIVE MAINTENANCE ZONE (Km 12/4 – 14/8)
-            </text>
-
-            {/* Signal Red at Block Limit */}
-            <circle cx="215" cy="80" r="5" fill="#EF4444" className="animate-pulse" />
-            <line x1="215" y1="85" x2="215" y2="98" stroke="#EF4444" strokeWidth="2" />
-            <text x="200" y="70" fill="#EF4444" fontSize="9" textAnchor="middle">STOP S-14</text>
-
-            {/* Signal Green downstream */}
-            <circle cx="445" cy="80" r="5" fill="#10B981" />
-            <line x1="445" y1="85" x2="445" y2="98" stroke="#10B981" strokeWidth="2" />
-            <text x="445" y="70" fill="#10B981" fontSize="9" textAnchor="middle">CLEAR S-18</text>
-
-            {/* Signal Green on Down line */}
-            <circle cx="455" cy="175" r="5" fill="#10B981" />
-            <line x1="455" y1="160" x2="455" y2="170" stroke="#10B981" strokeWidth="2" />
-            <text x="455" y="188" fill="#10B981" fontSize="9" textAnchor="middle">CLEAR S-21</text>
-
-            {/* ──────────────────────────────────────────────────── */}
-            {/* 28. ANIMATED TRAINS                                  */}
-            {/* ──────────────────────────────────────────────────── */}
-            {/* Train 1: 12002 Shatabdi (Approaching block on UP line) */}
-            <g
-              transform="translate(130, 92)"
-              className="cursor-pointer"
-              onMouseEnter={() => setHoveredTrain({
-                number: '12002',
-                name: 'New Delhi - Bhopal Shatabdi Express',
-                location: 'Km 8/2 (Approaching Phanda / BIH)',
-                direction: 'UP LINE (Towards Sehore)',
-                speed: '45 km/h (Regulated for block caution)',
-                delay: '+12 Mins',
-                nextStation: 'BIH (Bairagarh)',
-                blockImpact: 'Regulated behind Signal S-14 until possession is cleared.'
-              })}
-              onMouseLeave={() => setHoveredTrain(null)}
-            >
-              <rect x="0" y="0" width="55" height="22" rx="4" fill="#B91C1C" stroke="#FCA5A5" strokeWidth="1.5" />
-              <polygon points="55,4 65,11 55,18" fill="#F87171" />
-              <text x="27" y="14" fill="#FFFFFF" fontSize="9" fontWeight="bold" textAnchor="middle">12002</text>
+            {/* ACTIVE MAINTENANCE ZONE HIGHLIGHT */}
+            <g transform={`translate(0, ${selectedActiveWork.track.includes('1') ? 0 : selectedActiveWork.track.includes('2') ? 70 : 140})`}>
+              <rect
+                x="300"
+                y="85"
+                width="250"
+                height="36"
+                rx="6"
+                fill="#EF4444"
+                fillOpacity="0.25"
+                stroke="#EF4444"
+                strokeWidth="2"
+                strokeDasharray="6 4"
+                className="animate-pulse"
+              />
+              <text x="425" y="80" fill="#F87171" fontSize="10" fontWeight="bold" textAnchor="middle">
+                ⚠ MAINTENANCE ACTIVE ({selectedActiveWork.from} ➔ {selectedActiveWork.to})
+              </text>
+              <circle cx="290" cy="80" r="5" fill="#EF4444" className="animate-pulse" />
+              <line x1="290" y1="85" x2="290" y2="98" stroke="#EF4444" strokeWidth="2" />
+              <text x="290" y="70" fill="#EF4444" fontSize="9" textAnchor="middle">STOP (RED)</text>
+              
+              <circle cx="560" cy="80" r="5" fill="#10B981" />
+              <line x1="560" y1="85" x2="560" y2="98" stroke="#10B981" strokeWidth="2" />
+              <text x="560" y="70" fill="#10B981" fontSize="9" textAnchor="middle">CLEAR (GREEN)</text>
+            </g>
+            
+            <g transform={`translate(0, ${selectedActiveWork.track.includes('1') ? 70 : selectedActiveWork.track.includes('2') ? 140 : 0})`}>
+              <circle cx="350" cy="80" r="5" fill="#EAB308" />
+              <line x1="350" y1="85" x2="350" y2="98" stroke="#EAB308" strokeWidth="2" />
+              <text x="350" y="70" fill="#EAB308" fontSize="9" textAnchor="middle">CAUTION (YELLOW)</text>
             </g>
 
-            {/* Train 2: Freight BOXN on Down line (Running clear) */}
-            <g
-              transform="translate(620, 142)"
-              className="cursor-pointer"
-              onMouseEnter={() => setHoveredTrain({
-                number: 'BOXN-8841',
-                name: 'Freight Coal Rake (Jabalpur - Kota)',
-                location: 'Km 24/6 (Down Line)',
-                direction: 'DOWN LINE (Towards Bhopal)',
-                speed: '65 km/h',
-                delay: 'ON TIME',
-                nextStation: 'BPL (Bhopal Jn)',
-                blockImpact: 'No impact. Down line traffic fully open.'
-              })}
-              onMouseLeave={() => setHoveredTrain(null)}
-            >
-              <rect x="0" y="0" width="65" height="22" rx="4" fill="#047857" stroke="#6EE7B7" strokeWidth="1.5" />
-              <polygon points="0,4 -10,11 0,18" fill="#10B981" />
-              <text x="32" y="14" fill="#FFFFFF" fontSize="9" fontWeight="bold" textAnchor="middle">BOXN-88</text>
+            {/* ANIMATED TRAINS */}
+            
+            {/* Train 1: Normal Speed */}
+            <g>
+              <animateTransform attributeName="transform" type="translate" from="-100 92" to="1100 92" dur="20s" repeatCount="indefinite" />
+              <rect x="0" y="0" width="60" height="22" rx="4" fill="#047857" stroke="#6EE7B7" strokeWidth="1.5" />
+              <polygon points="60,4 70,11 60,18" fill="#10B981" />
+              <text x="30" y="14" fill="#FFFFFF" fontSize="9" fontWeight="bold" textAnchor="middle">TR 12951</text>
+              <text x="30" y="-5" fill="#10B981" fontSize="9" fontWeight="bold" textAnchor="middle">ON TIME</text>
+            </g>
+
+            {/* Train 2: Approaching Block, slower */}
+            <g>
+              <animateTransform attributeName="transform" type="translate" from="-100 162" to="250 162" dur="15s" repeatCount="indefinite" />
+              <rect x="0" y="0" width="60" height="22" rx="4" fill="#B91C1C" stroke="#FCA5A5" strokeWidth="1.5" />
+              <polygon points="60,4 70,11 60,18" fill="#F87171" />
+              <text x="30" y="14" fill="#FFFFFF" fontSize="9" fontWeight="bold" textAnchor="middle">TR 12424</text>
+              <text x="30" y="-5" fill="#F87171" fontSize="9" fontWeight="bold" textAnchor="middle">APPROACHING</text>
+            </g>
+
+            {/* Train 3: Opposite Direction */}
+            <g>
+              <animateTransform attributeName="transform" type="translate" from="1100 232" to="-100 232" dur="25s" repeatCount="indefinite" />
+              <rect x="0" y="0" width="60" height="22" rx="4" fill="#D97706" stroke="#FCD34D" strokeWidth="1.5" />
+              <polygon points="0,4 -10,11 0,18" fill="#FBBF24" />
+              <text x="30" y="14" fill="#FFFFFF" fontSize="9" fontWeight="bold" textAnchor="middle">TR 12034</text>
+              <text x="30" y="-5" fill="#FBBF24" fontSize="9" fontWeight="bold" textAnchor="middle">REGULATED</text>
             </g>
           </svg>
-
-          {/* Train Hover Details Overlay */}
-          {hoveredTrain && (
-            <div className="absolute top-2 right-4 p-3.5 rounded-xl bg-slate-950/95 border-2 border-cyan-500 shadow-2xl text-xs space-y-1 z-30 max-w-sm">
-              <div className="flex items-center justify-between text-cyan-400 font-bold border-b border-slate-800 pb-1">
-                <span>TRAIN {hoveredTrain.number}</span>
-                <span>{hoveredTrain.delay}</span>
-              </div>
-              <div className="text-white font-bold">{hoveredTrain.name}</div>
-              <div className="text-slate-300 text-[11px]">Location: {hoveredTrain.location}</div>
-              <div className="text-slate-300 text-[11px]">Speed: {hoveredTrain.speed}</div>
-              <div className="text-slate-300 text-[11px]">Next: {hoveredTrain.nextStation}</div>
-              <div className="text-amber-300 text-[11px] pt-1 border-t border-slate-900">
-                <strong>Block Impact:</strong> {hoveredTrain.blockImpact}
-              </div>
-            </div>
-          )}
         </div>
       </div>
-
       {/* ────────────────────────────────────────────────────────── */}
       {/* 29. LIVE MAINTENANCE CONTROLS                             */}
       {/* ────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         {/* A. Station Master ↔ Section Officer Communication (Col 6) */}
-        <div className="lg:col-span-6 rounded-2xl bg-[#0A1220] border border-slate-800 p-5 shadow-xl flex flex-col justify-between font-mono text-xs">
+        <div className="lg:col-span-6 rounded-xl bg-white border border-[#D9DEE7] p-5 shadow-sm flex flex-col justify-between font-mono text-xs">
           <div>
-            <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D9DEE7]">
               <div className="flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-cyan-400" />
-                <h3 className="font-bold text-white uppercase">
+                <MessageSquare className="w-4 h-4 text-[#173B73]" />
+                <h3 className="font-bold text-[#172033] uppercase">
                   Station Master ⟷ Section Officer Radio Log
                 </h3>
               </div>
-              <span className="text-[10px] text-emerald-400 font-bold">ONLINE (AUDITED)</span>
+              <span className="text-[10px] text-[#168A55] font-bold">ONLINE (AUDITED)</span>
             </div>
 
             {/* Messages feed */}
@@ -509,14 +569,14 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
               {chatMessages.map(msg => (
                 <div
                   key={msg.id}
-                  className="p-3 rounded-xl bg-slate-900/80 border border-slate-800 space-y-1"
+                  className="p-3 rounded-xl bg-[#F4F6F8] border border-[#D9DEE7] space-y-1"
                 >
                   <div className="flex items-center justify-between text-[10px]">
-                    <span className="font-bold text-cyan-300">{msg.sender}</span>
-                    <span className="text-slate-500">{msg.timestamp}</span>
+                    <span className="font-bold text-[#173B73]">{msg.sender}</span>
+                    <span className="text-[#5B6575]">{msg.timestamp}</span>
                   </div>
-                  <p className="text-slate-200 text-xs leading-relaxed">{msg.text}</p>
-                  <div className="flex items-center justify-end text-[9px] text-emerald-400 gap-1">
+                  <p className="text-[#172033] text-xs leading-relaxed">{msg.text}</p>
+                  <div className="flex items-center justify-end text-[9px] text-[#168A55] gap-1">
                     <CheckCircle2 className="w-3 h-3" />
                     <span>TRANSMISSION ACKNOWLEDGED</span>
                   </div>
@@ -526,17 +586,17 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
           </div>
 
           {/* Chat input */}
-          <form onSubmit={handleSendMessage} className="flex gap-2 pt-2 border-t border-slate-800">
+          <form onSubmit={handleSendMessage} className="flex gap-2 pt-2 border-t border-[#D9DEE7]">
             <input
               type="text"
               value={newChatMessage}
               onChange={(e) => setNewChatMessage(e.target.value)}
               placeholder="Transmit message to Station Master / Section Officer..."
-              className="flex-1 py-2 px-3 bg-slate-900 border border-slate-700 rounded-xl text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400"
+              className="flex-1 py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-xl text-[#172033] placeholder-[#5B6575] focus:outline-none focus:border-[#173B73] focus:bg-white"
             />
             <button
               type="submit"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl flex items-center gap-1.5"
+              className="px-4 py-2 bg-[#173B73] hover:bg-[#1F4380] text-white font-bold rounded-xl flex items-center gap-1.5 shadow-sm"
             >
               <Send className="w-3.5 h-3.5" />
               <span>TRANSMIT</span>
@@ -547,15 +607,15 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
         {/* B & C. Track Possession + TCP Traction Controls (Col 6) */}
         <div className="lg:col-span-6 space-y-5">
           {/* B. Track Connection / Disconnection */}
-          <div className="p-5 rounded-2xl bg-[#0A1220] border border-slate-800 shadow-xl font-mono text-xs space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-              <span className="font-bold text-white uppercase">
+          <div className="p-5 rounded-xl bg-white border border-[#D9DEE7] shadow-sm font-mono text-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-[#D9DEE7]">
+              <span className="font-bold text-[#172033] uppercase">
                 Track Possession Isolation Controls (G&SR 4.14)
               </span>
               <span className={`px-2 py-0.5 rounded font-bold text-[10px] ${
                 trackPossessionState === 'DISCONNECTED_FOR_WORK'
-                  ? 'bg-red-950 text-red-300 border border-red-700'
-                  : 'bg-emerald-950 text-emerald-300 border border-emerald-700'
+                  ? 'bg-red-50 text-[#C62828] border border-red-200'
+                  : 'bg-emerald-50 text-[#168A55] border border-emerald-200'
               }`}>
                 {trackPossessionState === 'DISCONNECTED_FOR_WORK' ? '⛔ DISCONNECTED (SAFE FOR WORK)' : '🟢 CONNECTED (TRAFFIC OPEN)'}
               </span>
@@ -563,16 +623,16 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
 
             <div className="flex items-center justify-between gap-3 pt-1">
               <div>
-                <p className="text-slate-300 font-bold">UP LINE (Km 12/4 – 14/8)</p>
-                <p className="text-[11px] text-slate-500">Track disconnected with banner flag & detonator protection.</p>
+                <p className="text-[#172033] font-bold">UP LINE (Km 12/4 – 14/8)</p>
+                <p className="text-[11px] text-[#5B6575]">Track disconnected with banner flag & detonator protection.</p>
               </div>
 
               <button
                 onClick={handleToggleTrackPossession}
-                className={`py-2 px-4 rounded-xl font-bold text-xs shadow-md transition-all ${
+                className={`py-2 px-4 rounded-xl font-bold text-xs shadow-sm transition-all ${
                   trackPossessionState === 'DISCONNECTED_FOR_WORK'
-                    ? 'bg-emerald-700 hover:bg-emerald-600 text-white'
-                    : 'bg-red-700 hover:bg-red-600 text-white'
+                    ? 'bg-[#168A55] hover:bg-emerald-700 text-white'
+                    : 'bg-[#C62828] hover:bg-red-800 text-white'
                 }`}
               >
                 {trackPossessionState === 'DISCONNECTED_FOR_WORK' ? 'RE-CONNECT TRACK' : 'DISCONNECT TRACK'}
@@ -581,22 +641,22 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
           </div>
 
           {/* C. Request to TCP (Traction Power Control) */}
-          <div className="p-5 rounded-2xl bg-[#0A1220] border border-slate-800 shadow-xl font-mono text-xs space-y-3">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+          <div className="p-5 rounded-xl bg-white border border-[#D9DEE7] shadow-sm font-mono text-xs space-y-3">
+            <div className="flex items-center justify-between pb-2 border-b border-[#D9DEE7]">
               <div className="flex items-center gap-2">
-                <Zap className="w-4 h-4 text-purple-400" />
-                <span className="font-bold text-white uppercase">
+                <Zap className="w-4 h-4 text-[#D98C00]" />
+                <span className="font-bold text-[#172033] uppercase">
                   TRD Traction Power (TCP) Isolation
                 </span>
               </div>
 
               {/* Status lifecycle badge */}
-              <span className="px-2 py-0.5 rounded bg-purple-950 text-purple-300 border border-purple-700 text-[10px] font-bold">
+              <span className="px-2 py-0.5 rounded bg-purple-50 text-purple-700 border border-purple-200 text-[10px] font-bold">
                 LIFECYCLE: {tcpStatus}
               </span>
             </div>
 
-            <p className="text-[11px] text-slate-400">
+            <p className="text-[11px] text-[#5B6575]">
               Request OHE 25kV traction power shutdown or re-energization from Traction Power Controller (TPC).
             </p>
 
@@ -604,33 +664,33 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
               <button
                 onClick={() => handleRequestTcp('POWER_OFF')}
                 disabled={isTcpSubmitting}
-                className="flex-1 py-2 px-3 rounded-xl bg-purple-900/60 hover:bg-purple-800 text-purple-200 border border-purple-600/50 font-bold flex items-center justify-center gap-2"
+                className="flex-1 py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-[#C62828] border border-red-200 font-bold flex items-center justify-center gap-2"
               >
-                <Power className="w-3.5 h-3.5 text-red-400" />
+                <Power className="w-3.5 h-3.5 text-[#C62828]" />
                 <span>REQUEST POWER OFF (SHUTDOWN)</span>
               </button>
 
               <button
                 onClick={() => handleRequestTcp('POWER_ON')}
                 disabled={isTcpSubmitting}
-                className="flex-1 py-2 px-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 font-bold flex items-center justify-center gap-2"
+                className="flex-1 py-2 px-3 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-[#168A55] border border-emerald-200 font-bold flex items-center justify-center gap-2"
               >
-                <Power className="w-3.5 h-3.5 text-emerald-400" />
+                <Power className="w-3.5 h-3.5 text-[#168A55]" />
                 <span>REQUEST POWER ON</span>
               </button>
             </div>
           </div>
 
           {/* ML Learning Insight Banner */}
-          <div className="p-4 rounded-xl bg-blue-950/40 border border-blue-600/40 font-mono text-xs space-y-1.5 text-slate-300">
-            <div className="flex items-center gap-2 text-cyan-400 font-bold">
-              <Sparkles className="w-4 h-4" />
+          <div className="p-4 rounded-xl bg-[#F4F6F8] border border-[#D9DEE7] font-mono text-xs space-y-1.5 text-[#172033]">
+            <div className="flex items-center gap-2 text-[#173B73] font-bold">
+              <Sparkles className="w-4 h-4 text-amber-500" />
               <span>ML PREDICTIVE LEARNING ENGINE INSIGHT</span>
             </div>
-            <p className="text-[11px] text-slate-300">{mlInsight.pattern}</p>
-            <div className="flex items-center justify-between text-[10px] text-slate-400 pt-1 border-t border-blue-900">
-              <span>PREDICTED UTILIZATION: <strong className="text-emerald-400">{mlInsight.predictedUtilization}</strong></span>
-              <span>MODEL CONFIDENCE: <strong className="text-cyan-400">{mlInsight.confidence}</strong></span>
+            <p className="text-[11px] text-[#5B6575]">{mlInsight.pattern}</p>
+            <div className="flex items-center justify-between text-[10px] text-[#5B6575] pt-1 border-t border-[#D9DEE7]">
+              <span>PREDICTED UTILIZATION: <strong className="text-[#168A55]">{mlInsight.predictedUtilization}</strong></span>
+              <span>MODEL CONFIDENCE: <strong className="text-[#173B73]">{mlInsight.confidence}</strong></span>
             </div>
           </div>
         </div>
@@ -640,32 +700,32 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
       {/* 30. SUBMIT FINAL MAINTENANCE REPORT MODAL                 */}
       {/* ────────────────────────────────────────────────────────── */}
       {isFinalReportModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="w-full max-w-2xl bg-[#0A1220] border-2 border-emerald-500/60 rounded-2xl shadow-2xl p-6 font-mono text-xs space-y-4 my-8 max-h-[85vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-2xl bg-white border border-[#D9DEE7] rounded-xl shadow-lg p-6 font-mono text-xs space-y-4 my-8 max-h-[85vh] overflow-y-auto">
             {reportSuccess ? (
               <div className="text-center space-y-3 py-6">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-950 border border-emerald-500 text-emerald-400 flex items-center justify-center mx-auto shadow-xl">
+                <div className="w-16 h-16 rounded-xl bg-emerald-50 border border-emerald-200 text-[#168A55] flex items-center justify-center mx-auto shadow-sm">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
-                <h3 className="text-xl font-black text-white">
+                <h3 className="text-xl font-black text-[#172033]">
                   Final Maintenance Report Submitted & Ingested
                 </h3>
-                <p className="text-slate-400 text-xs max-w-md mx-auto">
-                  The final maintenance execution dossier has been committed to MongoDB and immediately fed into the <strong>Machine Learning Continuous Learning Pipeline</strong> to improve future duration and train delay predictions.
+                <p className="text-[#5B6575] text-xs max-w-md mx-auto">
+                  The final maintenance execution dossier has been committed to MongoDB and immediately fed into the <strong className="text-[#172033]">Machine Learning Continuous Learning Pipeline</strong> to improve future duration and train delay predictions.
                 </p>
 
-                <div className="p-3 bg-slate-900 rounded-xl border border-slate-800 text-left text-xs max-w-sm mx-auto space-y-1">
+                <div className="p-3 bg-[#F4F6F8] rounded-xl border border-[#D9DEE7] text-left text-xs max-w-sm mx-auto space-y-1">
                   <div className="flex justify-between">
-                    <span className="text-slate-500">REPORT ID:</span>
-                    <span className="text-cyan-400 font-bold">{reportSuccess.reportId}</span>
+                    <span className="text-[#5B6575]">REPORT ID:</span>
+                    <span className="text-[#173B73] font-bold">{reportSuccess.reportId}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">ML INGESTION:</span>
-                    <span className="text-emerald-400 font-bold">{reportSuccess.mlFeedStatus}</span>
+                    <span className="text-[#5B6575]">ML INGESTION:</span>
+                    <span className="text-[#168A55] font-bold">{reportSuccess.mlFeedStatus}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-slate-500">AUDIT TIME:</span>
-                    <span className="text-slate-300">{reportSuccess.timestamp}</span>
+                    <span className="text-[#5B6575]">AUDIT TIME:</span>
+                    <span className="text-[#172033]">{reportSuccess.timestamp}</span>
                   </div>
                 </div>
 
@@ -674,24 +734,24 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
                     setIsFinalReportModalOpen(false);
                     setReportSuccess(null);
                   }}
-                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-800 text-white font-bold text-xs"
+                  className="px-6 py-2.5 rounded-xl bg-[#173B73] hover:bg-[#1F4380] text-white font-bold text-xs shadow-sm"
                 >
                   Close & Return to Corridor
                 </button>
               </div>
             ) : (
               <form onSubmit={handleSubmitFinalReport} className="space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                <div className="flex items-center justify-between pb-3 border-b border-[#D9DEE7]">
                   <div className="flex items-center gap-2">
-                    <FileCheck className="w-5 h-5 text-emerald-400" />
-                    <h3 className="text-base font-bold text-white uppercase">
+                    <FileCheck className="w-5 h-5 text-[#173B73]" />
+                    <h3 className="text-base font-bold text-[#172033] uppercase">
                       SUBMIT FINAL MAINTENANCE REPORT (G&SR FORM M-104)
                     </h3>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsFinalReportModalOpen(false)}
-                    className="text-slate-400 hover:text-white"
+                    className="text-[#5B6575] hover:text-[#172033]"
                   >
                     ✕
                   </button>
@@ -699,114 +759,114 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-slate-400 block mb-1">Actual Start Time</label>
+                    <label className="text-[#172033] font-bold block mb-1">Actual Start Time</label>
                     <input
                       type="text"
                       value={reportForm.actualStartTime}
                       onChange={(e) => setReportForm({ ...reportForm, actualStartTime: e.target.value })}
-                      className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                      className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Actual End Time</label>
+                    <label className="text-[#172033] font-bold block mb-1">Actual End Time</label>
                     <input
                       type="text"
                       value={reportForm.actualEndTime}
                       onChange={(e) => setReportForm({ ...reportForm, actualEndTime: e.target.value })}
-                      className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                      className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-slate-400 block mb-1">Work Performed & Assets Affected</label>
+                  <label className="text-[#172033] font-bold block mb-1">Work Performed & Assets Affected</label>
                   <textarea
                     rows={2}
                     value={reportForm.workPerformed}
                     onChange={(e) => setReportForm({ ...reportForm, workPerformed: e.target.value })}
-                    className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                    className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-slate-400 block mb-1">Defects Found</label>
+                    <label className="text-[#172033] font-bold block mb-1">Defects Found</label>
                     <input
                       type="text"
                       value={reportForm.defectsFound}
                       onChange={(e) => setReportForm({ ...reportForm, defectsFound: e.target.value })}
-                      className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                      className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Defects Resolved</label>
+                    <label className="text-[#172033] font-bold block mb-1">Defects Resolved</label>
                     <input
                       type="text"
                       value={reportForm.defectsResolved}
                       onChange={(e) => setReportForm({ ...reportForm, defectsResolved: e.target.value })}
-                      className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                      className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                     />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="text-slate-400 block mb-1">Manpower Used</label>
+                    <label className="text-[#172033] font-bold block mb-1">Manpower Used</label>
                     <input
                       type="number"
                       value={reportForm.manpowerUsed}
                       onChange={(e) => setReportForm({ ...reportForm, manpowerUsed: e.target.value })}
-                      className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                      className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Block Utilization %</label>
+                    <label className="text-[#172033] font-bold block mb-1">Block Utilization %</label>
                     <input
                       type="number"
                       value={reportForm.blockUtilizationPercent}
                       onChange={(e) => setReportForm({ ...reportForm, blockUtilizationPercent: e.target.value })}
-                      className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                      className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                     />
                   </div>
                   <div>
-                    <label className="text-slate-400 block mb-1">Status</label>
-                    <div className="py-2 px-3 bg-emerald-950 text-emerald-300 font-bold rounded-lg border border-emerald-700 text-center">
+                    <label className="text-[#172033] font-bold block mb-1">Status</label>
+                    <div className="py-2 px-3 bg-emerald-50 text-[#168A55] font-bold rounded-lg border border-emerald-200 text-center">
                       COMPLETED ✓
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="text-slate-400 block mb-1">Equipment Used</label>
+                  <label className="text-[#172033] font-bold block mb-1">Equipment Used</label>
                   <input
                     type="text"
                     value={reportForm.equipmentUsed}
                     onChange={(e) => setReportForm({ ...reportForm, equipmentUsed: e.target.value })}
-                    className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                    className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                   />
                 </div>
 
                 <div>
-                  <label className="text-slate-400 block mb-1">Recommendations & Speed Restrictions</label>
+                  <label className="text-[#172033] font-bold block mb-1">Recommendations & Speed Restrictions</label>
                   <textarea
                     rows={2}
                     value={reportForm.recommendations}
                     onChange={(e) => setReportForm({ ...reportForm, recommendations: e.target.value })}
-                    className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                    className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] rounded-lg text-[#172033] focus:outline-none focus:border-[#173B73] focus:bg-white"
                   />
                 </div>
 
-                <div className="pt-3 border-t border-slate-800 flex justify-end gap-3">
+                <div className="pt-3 border-t border-[#D9DEE7] flex justify-end gap-3">
                   <button
                     type="button"
                     onClick={() => setIsFinalReportModalOpen(false)}
-                    className="py-2 px-4 rounded-xl bg-slate-800 text-slate-300 font-bold text-xs"
+                    className="py-2 px-4 rounded-xl bg-white border border-[#D9DEE7] hover:bg-[#F4F6F8] text-[#172033] font-bold text-xs"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="py-2 px-6 rounded-xl bg-gradient-to-r from-emerald-600 to-emerald-800 hover:from-emerald-500 text-white font-bold text-xs shadow-lg"
+                    className="py-2 px-6 rounded-xl bg-[#168A55] hover:bg-[#126b42] text-white font-bold text-xs shadow-sm"
                   >
                     SUBMIT TO MONGODB & FEED ML PIPELINE
                   </button>
@@ -821,16 +881,16 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
       {/* 29-D. EMERGENCY REPORT MODAL                               */}
       {/* ────────────────────────────────────────────────────────── */}
       {isEmergencyModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="w-full max-w-md bg-[#0F0808] border-2 border-red-500 rounded-2xl shadow-2xl p-6 font-mono text-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-red-900/60">
-              <div className="flex items-center gap-2 text-red-400 font-bold">
-                <Flame className="w-5 h-5 animate-pulse" />
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-white border-t-4 border-[#C62828] rounded-xl shadow-lg p-6 font-mono text-xs space-y-4">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D9DEE7]">
+              <div className="flex items-center gap-2 text-[#C62828] font-bold">
+                <Flame className="w-5 h-5 animate-pulse text-[#D98C00]" />
                 <span className="text-sm uppercase">REPORT CORRIDOR EMERGENCY</span>
               </div>
               <button
                 onClick={() => setIsEmergencyModalOpen(false)}
-                className="text-slate-400 hover:text-white"
+                className="text-[#5B6575] hover:text-[#172033]"
               >
                 ✕
               </button>
@@ -838,11 +898,11 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
 
             <form onSubmit={handleSubmitEmergency} className="space-y-3">
               <div>
-                <label className="text-slate-400 block mb-1">Emergency Category</label>
+                <label className="text-[#172033] font-bold block mb-1">Emergency Category</label>
                 <select
                   value={emergencyData.type}
                   onChange={(e) => setEmergencyData({ ...emergencyData, type: e.target.value })}
-                  className="w-full py-2 px-3 bg-slate-900 border border-red-900/80 rounded-lg text-white font-bold"
+                  className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] focus:border-[#173B73] focus:bg-white focus:outline-none rounded-lg text-[#172033] font-bold"
                 >
                   <option value="TRACK_OBSTRUCTION">TRACK OBSTRUCTION / RAIL FRACTURE</option>
                   <option value="OHE_BREAKDOWN">OHE POWER WIRE SNAPPING</option>
@@ -852,29 +912,29 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Exact Location (Km Post)</label>
+                <label className="text-[#172033] font-bold block mb-1">Exact Location (Km Post)</label>
                 <input
                   type="text"
                   value={emergencyData.location}
                   onChange={(e) => setEmergencyData({ ...emergencyData, location: e.target.value })}
-                  className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                  className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] focus:border-[#173B73] focus:bg-white focus:outline-none rounded-lg text-[#172033]"
                 />
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Severity Level</label>
-                <div className="p-2 rounded bg-red-950/80 text-red-300 font-bold border border-red-600 text-center">
+                <label className="text-[#172033] font-bold block mb-1">Severity Level</label>
+                <div className="p-2 rounded bg-red-50 text-[#C62828] font-bold border border-red-200 text-center">
                   RED ALERT — MANDATORY TRAFFIC SUSPENSION
                 </div>
               </div>
 
               <div>
-                <label className="text-slate-400 block mb-1">Detailed Situation Description</label>
+                <label className="text-[#172033] font-bold block mb-1">Detailed Situation Description</label>
                 <textarea
                   rows={3}
                   value={emergencyData.description}
                   onChange={(e) => setEmergencyData({ ...emergencyData, description: e.target.value })}
-                  className="w-full py-2 px-3 bg-slate-900 border border-slate-700 rounded-lg text-white"
+                  className="w-full py-2 px-3 bg-[#F4F6F8] border border-[#D9DEE7] focus:border-[#173B73] focus:bg-white focus:outline-none rounded-lg text-[#172033]"
                 />
               </div>
 
@@ -882,13 +942,13 @@ export const ActiveMaintenancePage = ({ onNavigate }) => {
                 <button
                   type="button"
                   onClick={() => setIsEmergencyModalOpen(false)}
-                  className="py-2 px-4 rounded-xl bg-slate-800 text-slate-300 font-bold"
+                  className="py-2 px-4 rounded-xl bg-white border border-[#D9DEE7] hover:bg-[#F4F6F8] text-[#172033] font-bold"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="py-2.5 px-6 rounded-xl bg-red-600 hover:bg-red-500 text-white font-bold shadow-xl shadow-red-950/80"
+                  className="py-2.5 px-6 rounded-xl bg-[#C62828] hover:bg-red-800 text-white font-bold shadow-sm"
                 >
                   BROADCAST EMERGENCY ALERT
                 </button>

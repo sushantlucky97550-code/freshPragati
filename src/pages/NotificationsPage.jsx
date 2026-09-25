@@ -27,40 +27,41 @@ export const NotificationsPage = ({ onNavigate }) => {
       case 'EMERGENCY':
         return {
           icon: Flame,
-          color: 'text-red-400 bg-red-950/80 border-red-700/80',
+          color: 'text-[#C62828] bg-red-50 border-[#C62828]/30',
           label: '🔴 EMERGENCY',
           badgeColor: 'red'
         };
       case 'BLOCK_UPDATE':
         return {
           icon: Clock,
-          color: 'text-amber-400 bg-amber-950/80 border-amber-700/80',
+          color: 'text-[#D98C00] bg-amber-50 border-amber-300',
           label: '🟠 BLOCK UPDATE',
           badgeColor: 'amber'
         };
       case 'APPROVAL':
         return {
           icon: ShieldAlert,
-          color: 'text-yellow-400 bg-yellow-950/80 border-yellow-700/80',
+          color: 'text-[#173B73] bg-[#EBF2FA] border-[#D9DEE7]',
           label: '🟡 APPROVAL REQUIRED',
           badgeColor: 'yellow'
         };
       case 'WEATHER':
         return {
           icon: CloudRain,
-          color: 'text-cyan-400 bg-cyan-950/80 border-cyan-700/80',
+          color: 'text-blue-600 bg-blue-50 border-blue-200',
           label: '🔵 AI WEATHER ALERT',
           badgeColor: 'cyan'
         };
       default:
         return {
           icon: CheckCircle2,
-          color: 'text-emerald-400 bg-emerald-950/80 border-emerald-700/80',
+          color: 'text-[#168A55] bg-emerald-50 border-emerald-200',
           label: '🟢 APPROVAL COMPLETE',
           badgeColor: 'emerald'
         };
     }
   };
+
 
   const handleAcknowledge = (id) => {
     setAcknowledgedIds(prev => [...prev, id]);
@@ -74,50 +75,46 @@ export const NotificationsPage = ({ onNavigate }) => {
   const unreadCount = notifications.filter(n => !n.read && !acknowledgedIds.includes(n.id)).length;
 
   return (
-    <div className="space-y-6 pb-16 w-full max-w-7xl mx-auto selection:bg-red-700 selection:text-white font-sans">
-      {/* Official Header */}
-      <div className="p-5 rounded-2xl bg-gradient-to-r from-[#070D18] via-[#0A1426] to-[#070D18] border border-blue-900/40 shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-mono font-bold tracking-widest text-cyan-400 uppercase">
-              {currentZone} • {currentDivision} DIVISION
-            </span>
-            <span className="text-slate-600">•</span>
-            <span className="text-[10px] font-mono text-emerald-400 font-bold flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              LIVE TELEMETRY & ALERTS DISPATCH
-            </span>
+    <div className="space-y-6 pb-16 w-full max-w-7xl mx-auto selection:bg-[#173B73] selection:text-white font-sans">
+      {/* Official Header - White + Navy */}
+      <div className="rounded-xl overflow-hidden border border-[#D9DEE7] shadow-md bg-white">
+        <div className="bg-[#173B73] px-5 py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-2.5">
+            <div className="w-1.5 h-6 rounded-full bg-amber-400 flex-shrink-0" />
+            <div>
+              <div className="flex items-center gap-2 text-[10px] font-mono text-blue-200 uppercase tracking-widest mb-0.5">
+                <span>{currentZone} &bull; {currentDivision} DIVISION &bull; LIVE ALERTS DISPATCH</span>
+              </div>
+              <h1 className="text-lg font-black text-white tracking-tight flex items-center gap-2">
+                <Bell className="w-5 h-5 text-amber-300" />
+                <span>Operational Control Center Notifications</span>
+              </h1>
+            </div>
           </div>
-
-          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white font-mono flex items-center gap-3">
-            <Bell className="w-7 h-7 text-amber-400" />
-            <span>Operational Control Center Notifications</span>
-          </h1>
-
-          <p className="text-xs text-slate-400 font-mono mt-1">
+          <div className="flex items-center gap-3">
+            <div className="px-3.5 py-1.5 rounded-xl bg-[#C62828] border border-red-400/40 font-mono text-xs text-white font-bold flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-red-300 animate-ping" />
+              <span>{unreadCount} UNREAD ALERTS</span>
+            </div>
+            {markAllNotificationsRead && (
+              <button
+                onClick={markAllNotificationsRead}
+                className="px-4 py-2 rounded-xl bg-white/20 hover:bg-white/30 text-white font-mono text-xs font-bold border border-white/30 transition-colors"
+              >
+                MARK ALL READ
+              </button>
+            )}
+          </div>
+        </div>
+        <div className="px-5 py-3">
+          <p className="text-xs text-[#5B6575] font-medium">
             Real-time critical events, block timing updates, weather advisories, and departmental approval triggers
           </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <div className="px-3.5 py-1.5 rounded-xl bg-red-950/80 border border-red-700/60 font-mono text-xs text-red-300 font-bold flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-400 animate-ping" />
-            <span>{unreadCount} UNREAD ALERTS</span>
-          </div>
-
-          {markAllNotificationsRead && (
-            <button
-              onClick={markAllNotificationsRead}
-              className="px-4 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-mono text-xs font-bold border border-slate-700 transition-colors"
-            >
-              MARK ALL READ
-            </button>
-          )}
         </div>
       </div>
 
       {/* Filter Tabs */}
-      <div className="flex items-center gap-2 overflow-x-auto pb-2 font-mono text-xs border-b border-slate-800">
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 font-mono text-xs border-b border-[#D9DEE7]">
         {[
           { id: 'ALL', label: 'ALL NOTIFICATIONS', count: notifications.length },
           { id: 'EMERGENCY', label: '🔴 EMERGENCY', count: notifications.filter(n => n.type === 'EMERGENCY').length },
@@ -130,12 +127,12 @@ export const NotificationsPage = ({ onNavigate }) => {
             onClick={() => setFilterType(tab.id)}
             className={`px-3.5 py-1.5 rounded-lg border font-bold transition-all whitespace-nowrap flex items-center gap-2 ${
               filterType === tab.id
-                ? 'bg-blue-600 text-white border-blue-400 shadow-md shadow-blue-950/50'
-                : 'bg-slate-900/60 text-slate-400 border-slate-800 hover:border-slate-700 hover:text-white'
+                ? 'bg-[#173B73] text-white border-[#173B73] shadow-md'
+                : 'bg-white text-[#5B6575] border-[#D9DEE7] hover:border-[#173B73] hover:text-[#173B73]'
             }`}
           >
             <span>{tab.label}</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-black/40 text-[10px]">
+            <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${filterType === tab.id ? 'bg-white/20 text-white' : 'bg-[#F4F6F8] text-[#5B6575]'}`}>
               {tab.count}
             </span>
           </button>
@@ -145,7 +142,7 @@ export const NotificationsPage = ({ onNavigate }) => {
       {/* Notification Cards List */}
       <div className="space-y-3">
         {filteredNotifications.length === 0 ? (
-          <div className="p-12 text-center rounded-2xl bg-[#091122]/60 border border-slate-800 font-mono text-sm text-slate-500">
+          <div className="p-12 text-center rounded-xl bg-white border border-[#D9DEE7] font-mono text-sm text-[#5B6575]">
             No notifications found under selected filter.
           </div>
         ) : (
@@ -157,10 +154,10 @@ export const NotificationsPage = ({ onNavigate }) => {
             return (
               <div
                 key={notif.id}
-                className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+                className={`p-4 rounded-xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white ${
                   isAck
-                    ? 'bg-[#080E1A]/40 border-slate-800/60 opacity-70'
-                    : 'bg-[#0A1324] border-slate-700/80 shadow-md hover:border-blue-500/50'
+                    ? 'border-[#D9DEE7] opacity-70'
+                    : 'border-[#D9DEE7] shadow-sm hover:border-[#173B73] hover:shadow-md'
                 }`}
               >
                 <div className="flex items-start gap-3.5 flex-1 min-w-0">
@@ -173,21 +170,21 @@ export const NotificationsPage = ({ onNavigate }) => {
                       <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold border ${badge.color}`}>
                         {badge.label}
                       </span>
-                      <span className="text-[11px] font-mono text-slate-500">
+                      <span className="text-[11px] font-mono text-[#5B6575]">
                         {notif.timestamp}
                       </span>
                       {notif.workId && (
-                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-blue-950/80 text-cyan-300 border border-blue-700/50">
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-[#EBF2FA] text-[#173B73] border border-[#D9DEE7]">
                           REF: {notif.workId}
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-sm font-bold text-white font-mono mb-1">
+                    <h3 className="text-sm font-bold text-[#172033] font-mono mb-1">
                       {notif.title}
                     </h3>
 
-                    <p className="text-xs text-slate-300 font-sans leading-relaxed">
+                    <p className="text-xs text-[#5B6575] font-sans leading-relaxed">
                       {notif.message}
                     </p>
                   </div>
@@ -195,14 +192,14 @@ export const NotificationsPage = ({ onNavigate }) => {
 
                 <div className="flex items-center gap-2 self-end sm:self-center flex-shrink-0">
                   {isAck ? (
-                    <span className="px-3 py-1.5 rounded-lg bg-emerald-950/60 text-emerald-400 border border-emerald-800/40 text-xs font-mono font-bold flex items-center gap-1.5">
+                    <span className="px-3 py-1.5 rounded-lg bg-emerald-50 text-[#168A55] border border-emerald-200 text-xs font-mono font-bold flex items-center gap-1.5">
                       <Check className="w-3.5 h-3.5" />
                       <span>ACKNOWLEDGED</span>
                     </span>
                   ) : (
                     <button
                       onClick={() => handleAcknowledge(notif.id)}
-                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-cyan-300 hover:text-white border border-slate-700 font-mono text-xs font-bold transition-colors flex items-center gap-1.5"
+                      className="px-3 py-1.5 rounded-lg bg-[#EBF2FA] hover:bg-[#173B73] text-[#173B73] hover:text-white border border-[#D9DEE7] font-mono text-xs font-bold transition-colors flex items-center gap-1.5"
                     >
                       <Check className="w-3.5 h-3.5" />
                       <span>ACKNOWLEDGE</span>
@@ -212,7 +209,7 @@ export const NotificationsPage = ({ onNavigate }) => {
                   {notif.type === 'APPROVAL' && onNavigate && (
                     <button
                       onClick={() => onNavigate('todays-work')}
-                      className="px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-mono text-xs font-bold transition-colors flex items-center gap-1"
+                      className="px-3 py-1.5 rounded-lg bg-[#173B73] hover:bg-[#1F4380] text-white font-mono text-xs font-bold transition-colors flex items-center gap-1"
                     >
                       <span>OPEN TASK</span>
                       <ArrowRight className="w-3.5 h-3.5" />

@@ -4,14 +4,31 @@
 
 @layer base {
   :root {
-    --color-railway-navy: #0B1E36;
-    --color-railway-maroon: #801820;
-    --color-command-bg: #060A12;
-    --color-command-surface: #0B1120;
-    --color-command-card: #0E1626;
-    --color-signal-red: #DC2626;
-    --color-signal-amber: #F59E0B;
-    --color-signal-green: #10B981;
+    --color-railway-navy: #173B73;
+    --color-railway-navy-mid: #1F4380;
+    --color-railway-navy-light: #24477F;
+    --color-railway-navy-dark: #10274C;
+    --color-railway-white: #FFFFFF;
+    --color-railway-light-grey: #F4F6F8;
+    --color-railway-border: #D9DEE7;
+    --color-railway-text: #172033;
+    --color-railway-muted: #5B6575;
+    --color-railway-green: #168A55;
+    --color-railway-red: #C62828;
+    --color-railway-amber: #D98C00;
+
+    --color-command-bg: #F4F6F8;
+    --color-command-surface: #FFFFFF;
+    --color-command-card: #FFFFFF;
+    --color-signal-red: #C62828;
+    --color-signal-amber: #D98C00;
+    --color-signal-green: #168A55;
+  }
+
+  .dark {
+    --color-command-bg: #0B1528;
+    --color-command-surface: #0E1C35;
+    --color-command-card: #0E1C35;
   }
 
   html {
@@ -30,6 +47,8 @@
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    background-color: #F4F6F8;
+    color: #172033;
   }
 
   #root {
@@ -43,26 +62,26 @@
 
 /* ─── Custom Scrollbars ─── */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: rgba(11, 17, 32, 0.8);
+  background: #F4F6F8;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(100, 116, 139, 0.4);
+  background: #C4CBD6;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.6);
+  background: #173B73;
 }
 
 /* ─── Railway Background Patterns ─── */
 .bg-rail-stripes {
   background-image: repeating-linear-gradient(
     45deg,
-    rgba(239, 68, 68, 0.06),
-    rgba(239, 68, 68, 0.06) 10px,
+    rgba(198, 40, 40, 0.04),
+    rgba(198, 40, 40, 0.04) 10px,
     transparent 10px,
     transparent 20px
   );
@@ -71,55 +90,55 @@
 .bg-maintenance-stripes {
   background-image: repeating-linear-gradient(
     -45deg,
-    rgba(245, 158, 11, 0.12),
-    rgba(245, 158, 11, 0.12) 8px,
+    rgba(217, 140, 0, 0.08),
+    rgba(217, 140, 0, 0.08) 8px,
     transparent 8px,
     transparent 16px
   );
 }
 
 .bg-grid-command {
-  background-size: 40px 40px;
+  background-size: 36px 36px;
   background-image:
-    linear-gradient(to right, rgba(26, 39, 68, 0.3) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(26, 39, 68, 0.3) 1px, transparent 1px);
+    linear-gradient(to right, rgba(217, 222, 231, 0.6) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 222, 231, 0.6) 1px, transparent 1px);
 }
 
 .bg-grid-fine {
   background-size: 20px 20px;
   background-image:
-    linear-gradient(to right, rgba(26, 39, 68, 0.15) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(26, 39, 68, 0.15) 1px, transparent 1px);
+    linear-gradient(to right, rgba(217, 222, 231, 0.4) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 222, 231, 0.4) 1px, transparent 1px);
 }
 
 .bg-grid-pattern {
   background-size: 24px 24px;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(23, 59, 115, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(23, 59, 115, 0.05) 1px, transparent 1px);
 }
 
 .bg-grid-pattern-light {
   background-size: 24px 24px;
   background-image:
-    linear-gradient(to right, rgba(0, 0, 0, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.04) 1px, transparent 1px);
+    linear-gradient(to right, rgba(217, 222, 231, 0.5) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(217, 222, 231, 0.5) 1px, transparent 1px);
 }
 
 /* ─── Railway Track Line Pattern ─── */
 .bg-track-lines {
   background-image:
-    linear-gradient(180deg, transparent 48%, rgba(71, 85, 105, 0.2) 48%, rgba(71, 85, 105, 0.2) 52%, transparent 52%);
+    linear-gradient(180deg, transparent 48%, rgba(23, 59, 115, 0.15) 48%, rgba(23, 59, 115, 0.15) 52%, transparent 52%);
   background-size: 100% 12px;
 }
 
 /* ─── Command Surface Gradient ─── */
 .bg-command-gradient {
-  background: linear-gradient(180deg, #060A12 0%, #0B1120 40%, #0E1626 100%);
+  background: linear-gradient(180deg, #173B73 0%, #1F4380 50%, #24477F 100%);
 }
 
 .bg-hero-gradient {
-  background: linear-gradient(135deg, #0B1E36 0%, #0F172A 30%, #1E293B 60%, #0F172A 80%, #0B1E36 100%);
+  background: linear-gradient(135deg, #10274C 0%, #173B73 40%, #1F4380 75%, #24477F 100%);
 }
 
 /* ─── Signal Indicator Styles ─── */
@@ -138,33 +157,105 @@
   opacity: 0.3;
 }
 .signal-dot--green {
-  background: #10B981;
-  box-shadow: 0 0 8px 2px rgba(16, 185, 129, 0.4);
+  background: #168A55;
+  box-shadow: 0 0 6px 1px rgba(22, 138, 85, 0.4);
 }
 .signal-dot--red {
-  background: #DC2626;
-  box-shadow: 0 0 8px 2px rgba(220, 38, 38, 0.4);
+  background: #C62828;
+  box-shadow: 0 0 6px 1px rgba(198, 40, 40, 0.4);
 }
 .signal-dot--amber {
-  background: #F59E0B;
-  box-shadow: 0 0 8px 2px rgba(245, 158, 11, 0.4);
+  background: #D98C00;
+  box-shadow: 0 0 6px 1px rgba(217, 140, 0, 0.4);
 }
 .signal-dot--cyan {
-  background: #06B6D4;
-  box-shadow: 0 0 8px 2px rgba(6, 182, 212, 0.4);
+  background: #1F4380;
+  box-shadow: 0 0 6px 1px rgba(31, 67, 128, 0.4);
 }
 
-/* ─── Glassmorphism Panels ─── */
+/* ─── Professional Railway Card Styles ─── */
+.railway-card {
+  background-color: #FFFFFF;
+  border: 1px solid #D9DEE7;
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px 0 rgba(23, 32, 51, 0.05);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.railway-card:hover {
+  border-color: #1F4380;
+  box-shadow: 0 4px 12px -2px rgba(23, 59, 115, 0.08);
+}
+
+/* ─── Professional Railway Tables ─── */
+.railway-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+.railway-table thead th {
+  background-color: #173B73;
+  color: #FFFFFF;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1rem;
+  border-bottom: 2px solid #10274C;
+}
+.railway-table tbody tr {
+  background-color: #FFFFFF;
+  transition: background-color 0.15s ease;
+}
+.railway-table tbody tr:nth-child(even) {
+  background-color: #F8FAFC;
+}
+.railway-table tbody tr:hover {
+  background-color: #EBF2FA;
+}
+.railway-table tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #D9DEE7;
+  color: #172033;
+}
+
+/* ─── Primary Railway Buttons ─── */
+.btn-railway-primary {
+  background-color: #173B73;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.btn-railway-primary:hover {
+  background-color: #112D58;
+}
+.btn-railway-primary:active {
+  transform: translateY(1px);
+}
+
+.btn-railway-danger {
+  background-color: #C62828;
+  color: #FFFFFF;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: background-color 0.2s;
+}
+.btn-railway-danger:hover {
+  background-color: #B71C1C;
+}
+
+/* ─── Glassmorphism Panels (Restyled to crisp professional panels) ─── */
 .glass-panel {
-  background: rgba(11, 17, 32, 0.7);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(26, 39, 68, 0.6);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  border: 1px solid #D9DEE7;
 }
 
 .glass-panel-light {
-  background: rgba(14, 22, 38, 0.85);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(36, 53, 86, 0.5);
+  background: #FFFFFF;
+  border: 1px solid #D9DEE7;
 }
 
 /* ─── Module Card Hover Effect ─── */
@@ -310,6 +401,28 @@
 .login-fade-in-delay-2 {
   opacity: 0;
   animation: loginFadeIn 0.8s ease-out 0.8s forwards;
+}
+
+/* ─── Train Move Animation (used in LoginPage visual panel) ─── */
+@keyframes trainMove {
+  0% { transform: translateY(-20px); opacity: 0; }
+  5% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(100vh); opacity: 0; }
+}
+
+.animate-train-move {
+  animation: trainMove 12s linear infinite;
+}
+
+/* ─── Signal Blink (used in LoginPage SVG signals) ─── */
+@keyframes signalBlink {
+  0%, 90%, 100% { opacity: 0.9; }
+  45% { opacity: 0.2; }
+}
+
+.animate-signal-blink {
+  animation: signalBlink 2s ease-in-out infinite;
 }
 
 /* ─── Accessibility: Respect reduced motion ─── */

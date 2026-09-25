@@ -6,7 +6,7 @@ export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('railopt_theme');
     if (saved) return saved;
-    return 'dark'; // Default to Indian Railways Operations Dark Room mode
+    return 'light'; // Default to Indian Railways White + Navy Blue + Light Grey mode
   });
 
   useEffect(() => {
